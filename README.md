@@ -1,7 +1,7 @@
 node-Tor
 ===
 
-Node.js javascript implementation of Tor anonymizer project (https://www.torproject.org/)
+Node.js Javascript implementation of Tor anonymizer project (https://www.torproject.org/)
 
 ## Presentation:
 
@@ -9,11 +9,13 @@ This is an unofficial implementation of the Tor protocol (Onion Proxy and Onion 
 
 ## Install :
 
-Until it is fully integrated into node.js's official version, you need the following to install node-Tor :
+For the record, you need the following to run node-Tor :
 
 	node.js version >= v0.7.5 (getDiffieHelman function needed)
-	openssl version >= 1.0.1c (aes counter mode encryption required)
+	openssl version >= 1.0.0a (aes counter mode encryption required)
 	python >= 2.6 (node.js's requirement)
+	
+####Current release of node.js is v0.8.4 with openSSL 1.0.0f
 	
 Then as usual :
 
@@ -30,8 +32,10 @@ If you encounter installation problems, you might look at :
 	https://github.com/joyent/node/issues/3574 (openssl)
 	https://github.com/joyent/node/issues/3504 (python)
 	https://github.com/joyent/node/issues/3516 (node.js)
-	
-The installation steps might not look very trivial for now but this will be much more easier in the future once node.js's release does include everything.
+
+To launch it, you need to be in the lib directory (some small inconvenient that will be fixed) :
+
+	node tor.js
 
 ## Tor Network principles :
 
@@ -45,13 +49,13 @@ The Exit OR does decrypt the content, establish a TCP connection with the target
 
 The ORs are maintaining onion RSA keys to negociate the different keys needed for the communications with the OP, these keys are rotated once a week and the directory servers are updated by the ORs accordingly.
 
-The OP is maintaining different circuits inside the Tor Network in order to be able to quickly switch from a circuit to another in order to enforce anonimity and prevent circuit errors that can occur.
+The OP is maintaining different circuits inside the Tor Network in order to be able to quickly switch from a circuit to another in order to enforce anonymity and prevent circuit errors that can occur.
 	
 ## node-Tor Goals and possible Future :
 
 The intent of this project is to provide Tor mechanisms in a web language, so it might open the network to web languages interfaces.
 
-It might be easier to install, will not depend on specific application and can interact with js modules, then it might be possible to easily build web/js applications on top of it (chat, etc).
+It might be easier to install, will not depend on specific applications and can interact with js modules, then it might be possible to easily build web/js applications on top of it (chat, etc).
 
 It is not unrealist to envision the OP part directly into the browser, for example the OR Guards could implement the wss protocol, or future harmony modules could be used, or as a plugin.
 
@@ -65,7 +69,7 @@ It does allow to establish n connections with the ORs, then n circuits for each 
 
 This is the most difficult part, mainly due to the difficulty of establishing stable circuits into the Tor network where unexpected events are not rare.
 
-It can happen that the Directory servers are not up to date, then the retrieved keys for a given OR might not be the good one. The current implementation (that can maybe change later) does retrieve an "almost" trustable list of Guards, Relays, Exit and Directory servers, for this you need to run the script build-relays_and_dirs.js periodically (which uses Onionoo https://onionoo.torproject.org/details?running=true to get the initial information), this does create the guards.js, relays.js, exit.js and dirs.js files used by node-Tor to select the ORs. The script does some testing to check that the ORs are alive and responding correctly, and then tries to select trustable ORs, future implementations will update the lists automatically.
+It can happen that the Directory servers are not up to date, then the retrieved keys for a given OR might not be the good ones. The current implementation (that might change later) does retrieve an "almost" trustable list of Guards, Relays, Exit and Directory servers, for this you need to run the script ./lib/build-relays_and_dirs.js periodically (which uses Onionoo https://onionoo.torproject.org/details?running=true to get the initial information), this does create the guards.js, relays.js, exit.js and dirs.js files used by node-Tor to select the ORs. The script does some testing to check that the ORs are alive and responding correctly, and then tries to select trustable ORs, future implementations will update the lists automatically.
 
 Node-Tor OP does support currently only the V3 handshake with Guards, then Guards's release must be >= 0.2.3.6, the script mentioned above does select it automatically.
 
@@ -77,7 +81,7 @@ Instructions to the OP can be sent via :
 	websosckets : see ./lib/client.html simple example
 	direct proxy : establish TCP connection with the OP and send the requests 
 	
-Socks requests are passed transparently, websockets and direct proxys can send usual HTTP GET requests for example or specific customized requests to pass parameters you need to node-Tor, see below.
+Socks requests are passed transparently, websockets and direct proxys can send usual HTTP GET requests for example or specific customized requests to pass parameters that you need to node-Tor, see below.
 
 It is planned to add some changes mechanisms to incoming streams in order not to allow fingerprinting.
 
@@ -100,7 +104,7 @@ If the one_c option is "true", the OP will open a few circuit and stream all inc
 
 If one_c is true, the OP does establish and change circuits randomly.
 
-The option one_c originally stands for "one circuit", but depending of what method your are using to instruct the OP, it is not possible to set only one circuit, and anyway it's better like this since this allows a random repartition.
+The option one_c originally stands for "one circuit", but depending on what method your are using to instruct the OP, it is not possible to set only one circuit, and anyway it's better like this since this allows a random repartition.
 
 The Tor project is doing (we believe) about the same as one_c option "true", it does mainly establish a few circuits and stream everything along, the default value for one_c is "true".
 
@@ -118,7 +122,7 @@ It can happen that some ORs do persist not to answer correctly, then it might be
 
 ## node-Tor OR :
 
-TODO but basically it is similar to the OP. It might be plan to retrieve the OR's information (keys, etc) directly from the OR (ie not from the directory servers).
+TODO but basically it is similar to the OP. It might be planned to retrieve the OR's information (keys, etc) directly from the OR (ie not from the directory servers).
 
 ## Tests :
 
@@ -128,7 +132,7 @@ Coming soon, one easy test would be to configure the socks proxy of your browser
 
 node-Tor can advantageously be coupled for example with :
 
-[Ayms/node-bot](https://github.com/Ayms/node-dom)
+[Ayms/node-dom](https://github.com/Ayms/node-dom)
 [Ayms/node-bot](https://github.com/Ayms/node-bot)
 [Ayms/node-gadgets](https://github.com/Ayms/node-gadgets)
 
