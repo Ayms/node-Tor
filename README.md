@@ -83,7 +83,7 @@ Instructions to the OP can be sent via :
 	
 Socks requests are passed transparently, websockets and direct proxys can send usual HTTP GET requests for example or specific customized requests to pass parameters that you need to node-Tor, see below.
 
-It is planned to add some changes mechanisms to incoming streams in order not to allow fingerprinting.
+It is planned to add some changes mechanisms to incoming streams in order not to ease fingerprinting.
 
 ## node-Tor OP options :
 
