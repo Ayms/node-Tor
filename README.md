@@ -1,7 +1,7 @@
 node-Tor
 ===
 
-Node.js Javascript implementation of Tor anonymizer project (https://www.torproject.org/)
+Node.js Javascript implementation of the Tor anonymizer project (The Onion Router https://www.torproject.org/)
 
 ## Presentation:
 
