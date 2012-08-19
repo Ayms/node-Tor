@@ -51,13 +51,17 @@ The ORs are maintaining onion RSA keys to negociate the different keys needed fo
 
 The OP is maintaining different circuits inside the Tor Network in order to be able to quickly switch from a circuit to another in order to enforce anonymity and prevent circuit errors that can occur.
 	
-## node-Tor Goals and possible Future :
+## node-Tor Goals and possible Future (related to Tor Project) :
 
 The intent of this project is to provide Tor mechanisms in a web language, so it might open the network to web languages interfaces.
 
 It might be easier to install, will not depend on specific applications and can interact with js modules, then it might be possible to easily build web/js applications on top of it (chat, etc).
 
 It is not unrealist to envision the OP part directly into the browser, for example the OR Guards could implement the wss protocol, or future harmony modules could be used, or as a plugin.
+
+## node-Tor Goals and possible Future (not related to Tor Project) :
+
+Beside anonimity, node-Tor can have other multiple uses, for example it can be used to access services that used to be free but that are not any longer in a way that the service providers can not detect you based on the requests that you are sending (see Related projects below), more to come.
 
 ## node-Tor Status :
 
@@ -126,7 +130,9 @@ TODO but basically it is similar to the OP. It might be planned to retrieve the 
 
 ## Tests :
 
-Coming soon, one easy test would be to configure the socks proxy of your browser to the address that we will provide (same as Tor application is doing between Aurora/Firefox and the Tor localhost OP) 
+Coming soon, one easy test would be to configure the socks proxy of your browser to the address that we will provide (same as Tor application is doing between Aurora/Firefox and the Tor localhost OP)
+
+In the meantime you can look an example of communication in ./test/debug.txt 
 	
 ## Related projects :
 
