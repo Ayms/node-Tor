@@ -61,7 +61,11 @@ It is not unrealist to envision the OP part directly into the browser, for examp
 
 ## node-Tor Goals and possible Future (not related to Tor Project) :
 
-Beside anonimity, node-Tor can have other multiple uses, for example it can be used to access services that used to be free but that are not any longer in a way that the service providers can not detect you based on the requests that you are sending (see Related projects below), more to come.
+Beside anonymity, node-Tor can have other multiple uses, for example it can be used to access services that used to be free but that are not any longer (even if yourself did contribute to it, you don't get paid back but must now pay for your work) in a way that the service providers can not detect you based on the requests that you are sending (see Related projects below), more to come.
+
+node-Tor's nodes could be used to create a parallel network, implementing or not the Tor protocol, using or not the Tor network.
+
+etc... more to come again
 
 ## node-Tor Status :
 
