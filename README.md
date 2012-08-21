@@ -61,11 +61,11 @@ It is not unrealist to envision the OP part directly into the browser, for examp
 
 ## node-Tor Goals and possible Future (not related to Tor Project) :
 
-Beside anonymity, node-Tor can have other multiple uses, for example it can be used to access services that used to be free but that are not any longer (even if yourself did contribute to it, you don't get paid back but must now pay for your work) in a way that the service providers can not detect you based on the requests that you are sending (see Related projects below), more to come.
+Beside anonymity, node-Tor can have other multiple uses, for example it can be used to access services that used to be free but that are not any longer (even if yourself did contribute to it!) in a way that the service providers can not detect you based on the requests that you are sending (see Related projects below), more to come.
 
-node-Tor's nodes could be used to create a parallel network, implementing or not the Tor protocol, using or not the Tor network.
+node-Tor's nodes could be used to create a complementary and/or parallel network, implementing completely, partially or not the Tor protocol, using completely, partially or not the Tor network, depending on the uses.
 
-etc... more to come again
+More to come again
 
 ## node-Tor Status :
 
@@ -77,7 +77,7 @@ It does allow to establish n connections with the ORs, then n circuits for each 
 
 This is the most difficult part, mainly due to the difficulty of establishing stable circuits into the Tor network where unexpected events are not rare.
 
-It can happen that the Directory servers are not up to date, then the retrieved keys for a given OR might not be the good ones. The current implementation (that might change later) does retrieve an "almost" trustable list of Guards, Relays, Exit and Directory servers, for this you need to run the script ./lib/build-relays_and_dirs.js periodically (which uses Onionoo https://onionoo.torproject.org/details?running=true to get the initial information), this does create the guards.js, relays.js, exit.js and dirs.js files used by node-Tor to select the ORs. The script does some testing to check that the ORs are alive and responding correctly, and then tries to select trustable ORs, future implementations will update the lists automatically.
+It can happen that the Directory servers are not up to date, then the retrieved keys for a given OR might not be the good ones. The current implementation (that might change later) does retrieve an "almost" trustable list of Guards, Relays, Exit and Directory servers, for this you need to run the script ./lib/build-relays_and_dirs.js periodically (which uses Onionoo https://onionoo.torproject.org/details?running=true to get the initial information), this does create the guards.js, relays.js, exit.js and dirs.js files used by node-Tor to select the ORs. The script does some testing to check that the ORs are alive and responding correctly, and then tries to select trustable ORs, future implementations will update the lists automatically or might completely change since Tor network probably holds a list of hidden ORs.
 
 Node-Tor OP does support currently only the V3 handshake with Guards, then Guards's release must be >= 0.2.3.6, the script mentioned above does select it automatically.
 
@@ -126,7 +126,7 @@ Main Tor project security features are implemented but some are still pending (s
 
 Unexpected events in Tor Network can cause large delays, mainly to establish circuits, then node-Tor OP is doing its best to retrieve information and create circuits as fast as possible, as soon as it does not receive the answer from a given router within an acceptable timeframe, the OP switches instantly to another one.
 
-It can happen that some ORs do persist not to answer correctly, then it might be planned to learn from the ORs and banish failing ORs.
+It can happen that some ORs do persist not to answer correctly, then it might be planned to learn from the ORs and banish failing ORs (or attacking ones since it does not seem unlikely that false ORs are inserted into the network)
 
 ## node-Tor OR :
 
