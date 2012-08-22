@@ -1,5 +1,4 @@
 //Copyright 2012 jCore Aymeric Vitte (+ some parts of node.js crypto code)
-//No C++ extensive knowledge, please forgive potential curious things in the code
 
 #include "crypto.h"
 
