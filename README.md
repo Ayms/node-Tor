@@ -15,7 +15,7 @@ For the record, you need the following to run node-Tor :
 	openssl version >= 1.0.1c (aes counter mode encryption required)
 	python >= 2.6 (node.js's requirement)
 	
-####Current release of node.js is v0.8.5 with openSSL 1.0.0f
+####Current release of node.js is v0.8.7 with openSSL 1.0.0f
 	
 Then as usual :
 
