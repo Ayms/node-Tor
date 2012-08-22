@@ -9,6 +9,8 @@ This is an unofficial implementation of the Tor protocol (Onion Proxy and Onion 
 
 ## Install :
 
+Install node.js on supported platforms : Unix, Windows, MacOS
+
 For the record, you need the following to run node-Tor :
 
 	node.js version >= v0.7.5 (getDiffieHelman function needed)
@@ -32,6 +34,8 @@ If you encounter installation problems, you might look at :
 	https://github.com/joyent/node/issues/3574 (openssl)
 	https://github.com/joyent/node/issues/3504 (python)
 	https://github.com/joyent/node/issues/3516 (node.js)
+	
+####Windows installation : you must wait for now, please see here why and how to proceed if you really want to install it on windows http://dailyjs.com/2012/05/17/windows-and-node-3/
 
 To launch it, you need to be in the lib directory (some small inconvenient that will be fixed) :
 
