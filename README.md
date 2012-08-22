@@ -59,11 +59,13 @@ It might be easier to install, will not depend on specific applications and can 
 
 It is not unrealist to envision the OP part directly into the browser, for example the OR Guards could implement the wss protocol, or future harmony modules could be used, or as a plugin.
 
+This could then possibly federate the different Tor projects and Tor Browser Bundle into one unique code (OP, OR, TorButton, vidalia, tor2web, privoxy,etc)
+
 ## node-Tor Goals and possible Future (not related to Tor Project) :
 
-Beside anonymity, node-Tor can have other multiple uses, for example it can be used to access services that used to be free but that are not any longer (even if yourself did contribute to it!) in a way that the service providers can not detect you based on the requests that you are sending (see Related projects below), more to come.
+Beside anonymity, node-Tor can have other multiple uses, for example it can be used to access services that used to be free but that are not any longer (even if yourself did contribute to it!!!) in a way that the service providers can not detect you based on the requests that you are sending (see Related projects below), more to come.
 
-node-Tor's nodes could be used to create a complementary and/or parallel network, implementing completely, partially or not the Tor protocol, using completely, partially or not the Tor network, depending on the uses.
+node-Tor's nodes could be used to create complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, depending on the uses.
 
 More to come again
 
@@ -77,7 +79,7 @@ It does allow to establish n connections with the ORs, then n circuits for each 
 
 This is the most difficult part, mainly due to the difficulty of establishing stable circuits into the Tor network where unexpected events are not rare.
 
-It can happen that the Directory servers are not up to date, then the retrieved keys for a given OR might not be the good ones. The current implementation (that might change later) does retrieve an "almost" trustable list of Guards, Relays, Exit and Directory servers, for this you need to run the script ./lib/build-relays_and_dirs.js periodically (which uses Onionoo https://onionoo.torproject.org/details?running=true to get the initial information), this does create the guards.js, relays.js, exit.js and dirs.js files used by node-Tor to select the ORs. The script does some testing to check that the ORs are alive and responding correctly, and then tries to select trustable ORs, future implementations will update the lists automatically or might completely change since Tor network does contain some hidden ORs.
+It can happen that the Directory servers are not up to date, then the retrieved keys for a given OR might not be the good ones. The current implementation (that might change later) does retrieve an "almost" trustable list of Guards, Relays, Exit and Directory servers, for this you need to run the script ./lib/build-relays_and_dirs.js periodically (which uses Onionoo https://onionoo.torproject.org/details?running=true to get the initial information), this does create the guards.js, relays.js, exit.js and dirs.js files used by node-Tor to select the ORs. The script does some testing to check that the ORs are alive and responding correctly, and then tries to select trustable ORs, future implementations will update the lists automatically or might completely change.
 
 Node-Tor OP does support currently only the V3 handshake with Guards, then Guards's release must be >= 0.2.3.6, the script mentioned above does select it automatically.
 
@@ -145,6 +147,12 @@ node-Tor can advantageously be coupled for example with :
 [Ayms/node-dom](https://github.com/Ayms/node-dom)
 [Ayms/node-bot](https://github.com/Ayms/node-bot)
 [Ayms/node-gadgets](https://github.com/Ayms/node-gadgets)
+
+## node-Tor/Tor Documentation
+
+A lot of articles on the web talking about the Tor network are approximative or completely wrong regarding how it works, technical details, ways to use it and warning to take into account.
+
+Then you should rely more on official Tor Project documentation and take time to read it before using Tor or node-Tor.
 
 ## Support/Sponsors :
 
