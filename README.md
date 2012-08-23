@@ -39,7 +39,7 @@ If you encounter installation problems, you might look at :
 
 To launch it, you need to be in the lib directory (some small inconvenient that will be fixed) :
 
-	node tor.js
+	node node-tor.js
 
 ## Tor Network principles :
 
@@ -83,7 +83,7 @@ It does allow to establish n connections with the ORs, then n circuits for each 
 
 This is the most difficult part, mainly due to the difficulty of establishing stable circuits into the Tor network where unexpected events are not rare.
 
-It can happen that the Directory servers are not up to date, then the retrieved keys for a given OR might not be the good ones. The current implementation (that might change later) does retrieve an "almost" trustable list of Guards, Relays, Exit and Directory servers, for this you need to run the script ./lib/build-relays_and_dirs.js periodically (which uses Onionoo https://onionoo.torproject.org/details?running=true to get the initial information), this does create the guards.js, relays.js, exit.js and dirs.js files used by node-Tor to select the ORs. The script does some testing to check that the ORs are alive and responding correctly, and then tries to select trustable ORs, future implementations will update the lists automatically or might completely change.
+It can happen that the Directory servers are not up to date, then the retrieved keys for a given OR might not be the good ones. The current implementation (that might change later) does retrieve an "almost" trustable list of Guards, Relays, Exit and Directory servers, for this you need to run the script ./lib/build-relays_and_dirs.js periodically (which uses Onionoo https://onionoo.torproject.org/details?running=true to get the initial information, wait for the message 'End Relays' announcing that the script is finished), this does create the guards.js, relays.js, exit.js and dirs.js files used by node-Tor to select the ORs. The script does some testing to check that the ORs are alive and responding correctly, and then tries to select trustable ORs, future implementations will update the lists automatically or might completely change.
 
 Node-Tor OP does support currently only the V3 handshake with Guards, then Guards's release must be >= 0.2.3.6, the script mentioned above does select it automatically.
 
