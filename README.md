@@ -5,7 +5,7 @@ Node.js Javascript implementation of the Tor anonymizer project (The Onion Route
 
 ## Presentation:
 
-This is an unofficial implementation of the Tor protocol (Onion Proxy and Onion Router) which anonymizes communications via the Tor network.
+This is an unofficial implementation of the Tor protocol (Onion Proxy and Onion Router) which anonymizes communications via the Tor network. This allows to simply connect to the Tor network and use it, as well as adding nodes into the network.
 
 ## Install :
 
