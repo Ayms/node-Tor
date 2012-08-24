@@ -14,7 +14,7 @@ Install node.js on supported platforms : Unix, Windows, MacOS
 For the record, you need the following to run node-Tor :
 
 	node.js version >= v0.7.5 (getDiffieHelman function needed)
-	openssl version >= 1.0.1c (aes counter mode encryption required)
+	openssl version >= 1.0.1 (aes counter mode encryption required - evp_aes_128_ctr)
 	python >= 2.6 (node.js's requirement)
 	
 ####Current release of node.js is v0.8.7 with openSSL 1.0.0f
