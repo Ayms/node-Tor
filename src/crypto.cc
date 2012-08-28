@@ -470,9 +470,11 @@ PEM_::PEM_() : ObjectWrap() {
 PEM_::~PEM_() {
 }
 
-extern "C" void init(Handle<Object> target) {
+void init(Handle<Object> target) {
     AES::Initialize(target);
 	RSA_::Initialize(target);
 	PEM_::Initialize(target);
 	Hash::Initialize(target);
 }
+
+NODE_MODULE(crypto,init)
