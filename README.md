@@ -1,11 +1,11 @@
 node-Tor
 ===
 
-Node.js Javascript implementation of the Tor anonymizer project (The Onion Router https://www.torproject.org/)
+Node.js Javascript implementation of a Tor (or Tor like) anonymizer network (The Onion Router https://www.torproject.org/)
 
 ## Presentation:
 
-This is an unofficial implementation of the Tor protocol (Onion Proxy and Onion Router) which anonymizes communications via the Tor network. This allows to simply connect to the Tor network and use it, as well as adding nodes into the network.
+This is an unofficial implementation of the Tor (or Tor like) protocol (Onion Proxy and Onion Router) which anonymizes communications via the Tor (or Tor like) network. This allows to simply connect to the Tor (or Tor like) network and use it, as well as creating and adding nodes into the network.
 
 ## Install :
 
@@ -55,29 +55,31 @@ The ORs are maintaining onion RSA keys to negociate the different keys needed fo
 
 The OP is maintaining different circuits inside the Tor Network in order to be able to quickly switch from a circuit to another in order to enforce anonymity and prevent circuit errors that can occur.
 	
-## node-Tor Goals and possible Future (related to Tor Project) :
+## node-Tor Goals and possible Future :
 
-The intent of this project is to provide Tor mechanisms in a web language, so it might open the network to web languages interfaces.
+The intent of this project is to provide Tor mechanisms in a web language, so it might open the Tor (or Tor like) network to web languages interfaces.
 
 It might be easier to install, will not depend on specific applications and can interact with js modules, then it might be possible to easily build web/js applications on top of it (chat, etc).
 
-It is not unrealist to envision the OP part directly into the browser, for example the OR Guards could implement the wss protocol, or future harmony modules could be used, or as a plugin.
+It is foreseen to implement the OP part directly into the browser.
 
-This could then possibly federate the different Tor projects and Tor Browser Bundle into one unique code (OP, OR, TorButton, vidalia, tor2web, privoxy,etc)
+The way the node-Tor OP does choose nodes to establish circuits is completely aleatory, lifetime of the circuits is short and does insure rotation of the choosen circuits for a given connection (ie browsing a web site for example will use several different circuits to fetch resources, circuits that are changed and rotated during the browsing time), then it is impossible (or at least extremely difficult) to figure out the paths that your are using since they are aleatory and changing all the time.
 
-## node-Tor Goals and possible Future (not related to Tor Project) :
+This could possibly federate the different Tor (or Tor like) projects and Tor (or Tor like) Browser Bundle into one unique code (OP, OR, TorButton, vidalia, tor2web, privoxy,etc)
 
-Beside anonymity, node-Tor can have other multiple uses, for example it can be used to access services that used to be free but that are not any longer (even if yourself did contribute to it!!!) in a way that the service providers can not detect you based on the requests that you are sending (see Related projects below), more to come.
+Beside anonymity, node-Tor can have other multiple uses, for example it can be used to access services in a way that the service providers can not detect you based on the requests that you are sending (see Related projects below), more to come.
 
-node-Tor's nodes could be used to create complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, depending on the uses.
+node-Tor's nodes could be used to create complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, it can then be used to create separated Tor like networks.
 
 More to come again
 
 ## node-Tor Status :
 
-This is a working prototype for now implementing the OP part, see the TODOs in the code.
+This repo is showing a working version implementing partially the OP part (see the TODOs in the code), it can not be used as such.
 
 It does allow to establish n connections with the ORs, then n circuits for each connection and n streams for each circuit. In practice only a few connections and circuits are supposed to be opened, then trafic is streamed along these few circuits.
+
+The complete version is not public for now, please contact us. 
 
 ## node-Tor OP :
 
@@ -116,11 +118,7 @@ For now the certificates used for SSL connections with Guards are files in ./lib
 
 If the one_c option is "true", the OP will open a few circuit and stream all incoming streams along these circuits, if "false" the OP will create a circuit for each stream, which take more resources and is much longer.
 
-If one_c is true, the OP does establish and change circuits randomly.
-
-The option one_c originally stands for "one circuit", but depending on what method your are using to instruct the OP, it is not possible to set only one circuit, and anyway it's better like this since this allows a random repartition.
-
-The Tor project is doing (we believe) about the same as one_c option "true", it does mainly establish a few circuits and stream everything along, the default value for one_c is "true".
+If one_c is true, the OP does establish and change circuits randomly, see above "node-Tor Goals and possible Future" for more details.
 
 ## node-Tor OP security :
 
@@ -132,7 +130,7 @@ Main Tor project security features are implemented but some are still pending (s
 
 Unexpected events in Tor Network can cause large delays, mainly to establish circuits, then node-Tor OP is doing its best to retrieve information and create circuits as fast as possible, as soon as it does not receive the answer from a given router within an acceptable timeframe, the OP switches instantly to another one.
 
-It can happen that some ORs do persist not to answer correctly, then it might be planned to learn from the ORs and banish failing ORs (or attacking ones since it does not seem unlikely that false ORs are inserted into the network)
+It can happen that some ORs do persist not to answer correctly, then it might be planned to learn from the ORs and banish failing ORs (or attacking ones since it is not unlikely that false ORs are inserted into the network)
 
 ## node-Tor OR :
 
@@ -140,9 +138,7 @@ TODO but basically it is similar to the OP. It might be planned to retrieve the 
 
 ## Tests :
 
-Coming soon, one easy test would be to configure the socks proxy of your browser to the address that we will provide (same as Tor application is doing between Aurora/Firefox and the Tor localhost OP)
-
-In the meantime you can look an example of communication in ./test/debug.txt 
+See an example of communication in ./test/debug.txt 
 	
 ## Related projects :
 
@@ -151,12 +147,6 @@ node-Tor can advantageously be coupled for example with :
 [Ayms/node-dom](https://github.com/Ayms/node-dom)
 [Ayms/node-bot](https://github.com/Ayms/node-bot)
 [Ayms/node-gadgets](https://github.com/Ayms/node-gadgets)
-
-## node-Tor/Tor Documentation
-
-A lot of articles on the web talking about the Tor network are approximative or completely wrong regarding how it works, technical details, ways to use it and warning to take into account.
-
-Then you should rely more on official Tor Project documentation and take time to read it before using Tor or node-Tor.
 
 ## Support/Sponsors :
 
