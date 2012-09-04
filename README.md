@@ -132,7 +132,7 @@ Main Tor project security features are implemented but some are still pending (s
 
 Unexpected events in Tor Network can cause large delays, mainly to establish circuits, node-Tor OP is doing its best to retrieve information and create circuits as fast as possible, as soon as it does not receive the answer from a given router within an acceptable timeframe, the OP switches instantly to another one.
 
-It can happen that some ORs do persist not to answer correctly, it might be planned to learn from the ORs and banish failing ORs (or attacking ones since it is not unlikely that false ORs are inserted into the network)
+It can happen that some ORs do persist not to answer correctly, it might be planned to learn from the ORs and banish failing ORs or strange ones.
 
 ## node-Tor OR :
 
