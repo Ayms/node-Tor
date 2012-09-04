@@ -47,7 +47,7 @@ Specifications of the Tor protocol and associated protocols are available here :
 
 As a simplified summary, the Tor network is composed of Onion Proxys (OP) and Onion Routers (OR). The OP is usually located on the device that your are using to establish communications (ie on your PC for example), because communications between the application sending the instructions to the OP and the OP are not always protected. While operating, the OP does maintain a file retrieved from the Directory nodes giving it what it needs to know about the ORs to establish circuits.
 
-To establish a connexion, the OP does choose a path of n ORs (the first one being a Guard node, the last one being an Exit node), creates a circuit with the first OR, and then extends the circuit with each OR choosen in the path consecutively via each OR, communications between the ORs and the OP are encrypted several time along the path (onion skin) with the keys negociated with each ORs, in that way each OR only knows the preceding and next OR along the path and can not understand a content that is not addressed to him.
+To establish a connection, the OP does choose a path of n ORs (the first one being a Guard node, the last one being an Exit node), creates a circuit with the first OR, and then extends the circuit with each OR choosen in the path consecutively via each OR, communications between the ORs and the OP are encrypted several time along the path (onion skin) with the keys negociated with each ORs, in that way each OR only knows the preceding and next OR along the path and can not understand a content that is not addressed to him.
 
 The Exit OR does decrypt the content, establish a TCP connection with the target server and send the instructions received (get HTTP, etc)
 
@@ -63,13 +63,13 @@ It might be easier to install, will not depend on specific applications and can 
 
 It is foreseen to implement the OP part directly into the browser.
 
-The way the node-Tor OP does choose nodes to establish circuits is completely aleatory, lifetime of the circuits is short and does insure rotation of the choosen circuits for a given connection (ie browsing a web site for example will use several different circuits to fetch resources, circuits that will be changed and rotated during the browsing time), then it makes it difficult to figure out the paths that your are using since they are aleatory and changing all the time (this might be adapted in the future, depending on the applications being used, current specs and papers seem unclear regarding what would be the best circuit management's way to optimize anonimity).
+The way the node-Tor OP does choose nodes to establish circuits is completely aleatory, lifetime of the circuits is short and does insure rotation of the choosen circuits for a given connection (ie browsing a web site for example will use several different circuits to fetch resources, circuits that will be changed and rotated during the browsing time), therefore it makes it difficult to figure out the paths that your are using since they are aleatory and changing all the time (this might be adapted in the future, depending on the applications being used, current specs and papers seem unclear regarding what would be the best circuit management's way to optimize anonimity).
 
 This could possibly federate the different Tor (or Tor like) projects and Tor (or Tor like) Browser Bundle into one unique code (OP, OR, Tor controller, TorButton, vidalia, tor2web, privoxy,etc)
 
 Beside anonymity, node-Tor can have other multiple uses, for example it can be used to access services in a way that the service providers can not detect you based on the requests that you are sending (see Related projects below), more to come.
 
-node-Tor's nodes could be used to create complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, it can then be used to create separated Tor like networks.
+node-Tor's nodes could be used to create complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, it can be used to create separated Tor like networks.
 
 More to come again
 
@@ -87,9 +87,9 @@ This is the most complicate part, mainly due to the difficulty of establishing s
 
 It can happen that the Directory servers are not up to date, then the retrieved keys for a given OR might not be the good ones. The current implementation (that might change later) does retrieve an "almost" trustable list of Guards, Relays, Exit and Directory servers, for this you need to run the script ./lib/build-relays_and_dirs.js periodically (which uses Onionoo https://onionoo.torproject.org/details?running=true to get the initial information, wait for the message 'End Relays' announcing that the script is finished), this does create the guards.js, relays.js, exit.js and dirs.js files used by node-Tor to select the ORs. The script does some testing to check that the ORs are alive and responding correctly, and then tries to select trustable ORs, future implementations will update the lists automatically or might completely change.
 
-Node-Tor OP does support currently only the V3 handshake with Guards, then Guards's release must be >= 0.2.3.6, the script mentioned above does select it automatically.
+Node-Tor OP does support currently only the V3 handshake with Guards, therefore Guards's release must be >= 0.2.3.6, the script mentioned above does select it automatically.
 
-Then unlike Tor project, node-Tor does not maintain and parse a file containing all information about all routers, and then node-Tor does retrieve real-time the information needed from the Directory servers and can switch routers in case the information received is not up to date.
+Unlike Tor project, node-Tor does not maintain and parse a file containing all information about all routers, and therefore node-Tor does retrieve real-time the information needed from the Directory servers and can switch routers in case the information received is not up to date.
 
 Instructions to the OP can be sent via :
 
@@ -122,17 +122,17 @@ If one_c is true, the OP does establish and change circuits randomly, see above 
 
 ## node-Tor OP security :
 
-As explained above the communications between the application and the OP can be seen at the OP level, or between the application and the OP (except if you are using https or such encrypted protocol between the application and the target, see below), then you should normally insure that the OP is installed at a place that you are the only one to be able to access, and a place where the application is supposed to be too since communications with both can be intercepted.
+As explained above the communications between the application and the OP can be seen at the OP level, or between the application and the OP (except if you are using https or such encrypted protocol between the application and the target, see below), therefore you should normally insure that the OP is installed at a place that you are the only one to be able to access, and a place where the application is supposed to be too since communications with both can be intercepted.
 
-If you are using https or such specific encrypted protocol, the communications between the application and the OP via the socks proxy protocol, as well as between the exit node and the target can not be seen.
+If you are using https or such specific encrypted protocol, the communications between the application and the OP (via the socks proxy protocol), as well as between the exit node and the target one can not be seen.
 
 Main Tor project security features are implemented but some are still pending (see TODO in the code, authentication during the handshake for example and some other checks during circuit creation)
 
 ## node-Tor OP response time :
 
-Unexpected events in Tor Network can cause large delays, mainly to establish circuits, then node-Tor OP is doing its best to retrieve information and create circuits as fast as possible, as soon as it does not receive the answer from a given router within an acceptable timeframe, the OP switches instantly to another one.
+Unexpected events in Tor Network can cause large delays, mainly to establish circuits, node-Tor OP is doing its best to retrieve information and create circuits as fast as possible, as soon as it does not receive the answer from a given router within an acceptable timeframe, the OP switches instantly to another one.
 
-It can happen that some ORs do persist not to answer correctly, then it might be planned to learn from the ORs and banish failing ORs (or attacking ones since it is not unlikely that false ORs are inserted into the network)
+It can happen that some ORs do persist not to answer correctly, it might be planned to learn from the ORs and banish failing ORs (or attacking ones since it is not unlikely that false ORs are inserted into the network)
 
 ## node-Tor OR :
 
