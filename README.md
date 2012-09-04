@@ -47,7 +47,7 @@ Specifications of the Tor protocol and associated protocols are available here :
 
 As a simplified summary, the Tor network is composed of Onion Proxys (OP) and Onion Routers (OR). The OP is usually located on the device that your are using to establish communications (ie on your PC for example), because communications between the application sending the instructions to the OP and the OP are not always protected. While operating, the OP does maintain a file retrieved from the Directory nodes giving it what it needs to know about the ORs to establish circuits.
 
-To establish a connection, the OP does choose a path of n ORs (the first one being a Guard node, the last one being an Exit node), creates a circuit with the first OR, and then extends the circuit with each OR choosen in the path consecutively via each OR, communications between the ORs and the OP are encrypted several time along the path (onion skin) with the keys negociated with each ORs, in that way each OR only knows the preceding and next OR along the path and can not understand a content that is not addressed to him.
+To establish a connection, the OP does choose a path of n ORs (the first one being theorically a Guard node, the last one being an Exit node), creates a circuit with the first OR, and then extends the circuit with each OR choosen in the path consecutively via each OR, communications between the ORs and the OP are encrypted several time along the path (onion skin) with the keys negociated with each ORs, in that way each OR only knows the preceding and next OR along the path and can not understand a content that is not addressed to him.
 
 The Exit OR does decrypt the content, establish a TCP connection with the target server and send the instructions received (get HTTP, etc)
 
@@ -62,8 +62,6 @@ The intent of this project is to provide Tor mechanisms in a web language, so it
 It might be easier to install, will not depend on specific applications and can interact with js modules, then it might be possible to easily build web/js applications on top of it (chat, etc).
 
 It is foreseen to implement the OP part directly into the browser.
-
-The way the node-Tor OP does choose nodes to establish circuits is completely aleatory, lifetime of the circuits is short and does insure rotation of the choosen circuits for a given connection (ie browsing a web site for example will use several different circuits to fetch resources, circuits that will be changed and rotated during the browsing time), therefore it makes it difficult to figure out the paths that your are using since they are aleatory and changing all the time (this might be adapted in the future, depending on the applications being used, current specs and papers seem unclear regarding what would be the best circuit management's way to optimize anonimity).
 
 This could possibly federate the different Tor (or Tor like) projects and Tor (or Tor like) Browser Bundle into one unique code (OP, OR, Tor controller, TorButton, vidalia, tor2web, privoxy,etc)
 
@@ -118,7 +116,9 @@ For now the certificates used for SSL connections with Guards are files in ./lib
 
 If the one_c option is "true", the OP will open a few circuit and stream all incoming streams along these circuits, if "false" the OP will create a circuit for each stream, which take more resources and is much longer.
 
-If one_c is true, the OP does establish and change circuits randomly, see above "node-Tor Goals and possible Future" for more details.
+If one_c is true, the OP does establish and change circuits randomly. TODO give more details.
+
+See https://gitweb.torproject.org/torspec.git?a=blob_plain;hb=HEAD;f=path-spec.txt and https://www.torproject.org/docs/faq.html.en#EntryGuards and links (security issues regarding path creation, in theory the exit node should be fixed too).
 
 ## node-Tor OP security :
 
