@@ -17,7 +17,7 @@ For the record, you need the following to run node-Tor :
 	openssl version >= 1.0.1 (aes counter mode encryption required - evp_aes_128_ctr)
 	python >= 2.6 (node.js's requirement)
 	
-####Current release of node.js is v0.8.7 with openSSL 1.0.0f
+####Current release of node.js is v0.8.8 with openSSL 1.0.0f
 	
 Then as usual :
 
@@ -75,11 +75,11 @@ More to come again
 
 ## node-Tor Status :
 
-This repo is showing a working "proof of concept" version implementing on purpose partially the OP part (see the TODOs in the code), it can not be used as such.
+This repo is showing a working "proof of concept" version implementing partially the OP part (see the TODOs in the code), it can not be used as such.
 
 It does allow to establish n connections with the ORs, then n circuits for each connection and n streams for each circuit. In practice only a few connections and circuits are supposed to be opened, then trafic is streamed along these few circuits.
 
-The complete version is not public for now, please contact us. 
+The complete version is not public for now, please contact us for more information. 
 
 ## node-Tor OP :
 
