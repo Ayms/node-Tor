@@ -7,6 +7,8 @@ Node.js Javascript implementation of a Tor (or Tor like) anonymizer network (The
 
 This is an unofficial implementation of the Tor (or Tor like) protocol (Onion Proxy and Onion Router) which anonymizes communications via the Tor (or Tor like) network. This allows to simply connect to the Tor (or Tor like) network and use it, as well as creating and adding nodes into the network.
 
+This repository is a subset of the complete version which is not public for now, see below "node-Tor Status".
+
 ## Install :
 
 Install node.js on supported platforms : Unix, Windows, MacOS
