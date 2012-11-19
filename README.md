@@ -63,7 +63,7 @@ The intent of this project is to provide Tor mechanisms in a web language, so it
 
 It might be easier to install, will not depend on specific applications and can interact with js modules, then it might be possible to easily build web/js applications on top of it (chat, etc).
 
-It is foreseen to implement the OP/OR part directly into the browser.
+Implementation of the OP/OR part directly into the browser is ongoing, see http://www.ianonym.com and https://www.github.com/Ayms/iAnonym .
 
 This could possibly federate the different Tor (or Tor like) projects and Tor (or Tor like) Browser Bundle into one unique code (OP, OR, Tor controller, TorButton, vidalia, tor2web, privoxy,etc)
 
