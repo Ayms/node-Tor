@@ -146,6 +146,10 @@ See an example of communication in ./test/example.txt
 	
 ## Related projects :
 
+http://www.ianonym.com
+
+[Ayms/iAnonym](https://github.com/Ayms/iAnonym)
+
 node-Tor can advantageously be coupled for example with :
 
 [Ayms/node-dom](https://github.com/Ayms/node-dom)
