@@ -3,6 +3,8 @@ node-Tor
 
 Node.js Javascript implementation of a Tor (or Tor like) anonymizer network (The Onion Router https://www.torproject.org/)
 
+Anonymity into your browser everywhere from any device, see https://www.github.com/Ayms/iAnonym
+
 ## Presentation:
 
 This is an unofficial implementation of the Tor (or Tor like) protocol (Onion Proxy and Onion Router) which anonymizes communications via the Tor (or Tor like) network. This allows to simply connect to the Tor (or Tor like) network and use it, as well as creating and adding nodes into the network.
@@ -148,13 +150,13 @@ See an example of communication in ./test/example.txt
 
 http://www.ianonym.com
 
-[Ayms/iAnonym](https://github.com/Ayms/iAnonym)
+* [Ayms/iAnonym](https://github.com/Ayms/iAnonym)
 
 node-Tor can advantageously be coupled for example with :
 
-[Ayms/node-dom](https://github.com/Ayms/node-dom)
-[Ayms/node-bot](https://github.com/Ayms/node-bot)
-[Ayms/node-gadgets](https://github.com/Ayms/node-gadgets)
+* [Ayms/node-dom](https://github.com/Ayms/node-dom)
+* [Ayms/node-bot](https://github.com/Ayms/node-bot)
+* [Ayms/node-gadgets](https://github.com/Ayms/node-gadgets)
 
 ## Support/Sponsors :
 
