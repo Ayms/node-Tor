@@ -81,7 +81,7 @@ This repo is showing a working "proof of concept" version implementing partially
 
 It does allow to establish n connections with the ORs, then n circuits for each connection and n streams for each circuit. In practice only a few connections and circuits are supposed to be opened, then trafic is streamed along these few circuits.
 
-The complete version is not public for now, please contact us for more information. 
+The complete version (OP and OR) is not public for now, please contact us for more information. 
 
 ## node-Tor OP :
 
@@ -91,7 +91,7 @@ It can happen that the Directory servers are not up to date, then the retrieved 
 
 Node-Tor OP does support currently only the V3 handshake with Guards, therefore Guards's release must be >= 0.2.3.6, the script mentioned above does select it automatically.
 
-Unlike Tor project, node-Tor does not maintain and parse a file containing all information about all routers, and therefore node-Tor does retrieve real-time the information needed from the Directory servers and can switch routers in case the information received is not up to date.
+Unlike Tor project, node-Tor does not maintain and parse a file containing all information about all routers. node-Tor can retrieve real-time the information needed from the Directory servers or from the above script's output which is updated periodically.
 
 Instructions to the OP can be sent via :
 
@@ -112,13 +112,14 @@ The options are set by default but some of them can be changed via customized re
 	host : destination server (server_address:port)
 	nb_hop : number of hops for a circuit, default 3, max 5
 	one_c : see next section
+	one_OR : first OR in the path when set, otherwise the first OR is randomely choosen
 	stream : the stream to be passed along the circuit
 	
 For now the certificates used for SSL connections with Guards are files in ./lib and can be generated as indicated here http://nodejs.org/api/tls.html . It is planned to generate it dynamically.
 	
 ## node-Tor OP circuits :
 
-If the one_c option is "true", the OP will open a few circuit and stream all incoming streams along these circuits, if "false" the OP will create a circuit for each stream, which take more resources and is much longer.
+If the one_c option is "true", the OP will open a few circuit and stream all incoming streams along these circuits, if "false" the OP will create a circuit for each stream, which takes more resources and is much longer.
 
 If one_c is true, the OP does establish and change circuits randomly. TODO give more details.
 
@@ -140,7 +141,7 @@ It can happen that some ORs do persist not to answer correctly, it might be plan
 
 ## node-Tor OR :
 
-TODO but basically it is similar to the OP. It might be planned to retrieve the OR's information (keys, etc) directly from the OR (ie not from the directory servers).
+Implemented and includes the websocket Tor protocol extension.
 
 ## Tests :
 
