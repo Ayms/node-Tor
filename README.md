@@ -145,7 +145,7 @@ Implemented and includes the websocket Tor protocol extension.
 
 ## Tests :
 
-See an example of communication in ./test/example.txt 
+See an example of communication in [logs OP and OR] (https://github.com/Ayms/node-Tor/blob/master/test/example.txt)
 	
 ## Related projects :
 
