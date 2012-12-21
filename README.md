@@ -105,21 +105,21 @@ It is planned to add some changes mechanisms to incoming streams in order not to
 
 ## node-Tor OP options :
 
-	OP_port : OP TCP port (used for SOCKS proxy, websockets through SOCKS proxy, direct websockets and direct proxys) or OR websocket server port (see WS_OP_SOCKS below)
-	OR_port : OR port for TLS connections
-	OR_wsport : OR port for OR websocket server (see WS_OP below)
-	OP : true indicates that this is an OP request (same code is used for OP and OR)
-	OR and OR_f : OR request, backward and forward (_f)
-	host : destination server (server_address:port)
-	nb_hop : number of hops for a circuit, default 3, max 5
-	one_c : see next section
-	one_OR : first OR in the path when set, otherwise the first OR is randomely choosen
-	WS_OP : if true the OP communicates with the OR via direct websockets, the OR implements a WS server
-	WS_OP_SOCKS : if true the OP communicates with the OR using websockets via SOCKS proxy, the OR implements a TCP/SOCKS server,non websocket socks proxy messages are relayed to the OP via websockets over socks proxy
-	WS_OP and WS_OP_SOCKS are exclusive
-	anonym : if true switch to ArrayBuffers and iAnonym processing,see [Ayms/iAnonym](https://github.com/Ayms/iAnonym)
-	NB / CIRC_KA: number of circuits kept alive permanently and renewed every CIR_KA time
-	privkey : OR private key
+* OP_port : OP TCP port (used for SOCKS proxy, websockets through SOCKS proxy, direct websockets and direct proxys) or OR websocket server port (see WS_OP_SOCKS below)
+* OR_port : OR port for TLS connections
+* OR_wsport : OR port for OR websocket server (see WS_OP below)
+* OP : true indicates that this is an OP request (same code is used for OP and OR)
+* OR and OR_f : OR request, backward and forward (_f)
+* host : destination server (server_address:port)
+* nb_hop : number of hops for a circuit, default 3, max 5
+* one_c : see next section
+* one_OR : first OR in the path when set, otherwise the first OR is randomely choosen
+* WS_OP : if true the OP communicates with the OR via direct websockets, the OR implements a WS server
+* WS_OP_SOCKS : if true the OP communicates with the OR using websockets via SOCKS proxy, the OR implements a TCP/SOCKS server,non websocket socks proxy messages are relayed to the OP via websockets over socks proxy
+* WS_OP and WS_OP_SOCKS are exclusive
+* anonym : if true switch to ArrayBuffers and iAnonym processing, see [Ayms/iAnonym](https://github.com/Ayms/iAnonym) and [Ayms/node-typedarray](https://github.com/Ayms/node-typedarray)
+* NB / CIRC_KA: number of circuits kept alive permanently and renewed every CIR_KA time
+* privkey : OR private key
 
 For now the certificates used for SSL connections with Guards are files in ./lib and can be generated as indicated here http://nodejs.org/api/tls.html . It is planned to generate it dynamically.
 	
@@ -158,6 +158,8 @@ See an example of communication in [logs OP and OR] (https://github.com/Ayms/nod
 http://www.ianonym.com
 
 * [Ayms/iAnonym](https://github.com/Ayms/iAnonym)
+* [Ayms/websocket](https://github.com/Ayms/websocket)
+* [Ayms/node-typedarray](https://github.com/Ayms/node-typedarray)
 
 node-Tor can advantageously be coupled for example with :
 
