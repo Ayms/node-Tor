@@ -193,8 +193,9 @@ RELAY_WS streams payload is :
 Where Addr and Request are :
  
 from the OR : 
-* Addr :	socks_request_remoteAddress:socks_request_remotePort:socks_request_connexion_port:socks_request_id]
+* Addr :	socks_request_remoteAddress:socks_request_remotePort:socks_request_connexion_port:socks_request_id
 * Request :	socks_request_message (incoming from browser)
+
 from the OP :
 * Addr :	socks_request_remoteAddress:socks_request_remotePort
 * Request :	socks_request_message (responses from network)
