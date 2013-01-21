@@ -7,9 +7,11 @@ Anonymity into your browser everywhere from any device, see https://www.github.c
 
 ## Presentation:
 
-This is an unofficial implementation of the Tor (or Tor like) protocol (Onion Proxy and Onion Router) which anonymizes communications via the Tor (or Tor like) network. This allows to simply connect to the Tor (or Tor like) network and use it, as well as creating and adding nodes into the network.
+This is an unofficial and extended implementation of the Tor (or Tor like) protocol (Onion Proxy and Onion Router) which anonymizes communications via the Tor (or Tor like) network. This allows to simply connect to the Tor (or Tor like) network and use it, as well as creating and adding nodes into the network, creating complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, it can be used to create separated Tor like networks.
 
-This repository is a subset of the complete version which is not public for now, see below "node-Tor Status".
+This repository is a subset of the complete version, the complete version is stable but not public for now, see below "node-Tor Status".
+
+See live test possibility in section "Tests".
 
 ## Install :
 
@@ -21,7 +23,7 @@ For the record, you need the following to run node-Tor :
 	openssl version >= 1.0.1 (aes counter mode encryption required - evp_aes_128_ctr)
 	python >= 2.6 (node.js's requirement)
 	
-####Current release of node.js is v0.8.16 with openSSL 1.0.0f
+####Current release of node.js is v0.8.18 with openSSL 1.0.0f
 	
 Then as usual :
 
@@ -51,19 +53,19 @@ Specifications of the Tor protocol and associated protocols are available here :
 
 As a simplified summary, the Tor network is composed of Onion Proxys (OP) and Onion Routers (OR). The OP is usually located on the device that your are using to establish communications (ie on your PC for example), because communications between the application sending the instructions to the OP and the OP are not always protected. While operating, the OP does maintain a file retrieved from the Directory nodes giving it what it needs to know about the ORs to establish circuits.
 
-To establish a connection, the OP does choose a path of n ORs (the first one being theorically a Guard node, the last one being an Exit node), creates a circuit with the first OR, and then extends the circuit with each OR choosen in the path consecutively via each OR, communications between the ORs and the OP are encrypted several time along the path (onion skin) with the keys negociated with each ORs, in that way each OR only knows the preceding and next OR along the path and can not understand a content that is not addressed to him.
+To establish a connection, the OP does choose a path of n ORs (the first one being theorically a Guard node, the last one being an Exit node), creates a circuit with the first OR, and then extends the circuit with each OR choosen in the path consecutively via each OR, communications between the ORs and the OP are encrypted several time along the path (onion skin) with the keys negociated with each ORs, each OR only knows the preceding and next OR along the path and can not understand a content that is not addressed to him.
 
 The Exit OR does decrypt the content, establish a TCP connection with the target server and send the instructions received (get HTTP, etc)
 
 The ORs are maintaining onion RSA keys to negociate the different keys needed for the communications with the OP, these keys are rotated once a week and the directory servers are updated by the ORs accordingly.
 
-The OP is maintaining different circuits inside the Tor Network in order to be able to quickly switch from a circuit to another, this does enforce anonymity and prevent circuit errors that can occur.
+The OP is maintaining different circuits inside the Tor Network in order to be able to quickly switch from a circuit to another.
 	
 ## node-Tor Goals and possible Future :
 
 The intent of this project is to provide Tor mechanisms in a web language, so it might open the Tor (or Tor like) network to web languages interfaces.
 
-It might be easier to install, will not depend on specific applications and can interact with js modules, then it might be possible to easily build web/js applications on top of it (chat, etc).
+It is easier to install and to scale, does not depend on specific applications and can interact with js modules, then it is possible to easily build web/js applications on top of it (chat, etc).
 
 Implementation of the OP/OR part directly into the browser is ongoing, see http://www.ianonym.com and https://www.github.com/Ayms/iAnonym .
 
@@ -71,39 +73,35 @@ This could possibly federate the different Tor (or Tor like) projects and Tor (o
 
 Beside anonymity, node-Tor can have other multiple uses, for example it can be used to access services in a way that the service providers can not detect you based on the requests that you are sending (see Related projects below), more to come.
 
-node-Tor's nodes could be used to create complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, it can be used to create separated Tor like networks.
+node-Tor's nodes can be used to create complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, it can be used to create separated Tor like networks.
 
-More to come again
+More to come again.
 
 ## node-Tor Status :
 
-This repo is showing a working "proof of concept" version implementing partially the OP part (see the TODOs in the code), it can not be used as such.
+This repo code source is showing a working subset version implementing the OP part, it can not be used as such.
 
-It does allow to establish n connections with the ORs, then n circuits for each connection and n streams for each circuit. In practice only a few connections and circuits are supposed to be opened, then trafic is streamed along these few circuits.
+It does allow to establish n connections with the ORs, then n circuits for each connection and n streams for each circuit. In practice only a few connections and circuits are supposed to be opened, then traffic is streamed along these few circuits.
 
-The complete version (OP and OR) is not public for now, please contact us for more information. 
+The complete version does implement the OP and OR parts extended with the Websocket protocol extension (see below), it is stable and can be tested (see the "Tests" section), it is not public for now, please contact us for more information. 
 
 ## node-Tor OP :
 
-This is the most complicate part, mainly due to the difficulty of establishing stable circuits into the Tor network where unexpected events are not rare.
+Unlike Tor project, node-Tor does not maintain and parse a file containing all information about all routers.
 
-It can happen that the Directory servers are not up to date, then the retrieved keys for a given OR might not be the good ones. The current implementation (that might change later) does retrieve an "almost" trustable list of Guards, Relays, Exit and Directory servers, for this you need to run the script ./lib/build-relays_and_dirs.js periodically (which uses Onionoo https://onionoo.torproject.org/details?running=true to get the initial information, wait for the message 'End Relays' announcing that the script is finished), this does create the guards.js, relays.js, exit.js and dirs.js files used by node-Tor to select the ORs. The script does some testing to check that the ORs are alive and responding correctly, and then tries to select trustable ORs, future implementations will update the lists automatically or might completely change.
+The OP does retrieve real-time periodically a trustable list of working Guards, Relays and Exit nodes running the script ./lib/build-relays_and_dirs2.js periodically which creates the guards.js, relays.js and exit.js files used by node-Tor to select the ORs. The script does some testing to check that the ORs are alive and responding correctly and retrieve the required information for routers : {fingerprint-OR_IP:OR_port-bandwidth-DIR_IP:DIR_PORT-Onion_RSA_PUBLIC_KEY}
 
-Node-Tor OP does support currently only the V3 handshake with Guards, therefore Guards's release must be >= 0.2.3.6, the script mentioned above does select it automatically.
-
-Unlike Tor project, node-Tor does not maintain and parse a file containing all information about all routers. node-Tor can retrieve real-time the information needed from the Directory servers or from the above script's output which is updated periodically.
+Node-Tor OP does support the V3 handshake with Guards, if Tor project's Guards are used, their release must be >= 0.2.3.6, the script mentioned above does select it automatically.
 
 Instructions to the OP can be sent via :
 
 	socks v5 proxy : you can configure your browser to use socks proxy with server:port where is installed the OP
-	websosckets : see ./lib/client.html simple example
-	direct proxy : establish TCP connection with the OP and send the requests 
+	websosckets : directly or via socks proxy
+	direct proxy (not recommended) : establish TCP connection with the OP and send the requests 
 	
 Socks requests are passed transparently, websockets and direct proxys can send usual HTTP GET requests for example or specific customized requests to pass parameters that you need to node-Tor, see below.
 
-It is planned to add some changes mechanisms to incoming streams in order not to ease fingerprinting.
-
-## node-Tor OP options :
+## node-Tor OP options (subset) :
 
 * OP_port : OP TCP port (used for SOCKS proxy, websockets through SOCKS proxy, direct websockets and direct proxys) or OR websocket server port (see WS_OP_SOCKS below)
 * OR_port : OR port for TLS connections
@@ -121,13 +119,13 @@ It is planned to add some changes mechanisms to incoming streams in order not to
 * NB / CIRC_KA: number of circuits kept alive permanently and renewed every CIR_KA time
 * privkey : OR private key
 
-For now the certificates used for SSL connections with Guards are files in ./lib and can be generated as indicated here http://nodejs.org/api/tls.html . It is planned to generate it dynamically.
+For now the certificates used for TLS connections with Guards are files in ./lib and can be generated as indicated here http://nodejs.org/api/tls.html. It will be generated dynamically.
 	
 ## node-Tor OP circuits :
 
 If the one_c option is "true", the OP will open a few circuit and stream all incoming streams along these circuits, if "false" the OP will create a circuit for each stream, which takes more resources and is much longer.
 
-If one_c is true, the OP does establish and change circuits randomly. TODO give more details.
+If one_c is true, the OP does establish and change circuits randomly, a certain number of circuits are always kept alive and renewed periodically, datas are streamed along these circuits randomely.
 
 See https://gitweb.torproject.org/torspec.git?a=blob_plain;hb=HEAD;f=path-spec.txt and https://www.torproject.org/docs/faq.html.en#EntryGuards and links (security issues regarding path creation, in theory the exit node should be fixed too).
 
@@ -137,22 +135,92 @@ As explained above the communications between the application and the OP can be 
 
 If you are using https or such specific encrypted protocol, the communications between the application and the OP (via the socks proxy protocol), as well as between the exit node and the target one can not be seen.
 
-Main Tor project security features are implemented but some are still pending (see TODO in the code, authentication during the handshake for example and some other checks during circuit creation)
-
 ## node-Tor OP response time :
 
-Unexpected events in Tor Network can cause large delays, mainly to establish circuits, node-Tor OP is doing its best to retrieve information and create circuits as fast as possible, as soon as it does not receive the answer from a given router within an acceptable timeframe, the OP switches instantly to another one.
+node-Tor OP is doing its best to create circuits as fast as possible, as soon as it does not receive the answer from a given router within an acceptable timeframe, the OP switches instantly to another one.
 
-It can happen that some ORs do persist not to answer correctly, it might be planned to learn from the ORs and banish failing ORs or strange ones.
+## node-Tor OR and OP :
 
-## node-Tor OR :
+Extended with the Websocket protocol extension (RELAY_WS and RELAY_ASSOCIATE):
 
-Implemented and includes the websocket Tor protocol extension.
+This is specific to [Ayms/iAnonym](https://github.com/Ayms/iAnonym).
+
+Cells
+Variable-length command values are:
+ 7 -- VERSIONS    (Negotiate proto version) (See Sec 4)
+ 128 -- VPADDING  (Variable-length padding) (See Sec 7.2)
+ 129 -- CERTS     (Certificates)            (See Sec 4.2)
+ 130 -- AUTH_CHALLENGE (Challenge value)    (See Sec 4.3)
+ 131 -- AUTHENTICATE (Client authentication)(See Sec 4.5)
+ 132 -- AUTHORIZE (Client authorization)    (Not yet used)
+--- New :
+ 190 -- RELAY_WS
+
+Streams
+The relay commands are:
+ 1 -- RELAY_BEGIN     [forward]
+ 2 -- RELAY_DATA      [forward or backward]
+ 3 -- RELAY_END       [forward or backward]
+ 4 -- RELAY_CONNECTED [backward]
+ 5 -- RELAY_SENDME    [forward or backward] [sometimes control]
+ 6 -- RELAY_EXTEND    [forward]             [control]
+ 7 -- RELAY_EXTENDED  [backward]            [control]
+ 8 -- RELAY_TRUNCATE  [forward]             [control]
+ 9 -- RELAY_TRUNCATED [backward]            [control]
+ 10 -- RELAY_DROP      [forward or backward] [control]
+ 11 -- RELAY_RESOLVE   [forward]
+ 12 -- RELAY_RESOLVED  [backward]
+ 13 -- RELAY_BEGIN_DIR [forward]
+--- New :
+ 40 -- RELAY_ASSOCIATE
+ 41 -- RELAY_WS
+
+RELAY_WS cells act the same as RELAY cells but with a variable length (limited to 65535 bytes) allowing to transfer larger amount of data over the websocket interface more efficiently , they are used to transport RELAY_WS streams.
+
+RELAY_WS and RELAY_ASSOCIATE streams are only exchanged between the OP and first OR, then could be only cells but it was decided otherwise.
+
+RELAY_WS cells, RELAY_WS and RELAY_ASSOCIATE streams are only used in the context of [Ayms/iAnonym](https://github.com/Ayms/iAnonym) project, for normal websocket streaming between the OP and the OR the usual RELAY cells are used.
+
+RELAY_ASSOCIATE streams are sent with RELAY cells, their payload is just : [fake_domain], while receiving a RELAY_ASSOCIATE stream on circuit CID, the OR does associate fake_domain to CID, this circuit will be dedicated for the OP and OR to stream RELAY_WS cells.
+
+RELAY_WS streams payload is :
+ Length  [2 bytes]
+ Addr    [Length bytes]
+ Request [CELL_LEN - Length bytes - 14 bytes]
+
+Where Addr and Request are :
+ 
+from the OR : 
+ Addr :		socks_request_remoteAddress:socks_request_remotePort:socks_request_connexion_port:socks_request_id]
+ Request :	socks_request_message (incoming from browser)
+from the OP :
+ Addr :		socks_request_remoteAddress:socks_request_remotePort
+ Request :	socks_request_message (responses from network)
+ 
+RELAY_WS cells are behaving exactly as RELAY cells in terms of encryption and hash, they are transported over the websocket interface and therefore encoded with the websocket protocol.
+
+The non specific iAnonym signaling traffic (circuit creation, RELAY[RELAY_BEGIN, RELAY_CONNECTED, RELAY_DATA]) is transported over the websocket interface too between the OP and first OR using different circuits than CID.
 
 ## Tests :
 
 See an example of communication in [logs OP and OR] (https://github.com/Ayms/node-Tor/blob/master/test/example.txt)
-	
+
+You can try it live :
+* set the socks proxy V5 interface of your browser to IP 213.246.53.127 port 8100 (on Firefox : Options/Advanced/Network/Parameters/Manual configuration of proxy), clear the cache/history, close your browser and reopen it
+* enter url http://www.lepoint.fr or http://www.monip.org
+
+For security reasons this test address is restricted to the domains www.lepoint.fr, www.monip.org and related IP addresses, then while loading the pages the network will not fetch resources outside of these domains (for example facebook widget on www.lepoint.fr will display "outside of authorized domains") but this is enough to give an idea and you can navigate inside the domains.
+
+www.lepoint.fr is a "usual" huge public site that does include whatever messy stuff the web has invented, so it's a good test site.
+
+www.monip.org allows you to see your anonymized IP address (if you refresh the page you will see that your anonymized IP address can change since different circuits can be used inside the network).
+
+Depending on the "health" of the circuits and associated routers when you try it, the delay for page loading might vary but it is usually fast.
+
+The test configuration is :
+
+	[Browser] <--socks--> [node-Tor_OP:8100] <-----> [node-Tor_OR] <-----> [Tor Network] <-----> [Site] 
+
 ## Related projects :
 
 http://www.ianonym.com
@@ -161,7 +229,7 @@ http://www.ianonym.com
 * [Ayms/websocket](https://github.com/Ayms/websocket)
 * [Ayms/node-typedarray](https://github.com/Ayms/node-typedarray)
 
-node-Tor can advantageously be coupled for example with :
+node-Tor can advantageously be coupled with :
 
 * [Ayms/node-dom](https://github.com/Ayms/node-dom)
 * [Ayms/node-bot](https://github.com/Ayms/node-bot)
@@ -169,4 +237,12 @@ node-Tor can advantageously be coupled for example with :
 
 ## Support/Sponsors :
 
-If you like this project you can contact us and/or possibly donate : donate at jcore.fr or via PayPal
+If you like this project you can contact us and/or possibly donate : donate at jcore.fr or via PayPal.
+
+## Some words :
+
+The recent disparition of Aaron Swartz was a shock for us as for everybody. We did not know each other but exchanged a few emails where he suggested briefly just "to implement all of Tor in JavaScript" while our intent at that time was only to access the network using server side javascript. Apparently Aaron meant to put it inside the browser recognizing a kind of technical challenge. With this idea in mind we did node-Tor and came up with iAnonym for the browser implementation, Aaron was aware of part of the result, hopefully this might help serving the causes he defended that we support too.
+
+
+
+
