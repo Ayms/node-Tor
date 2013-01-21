@@ -146,6 +146,7 @@ Extended with the Websocket protocol extension (RELAY_WS and RELAY_ASSOCIATE):
 This is specific to [Ayms/iAnonym](https://github.com/Ayms/iAnonym).
 
 Cells
+
 	Variable-length command values are:
 	7 -- VERSIONS    (Negotiate proto version) (See Sec 4)
 	128 -- VPADDING  (Variable-length padding) (See Sec 7.2)
@@ -157,6 +158,7 @@ Cells
 	190 -- RELAY_WS
 
 Streams
+
 	The relay commands are:
 	1 -- RELAY_BEGIN     [forward]
 	2 -- RELAY_DATA      [forward or backward]
