@@ -1,7 +1,7 @@
 node-Tor
 ===
 
-Node.js Javascript implementation of a Tor (or Tor like) anonymizer network (The Onion Router https://www.torproject.org/)
+Javascript implementation of a Tor (or Tor like) anonymizer network (The Onion Router https://www.torproject.org/)
 
 Anonymity into your browser everywhere from any device, see https://www.github.com/Ayms/iAnonym
 
@@ -145,7 +145,7 @@ Extended with the Websocket protocol extension (RELAY_WS and RELAY_ASSOCIATE):
 
 This is specific to [Ayms/iAnonym](https://github.com/Ayms/iAnonym).
 
-Cells
+Cells :
 
 	Variable-length command values are:
 	7 -- VERSIONS    (Negotiate proto version) (See Sec 4)
@@ -157,7 +157,7 @@ Cells
 	--- New :
 	190 -- RELAY_WS
 
-Streams
+Streams :
 
 	The relay commands are:
 	1 -- RELAY_BEGIN     [forward]
@@ -186,18 +186,18 @@ RELAY_WS cells, RELAY_WS and RELAY_ASSOCIATE streams are only used in the contex
 RELAY_ASSOCIATE streams are sent with RELAY cells, their payload is just : [fake_domain], while receiving a RELAY_ASSOCIATE stream on circuit CID, the OR does associate fake_domain to CID, this circuit will be dedicated for the OP and OR to stream RELAY_WS cells.
 
 RELAY_WS streams payload is :
- Length  [2 bytes]
- Addr    [Length bytes]
- Request [CELL_LEN - Length bytes - 14 bytes]
+* Length  [2 bytes]
+* Addr    [Length bytes]
+* Request [CELL_LEN - Length bytes - 14 bytes]
 
 Where Addr and Request are :
  
 from the OR : 
- Addr :		socks_request_remoteAddress:socks_request_remotePort:socks_request_connexion_port:socks_request_id]
- Request :	socks_request_message (incoming from browser)
+* Addr :	socks_request_remoteAddress:socks_request_remotePort:socks_request_connexion_port:socks_request_id]
+* Request :	socks_request_message (incoming from browser)
 from the OP :
- Addr :		socks_request_remoteAddress:socks_request_remotePort
- Request :	socks_request_message (responses from network)
+* Addr :	socks_request_remoteAddress:socks_request_remotePort
+* Request :	socks_request_message (responses from network)
  
 RELAY_WS cells are behaving exactly as RELAY cells in terms of encryption and hash, they are transported over the websocket interface and therefore encoded with the websocket protocol.
 
