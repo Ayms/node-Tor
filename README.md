@@ -146,34 +146,34 @@ Extended with the Websocket protocol extension (RELAY_WS and RELAY_ASSOCIATE):
 This is specific to [Ayms/iAnonym](https://github.com/Ayms/iAnonym).
 
 Cells
-Variable-length command values are:
- 7 -- VERSIONS    (Negotiate proto version) (See Sec 4)
- 128 -- VPADDING  (Variable-length padding) (See Sec 7.2)
- 129 -- CERTS     (Certificates)            (See Sec 4.2)
- 130 -- AUTH_CHALLENGE (Challenge value)    (See Sec 4.3)
- 131 -- AUTHENTICATE (Client authentication)(See Sec 4.5)
- 132 -- AUTHORIZE (Client authorization)    (Not yet used)
---- New :
- 190 -- RELAY_WS
+	Variable-length command values are:
+	7 -- VERSIONS    (Negotiate proto version) (See Sec 4)
+	128 -- VPADDING  (Variable-length padding) (See Sec 7.2)
+	129 -- CERTS     (Certificates)            (See Sec 4.2)
+	130 -- AUTH_CHALLENGE (Challenge value)    (See Sec 4.3)
+	131 -- AUTHENTICATE (Client authentication)(See Sec 4.5)
+	132 -- AUTHORIZE (Client authorization)    (Not yet used)
+	--- New :
+	190 -- RELAY_WS
 
 Streams
-The relay commands are:
- 1 -- RELAY_BEGIN     [forward]
- 2 -- RELAY_DATA      [forward or backward]
- 3 -- RELAY_END       [forward or backward]
- 4 -- RELAY_CONNECTED [backward]
- 5 -- RELAY_SENDME    [forward or backward] [sometimes control]
- 6 -- RELAY_EXTEND    [forward]             [control]
- 7 -- RELAY_EXTENDED  [backward]            [control]
- 8 -- RELAY_TRUNCATE  [forward]             [control]
- 9 -- RELAY_TRUNCATED [backward]            [control]
- 10 -- RELAY_DROP      [forward or backward] [control]
- 11 -- RELAY_RESOLVE   [forward]
- 12 -- RELAY_RESOLVED  [backward]
- 13 -- RELAY_BEGIN_DIR [forward]
---- New :
- 40 -- RELAY_ASSOCIATE
- 41 -- RELAY_WS
+	The relay commands are:
+	1 -- RELAY_BEGIN     [forward]
+	2 -- RELAY_DATA      [forward or backward]
+	3 -- RELAY_END       [forward or backward]
+	4 -- RELAY_CONNECTED [backward]
+	5 -- RELAY_SENDME    [forward or backward] [sometimes control]
+	6 -- RELAY_EXTEND    [forward]             [control]
+	7 -- RELAY_EXTENDED  [backward]            [control]
+	8 -- RELAY_TRUNCATE  [forward]             [control]
+	9 -- RELAY_TRUNCATED [backward]            [control]
+	10 -- RELAY_DROP      [forward or backward] [control]
+	11 -- RELAY_RESOLVE   [forward]
+	12 -- RELAY_RESOLVED  [backward]
+	13 -- RELAY_BEGIN_DIR [forward]
+	--- New :
+	40 -- RELAY_ASSOCIATE
+	41 -- RELAY_WS
 
 RELAY_WS cells act the same as RELAY cells but with a variable length (limited to 65535 bytes) allowing to transfer larger amount of data over the websocket interface more efficiently , they are used to transport RELAY_WS streams.
 
