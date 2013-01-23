@@ -196,13 +196,15 @@ from the OR :
 * Addr :	socks_request_remoteAddress:socks_request_remotePort:socks_request_connexion_port:socks_request_id
 * Request :	socks_request_message (incoming from browser)
 
+If Request is empty, the OR will end the associated socks request.
+
 from the OP :
 * Addr :	socks_request_remoteAddress:socks_request_remotePort
 * Request :	socks_request_message (responses from network)
  
 RELAY_WS cells are behaving exactly as RELAY cells in terms of encryption and hash, they are transported over the websocket interface and therefore encoded with the websocket protocol.
 
-The non specific iAnonym signaling traffic (circuit creation, RELAY[RELAY_BEGIN, RELAY_CONNECTED, RELAY_DATA]) is transported over the websocket interface too between the OP and first OR using different circuits than CID.
+The non specific iAnonym signaling traffic (circuit creation, RELAY[RELAY_BEGIN, RELAY_CONNECTED, RELAY_DATA]) is transported over the websocket interface too between the OP and first OR using different circuits than CID. Since the fake_domain is common to all urls, the browser will try to stream the requests opening only a few socks connections, the OP will stream the traffic with already relay_connected streams for the real hostname associated to the fake_domain and open new connections if the real host is different.
 
 ## Tests :
 
