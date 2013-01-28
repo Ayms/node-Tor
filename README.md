@@ -179,11 +179,11 @@ Streams :
 
 RELAY_WS cells act the same as RELAY cells but with a variable length (limited to 65535 bytes) allowing to transfer larger amount of data over the websocket interface more efficiently , they are used to transport RELAY_WS streams.
 
-RELAY_WS and RELAY_ASSOCIATE streams are only exchanged between the OP and first OR, then could be only cells but it was decided otherwise.
+RELAY_WS and RELAY_ASSOCIATE streams are only exchanged between the OP and first OR.
 
 RELAY_WS cells, RELAY_WS and RELAY_ASSOCIATE streams are only used in the context of [Ayms/iAnonym](https://github.com/Ayms/iAnonym) project, for normal websocket streaming between the OP and the OR the usual RELAY cells are used.
 
-RELAY_ASSOCIATE streams are sent with RELAY cells, their payload is just : [fake_domain], while receiving a RELAY_ASSOCIATE stream on circuit CID, the OR does associate fake_domain to CID, this circuit will be dedicated for the OP and OR to stream RELAY_WS cells.
+RELAY_ASSOCIATE streams are sent with RELAY cells, their payload is just : [fake_domain], while receiving a RELAY_ASSOCIATE stream on circuit CID, the OR does associate fake_domain to CID, this circuit will be dedicated for the OP and OR to stream RELAY_WS cells. CID is a specific circuit that only exists between the OP and the OR (ie is not extended). The OR might send to the OP a RELAY_ASSOCIATE stream too (see "Notes" in Details [iAnonym](https://www.ianonym.com) ), in that case the OP must close the page, generate a new fake_domain and restart the process.
 
 RELAY_WS streams payload is :
 * Length  [2 bytes]
