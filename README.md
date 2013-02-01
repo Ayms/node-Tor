@@ -118,6 +118,8 @@ Socks requests are passed transparently, websockets and direct proxys can send u
 * anonym : if true switch to ArrayBuffers and iAnonym processing, see [Ayms/iAnonym](https://github.com/Ayms/iAnonym) and [Ayms/node-typedarray](https://github.com/Ayms/node-typedarray)
 * NB / CIRC_KA: number of circuits kept alive permanently and renewed every CIR_KA time
 * privkey : OR private key
+* window :  switch to ArrayBuffers instead of node.js's buffers (default is true)
+* window_browser : switch to js cryptography instead of node.js's one (true for the OP inside the browser, false for the OR)
 
 For now the certificates used for TLS connections with Guards are files in ./lib and can be generated as indicated here http://nodejs.org/api/tls.html. It will be generated dynamically.
 	
@@ -146,7 +148,10 @@ Extended with the Websocket protocol extension (RELAY_WS and RELAY_ASSOCIATE):
 This is specific to [Ayms/iAnonym](https://github.com/Ayms/iAnonym).
 
 Cells :
-
+	--- New :
+	120 -- CREATE_FAST_WS
+	121 -- CREATED_FAST_WS
+	
 	Variable-length command values are:
 	7 -- VERSIONS    (Negotiate proto version) (See Sec 4)
 	128 -- VPADDING  (Variable-length padding) (See Sec 7.2)
@@ -176,6 +181,7 @@ Streams :
 	--- New :
 	40 -- RELAY_ASSOCIATE
 	41 -- RELAY_WS
+	42 -- RELAY_INFO
 
 RELAY_WS cells act the same as RELAY cells but with a variable length (limited to 65535 bytes) allowing to transfer larger amount of data over the websocket interface more efficiently , they are used to transport RELAY_WS streams.
 
@@ -206,6 +212,17 @@ RELAY_WS cells are behaving exactly as RELAY cells in terms of encryption and ha
 
 The non specific iAnonym signaling traffic (circuit creation, RELAY[RELAY_BEGIN, RELAY_CONNECTED, RELAY_DATA]) is transported over the websocket interface too between the OP and first OR using different circuits than CID. Since the fake_domain is common to all urls, the browser will try to stream the requests opening only a few socks connections, the OP will stream the traffic with already relay_connected streams for the real hostname associated to the fake_domain and open new connections if the real host is different.
 
+CREATE_FAST_WS and CREATED_FAST_WS are the same as CREATE_FAST and CREATED_FAST except that X (OP to OR) is encrypted with the public onion key of the OR and Y (OR to OP) is encrypted with aes-128-ctr and the 16 first bytes of X. This is because secure websocket (wss) can not be used between the browser and the OR since the OR certificates are not valid, this does prevent that someone gets in clear X and Y. This is used only to set CID above and will be removed when RSA OAEP and Diffie-Hellman are available inside the browser, see below, then the fast circuit creation cells will not be used any longer.
+
+RSA OAEP and Diffie-Hellman are not implemented inside the browser for now. So as a temporary mechanism the RELAY_INFO streams are used to get from the OR the computation of RSA OAEP and DH, RELAY_INFO streams are transported (encrypted) with RELAY_WS cells over CID :
+				OP request                    OR response
+	[01][ID 16 bytes][public modulus] - [ID][X_length][X][Onion]
+	[02][ID 16 bytes][Y]              - [ID][DH secret(X,Y)]
+	
+The ID is randomely generated and identifies a transaction.
+
+The OR knows the secret keys but does not know for what circuits/ORs in the path, but it's not impossible to correlate, therefore this will be removed as soon as RSA OAEP and DH are available inside the browser.
+	
 ## Tests :
 
 See an example of communication in [logs OP and OR] (https://github.com/Ayms/node-Tor/blob/master/test/example.txt)
