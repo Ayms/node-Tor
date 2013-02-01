@@ -148,6 +148,7 @@ Extended with the Websocket protocol extension (RELAY_WS and RELAY_ASSOCIATE):
 This is specific to [Ayms/iAnonym](https://github.com/Ayms/iAnonym).
 
 Cells :
+
 	--- New :
 	120 -- CREATE_FAST_WS
 	121 -- CREATED_FAST_WS
@@ -215,6 +216,7 @@ The non specific iAnonym signaling traffic (circuit creation, RELAY[RELAY_BEGIN,
 CREATE_FAST_WS and CREATED_FAST_WS are the same as CREATE_FAST and CREATED_FAST except that X (OP to OR) is encrypted with the public onion key of the OR and Y (OR to OP) is encrypted with aes-128-ctr and the 16 first bytes of X. This is because secure websocket (wss) can not be used between the browser and the OR since the OR certificates are not valid, this does prevent that someone gets in clear X and Y. This is used only to set CID above and will be removed when RSA OAEP and Diffie-Hellman are available inside the browser, see below, then the fast circuit creation cells will not be used any longer.
 
 RSA OAEP and Diffie-Hellman are not implemented inside the browser for now. So as a temporary mechanism the RELAY_INFO streams are used to get from the OR the computation of RSA OAEP and DH, RELAY_INFO streams are transported (encrypted) with RELAY_WS cells over CID :
+
 				OP request                    OR response
 	[01][ID 16 bytes][public modulus] - [ID][X_length][X][Onion]
 	[02][ID 16 bytes][Y]              - [ID][DH secret(X,Y)]
