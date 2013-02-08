@@ -11,9 +11,9 @@ This is an unofficial and extended implementation of the Tor (or Tor like) proto
 
 ####But the most challenging goals are to put the OP and the OR inside the browsers.
 
-####It's done for the OP : 9th February 2012's first successfull complete communication from the browser with the js OP totally inside the browser, see the results [First loading - in black the OR,in white the OP inside the browser with web console messages] (http://www.ianonym.com/img/first_browser_page3.jpg) 
+####It's done for the OP : 9th February 2012's first successfull complete communication from the browser with the js OP totally inside the browser, see the results [First loading - in black the OR, in white the OP inside the browser with web console messages] (http://www.ianonym.com/img/first_browser_page3.jpg) 
 
-It's already quite fast while no optimization efforts have been made.
+####It's already quite fast while no optimization efforts have been made.
 
 Now we can envision the OR inside the browsers too.
 
@@ -23,7 +23,7 @@ See live test possibility in section "Tests".
 
 ## Why is the complete version not public?
 
-The complete version does include the OP and OR parts, websocket protocol extension, socks proxy interface + all communication interfaces for both (tcp, http, tls, websockets), the OP inside the browser (+ everything that is required : crypto, websocket, array buffer, etc - see [iAnonym](https://www.github.com/Ayms/iAnonym) ) and proxy auto config mechanisms.
+####The complete version does include the OP and OR parts, websocket protocol extension, socks proxy interface + all communication interfaces for both (tcp, http, tls, websockets), the OP inside the browser (+ everything that is required : crypto, websocket, array buffer, etc - see [iAnonym](https://www.github.com/Ayms/iAnonym) ) and proxy auto config mechanisms.
 
 Speechless to say that it's a huge and complicate work, but javascript's magic makes that the complete code is only about 4000 lines (certificates handling and TLS are not implemented for the browser part), the complete code with third party modules minified is about 200 KB.
 
