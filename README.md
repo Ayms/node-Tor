@@ -9,9 +9,49 @@ Anonymity into your browser everywhere from any device, see https://www.github.c
 
 This is an unofficial and extended implementation of the Tor (or Tor like) protocol (Onion Proxy and Onion Router) which anonymizes communications via the Tor (or Tor like) network. This allows to simply connect to the Tor (or Tor like) network and use it, as well as creating and adding nodes into the network, creating complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, it can be used to create separated Tor like networks.
 
-This repository is a subset of the complete version, the complete version is stable but not public for now, see below "node-Tor Status".
+But the most challenging goals are to put the OP and the OR inside the browsers.
+
+It's done for the OP : 9th February 2012's first successfull complete communication from the browser with the js OP totally inside the browser, see the results [First loading - in black the OR,in white the OP inside the browser with web console messages] (http://www.ianonym.com/img/first_browser_page3.jpg) 
+
+It's already quite fast while no optimization efforts have been made.
+
+Now we can envision the OR inside the browsers too.
+
+This repository is a subset of the complete version, the complete version is stable but not public for now, see below "Why is the complete version not public?" and "node-Tor Status".
 
 See live test possibility in section "Tests".
+
+## Why is the complete version not public?
+
+The complete version does include the OP and OR parts, websocket protocol extension, socks proxy interface + all communications interface for both (tcp, http, tls, websockets), the OP inside the browser (+ everything that is required : crypto, websocket, array buffer, etc - see [iAnonym](https://www.github.com/Ayms/iAnonym) and proxy auto config mechanisms.
+
+Speechless to say that it's a huge and complicate work, but javascript's magic makes that the complete code is only about 3500 lines (non minified, certificates handling and TLS are not implemented for the browser part), the complete code with third party modules minified is about 4200 lines.
+
+It does offer numerous easy possibilities to access anonymizer networks or create your own and do whatever you like inside them. It's really fast and much faster than everything that exists.
+
+Then we are a bit concerned about what people could do with it, that's why it's not public for now.
+
+And we are concerned about how to finance it too.
+
+## Tests :
+
+See an example of communication in [logs OP and OR] (https://github.com/Ayms/node-Tor/blob/master/test/example.txt)
+
+You can try it live :
+* set the socks proxy V5 interface of your browser to IP 213.246.53.127 port 8100 (on Firefox : Options/Advanced/Network/Parameters/Manual configuration of proxy), clear the cache/history, close your browser and reopen it
+* enter url http://www.lepoint.fr or http://www.monip.org
+
+For security reasons this test address is restricted to the domains www.lepoint.fr, www.monip.org and related IP addresses, then while loading the pages the network will not fetch resources outside of these domains (for example facebook widget on www.lepoint.fr will display "outside of authorized domains") but this is enough to give an idea and you can navigate inside the domains.
+
+www.lepoint.fr is a "usual" huge public site that does include whatever messy stuff the web has invented, so it's a good test site.
+
+www.monip.org allows you to see your anonymized IP address (if you refresh the page you will see that your anonymized IP address can change since different circuits can be used inside the network).
+
+Depending on the "health" of the circuits and associated routers when you try it, the delay for page loading might vary but it is usually fast.
+
+The test configuration is :
+
+	[Browser] <--socks--> [node-Tor_OP:8100] <-----> [node-Tor_OR] <-----> [Tor Network] <-----> [Site] 
 
 ## Install :
 
@@ -63,6 +103,8 @@ The OP is maintaining different circuits inside the Tor Network in order to be a
 	
 ## node-Tor Goals and possible Future :
 
+####This section is a bit obsolete now, there are numerous possibilities mentioned below, the most challenging ones are to put the OP and the OR inside the browsers, it's done for the OP, now it has to be worked for the OR.
+
 The intent of this project is to provide Tor mechanisms in a web language, so it might open the Tor (or Tor like) network to web languages interfaces.
 
 It is easier to install and to scale, does not depend on specific applications and can interact with js modules, then it is possible to easily build web/js applications on top of it (chat, etc).
@@ -74,8 +116,6 @@ This could possibly federate the different Tor (or Tor like) projects and Tor (o
 Beside anonymity, node-Tor can have other multiple uses, for example it can be used to access services in a way that the service providers can not detect you based on the requests that you are sending (see Related projects below), more to come.
 
 node-Tor's nodes can be used to create complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, it can be used to create separated Tor like networks.
-
-More to come again.
 
 ## node-Tor Status :
 
@@ -225,26 +265,6 @@ The ID is randomely generated and identifies a transaction.
 
 The OR knows the secret keys but does not know for what circuits/ORs in the path, but it's not impossible to correlate, therefore this will be removed as soon as RSA OAEP and DH are available inside the browser.
 	
-## Tests :
-
-See an example of communication in [logs OP and OR] (https://github.com/Ayms/node-Tor/blob/master/test/example.txt)
-
-You can try it live :
-* set the socks proxy V5 interface of your browser to IP 213.246.53.127 port 8100 (on Firefox : Options/Advanced/Network/Parameters/Manual configuration of proxy), clear the cache/history, close your browser and reopen it
-* enter url http://www.lepoint.fr or http://www.monip.org
-
-For security reasons this test address is restricted to the domains www.lepoint.fr, www.monip.org and related IP addresses, then while loading the pages the network will not fetch resources outside of these domains (for example facebook widget on www.lepoint.fr will display "outside of authorized domains") but this is enough to give an idea and you can navigate inside the domains.
-
-www.lepoint.fr is a "usual" huge public site that does include whatever messy stuff the web has invented, so it's a good test site.
-
-www.monip.org allows you to see your anonymized IP address (if you refresh the page you will see that your anonymized IP address can change since different circuits can be used inside the network).
-
-Depending on the "health" of the circuits and associated routers when you try it, the delay for page loading might vary but it is usually fast.
-
-The test configuration is :
-
-	[Browser] <--socks--> [node-Tor_OP:8100] <-----> [node-Tor_OR] <-----> [Tor Network] <-----> [Site] 
-
 ## Related projects :
 
 http://www.ianonym.com
