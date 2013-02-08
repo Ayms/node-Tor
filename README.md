@@ -25,7 +25,7 @@ See live test possibility in section "Tests".
 
 The complete version does include the OP and OR parts, websocket protocol extension, socks proxy interface + all communication interfaces for both (tcp, http, tls, websockets), the OP inside the browser (+ everything that is required : crypto, websocket, array buffer, etc - see [iAnonym](https://www.github.com/Ayms/iAnonym) ) and proxy auto config mechanisms.
 
-Speechless to say that it's a huge and complicate work, but javascript's magic makes that the complete code is only about 3500 lines (non minified, certificates handling and TLS are not implemented for the browser part), the complete code with third party modules minified is about 4200 lines.
+Speechless to say that it's a huge and complicate work, but javascript's magic makes that the complete code is only about 4000 lines (non minified, certificates handling and TLS are not implemented for the browser part), the complete code with third party modules minified is about 200 KB.
 
 It does offer numerous easy possibilities to access anonymizer networks or create your own and do whatever you like inside them. It's really fast and much faster than everything that exists.
 
