@@ -25,13 +25,11 @@ See live test possibility in section "Tests".
 
 ####The complete version does include the OP and OR parts, websocket protocol extension, socks proxy interface + all communication interfaces for both (tcp, http, tls, websockets), the OP inside the browser (+ everything that is required : crypto, websocket, array buffer, etc - see [iAnonym](https://www.github.com/Ayms/iAnonym) ) and proxy auto config mechanisms.
 
-Speechless to say that it's a huge and complicate work, but javascript's magic makes that the complete code is only about 4000 lines (certificates handling and TLS are not implemented for the browser part), the complete code with third party modules minified is about 200 KB.
+Speechless to say that it's a huge and complicate work, but javascript's magic makes that the complete code is only about 4000 "normal" lines, the complete code with third party modules minified is about 200 KB.
 
-It does offer numerous easy possibilities to access anonymizer networks or create your own and do whatever you like inside them. It's really fast and much faster than everything that exists.
+It does offer numerous powerfull and easy possibilities to access anonymizer networks or create your own and do whatever you like inside them. It's really fast and much faster than whatever exists today.
 
 Then we are a bit concerned about what people could do with it, that's why it's not public for now.
-
-And we are concerned about how to finance it too.
 
 ## Tests :
 
@@ -63,7 +61,7 @@ For the record, you need the following to run node-Tor :
 	openssl version >= 1.0.1 (aes counter mode encryption required - evp_aes_128_ctr)
 	python >= 2.6 (node.js's requirement)
 	
-####Current release of node.js is v0.8.18 with openSSL 1.0.0f
+####Current release of node.js is v0.8.19 with openSSL 1.0.0f (still...)
 	
 Then as usual :
 
