@@ -11,7 +11,7 @@ This is an unofficial and extended implementation of the Tor (or Tor like) proto
 
 ####But the most challenging goals are to put the OP and the OR inside the browsers.
 
-####It's done for the OP : 9th February 2012's first successfull complete communication from the browser with the js OP totally inside the browser, see the results [First loading - in black the OR, in white the OP inside the browser with web console messages] (http://www.ianonym.com/img/first_browser_page3.jpg) 
+####It's done for the OP : 9th February 2013's first successfull complete communication from the browser with the js OP totally inside the browser, see the results [First loading - in black the OR, in white the OP inside the browser with web console messages] (http://www.ianonym.com/img/first_browser_page3.jpg) 
 
 ####It's already quite fast while no optimization efforts have been made.
 
