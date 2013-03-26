@@ -268,6 +268,8 @@ The OR knows the secret keys but does not know for what circuits/ORs in the path
 http://www.ianonym.com
 
 * [Ayms/iAnonym](https://github.com/Ayms/iAnonym)
+* [Interception Detector](http://www.ianonym.com/intercept.html)
+* [Ayms/abstract-tls](https://github.com/Ayms/abstract-tls)
 * [Ayms/websocket](https://github.com/Ayms/websocket)
 * [Ayms/node-typedarray](https://github.com/Ayms/node-typedarray)
 
