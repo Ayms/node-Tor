@@ -9,7 +9,9 @@ Anonymity into your browser everywhere from any device, see https://www.github.c
 
 This is an unofficial and extended implementation of the Tor (or Tor like) protocol (Onion Proxy and Onion Router) which anonymizes communications via the Tor (or Tor like) network. This allows to simply connect to the Tor (or Tor like) network and use it, as well as creating and adding nodes into the network, creating complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, it can be used to create separated Tor like networks.
 
-####But the most challenging goals are to put the OP and the OR inside the browsers.
+####There are numerous uses possibilities for node-Tor
+
+####The most challenging goals are now to put the OP and the OR inside the browsers.
 
 ####It's done for the OP : 9th February 2013's first successfull complete communication from the browser with the js OP totally inside the browser, see the results [First loading - in black the OR, in white the OP inside the browser with web console messages] (http://www.ianonym.com/img/first_browser_page3.jpg) 
 
@@ -61,7 +63,7 @@ For the record, you need the following to run node-Tor :
 	openssl version >= 1.0.1 (aes counter mode encryption required - evp_aes_128_ctr)
 	python >= 2.6 (node.js's requirement)
 	
-####Current release of node.js is v0.8.19 with openSSL 1.0.0f (still...)
+####Current release of node.js is v0.10.5 with openSSL 1.0.1e (at last...)
 	
 Then as usual :
 
@@ -101,7 +103,7 @@ The OP is maintaining different circuits inside the Tor Network in order to be a
 	
 ## node-Tor Goals and possible Future :
 
-####This section is a bit obsolete now, there are numerous possibilities mentioned below, the most challenging ones are to put the OP and the OR inside the browsers, it's done for the OP, now it has to be worked for the OR.
+####There are numerous possibilities mentioned below and in the introduction, the most challenging ones are to put the OP and the OR inside the browsers, it's done for the OP, now it has to be worked for the OR.
 
 The intent of this project is to provide Tor mechanisms in a web language, so it might open the Tor (or Tor like) network to web languages interfaces.
 
@@ -281,7 +283,7 @@ node-Tor can advantageously be coupled with :
 
 ## Support/Sponsors :
 
-If you like this project you can contact us and/or possibly donate : donate at jcore.fr or via PayPal.
+If you like this project you can contact us and/or possibly donate : contact at ianonym.com or via PayPal.
 
 ## Some words :
 
