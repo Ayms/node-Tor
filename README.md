@@ -38,7 +38,7 @@ Then we are a bit concerned about what people could do with it, that's why it's 
 See an example of communication in [logs OP and OR] (https://github.com/Ayms/node-Tor/blob/master/test/example.txt)
 
 You can try it live :
-* set the socks proxy V5 interface of your browser to IP 213.246.53.127 port 8100 (on Firefox : Options/Advanced/Network/Parameters/Manual configuration of proxy), clear the cache/history, close your browser and reopen it
+* set the socks proxy V5 interface of your browser to IP 213.246.53.127 port 8101 (on Firefox : Options/Advanced/Network/Parameters/Manual configuration of proxy), clear the cache/history, close your browser and reopen it
 * enter url http://www.lepoint.fr or http://www.monip.org
 
 For security reasons this test address is restricted to the domains www.lepoint.fr, www.monip.org and related IP addresses, then while loading the pages the network will not fetch resources outside of these domains (for example facebook widget on www.lepoint.fr will display "outside of authorized domains") but this is enough to give an idea and you can navigate inside the domains.
