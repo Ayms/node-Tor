@@ -5,6 +5,10 @@ Javascript implementation of a Tor (or Tor like) anonymizer network (The Onion R
 
 Anonymity into your browser everywhere from any device, see https://www.github.com/Ayms/iAnonym
 
+## Crowdfunding campaign launched on Kickstarter the 19th of June for 40 days, you're welcome to contribute
+
+[iAnonym kickstarter campaign] (http://www.kickstarter.com/projects/450023/ianonym-internet-privacy-everywhere-from-any-devic)
+
 ## Presentation:
 
 This is an unofficial and extended implementation of the Tor (or Tor like) protocol (Onion Proxy and Onion Router) which anonymizes communications via the Tor (or Tor like) network. This allows to simply connect to the Tor (or Tor like) network and use it, as well as creating and adding nodes into the network, creating complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, it can be used to create separated Tor like networks.
