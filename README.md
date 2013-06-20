@@ -37,7 +37,7 @@ It does offer numerous powerfull and easy possibilities to access anonymizer net
 
 Then we are a bit concerned about what people could do with it, that's why it's not public for now.
 
-## Tests :
+## Tests : 
 
 See an example of communication in [logs OP and OR] (https://github.com/Ayms/node-Tor/blob/master/test/example.txt)
 
@@ -47,7 +47,7 @@ You can try it live :
 
 For security reasons this test address is restricted to the domains www.lepoint.fr, www.monip.org and related IP addresses, then while loading the pages the network will not fetch resources outside of these domains (for example facebook widget on www.lepoint.fr will display "outside of authorized domains") but this is enough to give an idea and you can navigate inside the domains.
 
-www.lepoint.fr is a "usual" huge public site that does include whatever messy stuff the web has invented, so it's a good test site.
+www.lepoint.fr is a huge public site, so it's a good test site.
 
 www.monip.org allows you to see your anonymized IP address (if you refresh the page you will see that your anonymized IP address can change since different circuits can be used inside the network).
 
