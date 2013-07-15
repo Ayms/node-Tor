@@ -49,6 +49,8 @@ Then we are a bit concerned about what people could do with it, that's why it's 
 
 ####The OR-DB does not know to whom it is talking to and does not know what data it is relaying, it only knows to which anonymized streams it has to relay data, and only knows the hash identifying the source of data, not it's real name.
 
+####So, unlike Torrents, nobody knows what you are doing, therefore you can not be tracked and/or caught.
+
 The configuration can be summarized as follow:
 
 	[Browser 1] <-- Websocket1-1 (ephemeral for direct download)		--> 	OR1-1 	<--> OR1-2 	<--> OR1-3 <--> Web site
