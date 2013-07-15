@@ -51,6 +51,8 @@ Then we are a bit concerned about what people could do with it, that's why it's 
 
 ####So, unlike Torrents, nobody knows what you are doing, therefore you can not be tracked and/or caught.
 
+####It will be of course compatible with popular CDNs such as MEGA.
+
 The configuration can be summarized as follow:
 
 	[Browser 1] <-- Websocket1-1 (ephemeral for direct download)		--> 	OR1-1 	<--> OR1-2 	<--> OR1-3 <--> Web site
