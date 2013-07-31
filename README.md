@@ -3,13 +3,11 @@ node-Tor
 
 Javascript implementation of a Tor (or Tor like) anonymizer network (The Onion Router https://www.torproject.org/)
 
-Anonymity into your browser everywhere from any device, see https://www.github.com/Ayms/iAnonym
+Example of implementations:
 
-## Crowdfunding campaign launched on Kickstarter the 19th of June for 40 days, you're welcome to contribute
+* Peersm (http://www.peersm.com) : Anonymous peer to peer download inside browsers and distributed database inside browsers (torrent like but better and safe)
 
-[iAnonym kickstarter campaign] (http://www.kickstarter.com/projects/450023/ianonym-internet-privacy-everywhere-from-any-devic)
-
-## Update: the campaign is a flop for now. Apparently people don't care about their privacy. New project to come, see anonymous peer to peer download inside browsers below.
+* iAnonym :Anonymity into your browser everywhere from any device, see https://www.github.com/Ayms/iAnonym and http://www.ianonym.com
 
 ## Presentation:
 
