@@ -17,7 +17,7 @@ This is an unofficial and extended implementation of the Tor (or Tor like) proto
 
 ####The most challenging goals are now to put the OP and the OR inside the browsers.
 
-####It's done for the OP : 9th February 2013's first successfull complete communication from the browser with the js OP totally inside the browser, see the results [First loading - in black the OR, in white the OP inside the browser with web console messages] (http://www.ianonym.com/img/first_browser_page3.jpg) 
+####It's done for the OP, see latest screenshots here (Peersm/OR DB): http://www.peersm.com
 
 ####It's already quite fast while no optimization efforts have been made.
 
@@ -133,6 +133,8 @@ with Reason set to UNAVAILABLE.
 When receiving a RELAY_DB_END stream, the OR_DB looks if another browser can serve the file (limited to NB_DB attempts), then restarts the process, if not sends it backward (with payload set at Reason only).
 
 When receiving a RELAY_DB_END stream, the receiving browser tries downloading the file connecting to an exit node if Reason is not RESET (and reset the file being dowloaded if it was the case) or reset the file being downloaded if Reason is RESET and waits for new data.
+
+Flow control: to be documented.
 
 Studies are ongoing to implement the OR-DB inside browsers too.
 
