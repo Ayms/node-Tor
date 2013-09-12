@@ -100,6 +100,8 @@ The initiating OP has chosen a streamId1 to send the RELAY_DB_QUERY message that
 
 When receiving a RELAY_DB_QUERY stream the OR-DB looks if it can associate it to a socket,CIC,Stream choosing the one having the lowest nb, generates a Transaction_id (associated to the incoming socket/CIC/stream) and then send it forward.
 
+Note that the Bytes_available field is for the receiver to advertise how many bytes he already has for this file (in case a download was interrupted), the sender will get this information and resume the download from this number of bytes.
+
 When receiving a RELAY_DB_QUERY stream, the browser does respond with a:
 
 (1) RELAY_DB_CONNECTED stream if it can serve the file:
@@ -134,7 +136,29 @@ When receiving a RELAY_DB_END stream, the OR_DB looks if another browser can ser
 
 When receiving a RELAY_DB_END stream, the receiving browser tries downloading the file connecting to an exit node if Reason is not RESET (and reset the file being dowloaded if it was the case) or reset the file being downloaded if Reason is RESET and waits for new data.
 
-Flow control: to be documented.
+The receiver can stop a download sending a RELAY_DB_END to the sender relayed by the ORDB, in that case the partial data downloaded so far will be stored in indexedDB at the receiver side, he will be able to resume the download later.
+
+Flow control: 
+
+The sender does monitor its available bandwidth and does provide 50% of its bandwidth to the receivers, so 50%/(receivers nb) for each receiver, both sender and receiver are updating a window associated to the stream they are using to exchange data, the sender does decrement the window size by 1 for each packet received and waits for a RELAY_DB_SENDME message from the receiver if the window size drops to 0 before reinitializing the window size and sending data again. The receiver does the same and send a RELAY_DB_SENDME each time the window size comes under 80% of the initial window size.
+
+This is assuming that half of the sender upload bandwidth is the minimal bandwidth available in all the path between the sender and the receiver, it might not be the case since some nodes in the path might have a lower bandwidth, in that case the sender's or receiver's circuit with the ORDB is destroyed to get another one performing better.
+
+Hash_names management:
+
+Hash_names are used to identify a download. If the file was originally downloaded from the web, hash_name is the hash of the link (public), if the file was uploaded inside the browser, hash_name is a hash provided by the system (private). So the same file can have different hash_name which will split the traffic better than having a unique reference like its hash for all the same files. The hash information of a file does allow to detect if a file was not modified for malicious reasons.
+
+A name is associated to the file, for http://aaa.com/myfile.ext (public) the name is myfile.ext, for private references the name is a random string or the name of the file that was uploaded inside the browser. For private references you must provide to the receivers the hash_name and the file extension since they will not know the extension after the download.
+
+You can encrypt files too that you have downloaded or uploaded, in that case the name of the encrypted file will become name.ext.enc, the system will keep reference to the initial type of the file and store it in indexedDB as a binary file. The sender must provide to receivers the hash_name, the encryption key and the extension of the file. While downloading an encrypted file the receiver will receive the initial type of the file so he can decrypt it and store it with the right format (but nothing else since the ORDB must not know any other information about the files that it is relaying), then he can open/save it using the extension provided by the sender.
+
+The type of a file is used for consistency reasons when storing a file in indexedDB, but senders can change the real type of the file if they don't want the ORDB to be aware of it.
+
+So, basically, people must exchange information to download private and/or encrypted files, by usual means (blogs, emails, etc)
+
+Non anonym Peer to Peer (without the traffic being relayed by the ORDB): for those that do not care about anonymity, the system might implement WebRTC mechanisms so the trunking does not go through the ORDB after the ORDB has set the connexion between the two peers but goes directly between the browser of the sender and the receiver.
+
+Others:
 
 Studies are ongoing to implement the OR-DB inside browsers too.
 
@@ -168,7 +192,7 @@ For the record, you need the following to run node-Tor :
 	openssl version >= 1.0.1 (aes counter mode encryption required - evp_aes_128_ctr)
 	python >= 2.6 (node.js's requirement)
 	
-####Current release of node.js is v0.10.5 with openSSL 1.0.1e (at last...)
+####Current release of node.js is v0.10.x with openSSL 1.0.1e (at last...)
 	
 Then as usual :
 
