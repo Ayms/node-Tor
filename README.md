@@ -170,6 +170,16 @@ Since the ORDBs are relaying the traffic, they can handle a certain number of us
 
 So the system might implement WebRTC mechanisms for peers that do not care about anonymity and might implement a secure mechanism on top of WebRTC for those who care about anonymity, based on PKI where peers will advertise their public key in addition to the files they have.
 
+Uses, privacy and security:
+
+As explained several times above, the system does not know what you are doing and what files you have personnaly, it only knows what files are available and how to connect two anonymous peers to retrieve them. The ORDB could store what is is relaying (which it is not doing) but this would require a lot of storage and this is at the end of no use (in case of law enforcement or other) since it does not know who own the files and who downloaded them, and it can not trivially know for a monitored file what it is. In addition you can encrypt the files so the ORDB has no way to know what the files are about.
+
+That's up to you to disclose the hash_names and the keys for what you want to make available to others, in a public or a private manner. The intent of the system is not to do strange things but can be as simple as sending photos to the family without having to put them on a third party site that you don't know what they will do with it, or sending them over the network in a normal way while you don't know whom is eventually sniffing the network.
+
+On browser side you have a unique user code that identifies your local database too, a bit like a password that you should never disclose (which will be used to encrypt locally your private key if private/public keys are used one day), this is protecting you somewhere too since you are responsible for what you are storing and for what you are sharing, this code uniquely indexes your own local data in case of unexpected events like law enforcement on your computer.
+
+Unlike torrents or usual direct downloads the system does defeat any attempt from a third party to know what you are doing. 
+
 Others:
 
 Studies are ongoing to implement the OR-DB inside browsers too.
