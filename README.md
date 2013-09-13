@@ -49,6 +49,8 @@ Then we are a bit concerned about what people could do with it, that's why it's 
 
 ####The OR-DB does not know to whom it is talking to and does not know what data it is relaying, it only knows to which anonymized streams it has to relay data, and only knows the hash identifying the source of data, not it's real name.
 
+####Browsers are implementing the javascript anonymizing module to access the anonymizer network (js OP) and connect to the anonymizer network using WebSockets. The anonymizer network is the Tor network or a Tor-like.
+
 ####So, unlike Torrents, nobody knows what you are doing, therefore you can not be tracked and/or caught.
 
 ####It will be of course compatible with popular CDNs such as MEGA.
@@ -154,7 +156,7 @@ Hash_names management:
 
 Hash_names are used to identify a download. If the file was originally downloaded from the web, hash_name is the hash of the link (public), if the file was uploaded inside the browser, hash_name is a hash provided by the system (private). So the same file can have different hash_name which will split the traffic better than having a unique reference like its hash for all the same files. The hash information of a file does allow to detect if a file was not modified for malicious reasons.
 
-A name is associated to the file, for http://aaa.com/myfile.ext (public) the name is myfile.ext, for private references the name is a random string or the name of the file that was uploaded inside the browser. For private references you must provide to the receivers the hash_name and the file extension since they will not know the extension after the download.
+A name is associated to the file, for http://aaa.com/myfile.ext (public) the name is myfile.ext, for private references the name is a random string (in that case you are advised to rename it with a more intuitive name and a correct file extension) or the name of the file that was uploaded inside the browser. For private references you must provide to the receivers the hash_name and the file extension since they can not know the file extension after they have downloaded it, they only know the type of the file but this might not be enough to use it correctly (open, save, etc).
 
 You can encrypt files too that you have downloaded or uploaded, in that case the name of the encrypted file will become name.ext.enc, the system will keep reference to the initial type of the file and store the file in indexedDB as a binary file. The sender must provide to receivers the hash_name, the encryption key and the extension of the file. While downloading an encrypted file the receiver will receive the initial type of the file so he can decrypt it and store it with the right format (but nothing else since the ORDB must not know any other information about the files that it is relaying), then he can open/save it using the extension provided by the sender.
 
