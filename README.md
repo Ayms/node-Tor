@@ -146,13 +146,13 @@ The receiver can stop a download sending a RELAY_DB_END to the sender relayed by
 
 It is possible to stream the file too (video, etc) while it is being downloaded.
 
-######Flow control: 
+#####Flow control: 
 
 The sender does monitor its available bandwidth and does provide 50% of its bandwidth to the receivers, so 50%/(receivers nb) for each receiver, both sender and receiver are updating a window associated to the stream that they are using to exchange data, the sender does decrement the window size by 1 for each packet received and waits for a RELAY_DB_SENDME message from the receiver if the window size drops to 0 before reinitializing the window size and sending data again. The receiver does the same and send a RELAY_DB_SENDME each time the window size comes under 80% of the initial window size.
 
 This is assuming that half of the sender upload bandwidth is the minimal bandwidth available in all the path between the sender and the receiver, it might not be the case since some nodes in the path might have a lower bandwidth, in that case the sender's or receiver's circuit with the ORDB is destroyed to get another one performing better.
 
-######Hash_names management:
+#####Hash_names management:
 
 Hash_names are used to identify a download. If the file was originally downloaded from the web, hash_name is the hash of the link (public), if the file was uploaded inside the browser, hash_name is a hash provided by the system (private). So the same file can have different hash_name which will split the traffic better than having a unique reference like its hash for all the same files. The hash information of a file does allow to detect if a file was not modified for malicious reasons.
 
@@ -164,13 +164,13 @@ The type of a file is used for consistency reasons when storing a file in indexe
 
 So, basically, people must exchange information to download private and/or encrypted files, by usual means (blogs, emails, sms, etc).
 
-######Bandwidth:
+#####Bandwidth:
 
 Since the ORDBs are relaying the traffic, they can handle a certain number of users depending on their bandwidth. Ideally the ORDBs could only handle the signaling with the same protocol described above to connect peers, the traffic will then go between these peers without involving the ORDBs any longer.
 
 So the system might implement WebRTC mechanisms for peers that do not care about anonymity and might implement a secure mechanism on top of WebRTC for those who care about anonymity, based on PKI where peers will advertise their public key in addition to the files they have.
 
-######Uses, privacy and security:
+#####Uses, privacy and security:
 
 As explained several times above, the system does not know what you are doing and what files you have personnaly, it only knows what files are available and how to connect two anonymous peers to retrieve them. The ORDB could store what is is relaying (which it is not doing) but this would require a lot of storage and this is at the end of no use (in case of law enforcement or other) since it does not know who own the files and who downloaded them, and it can not trivially know for a monitored file what it is. In addition you can encrypt the files so the ORDB has no way to know what the files are about.
 
@@ -180,7 +180,7 @@ On browser side you have a unique user code that identifies your local database 
 
 Unlike torrents or usual direct downloads the system does defeat any attempt from a third party to know what you are doing. 
 
-######Others:
+#####Others:
 
 Studies are ongoing to implement the OR-DB inside browsers too.
 
