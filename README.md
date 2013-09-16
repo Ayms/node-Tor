@@ -166,9 +166,13 @@ So, basically, people must exchange information to download private and/or encry
 
 #####Bandwidth:
 
-Since the ORDBs are relaying the traffic, they can handle a certain number of users depending on their bandwidth. Ideally the ORDBs could only handle the signaling with the same protocol described above to connect peers, the traffic will then go between these peers without involving the ORDBs any longer.
+Since the ORDBs are relaying the traffic, they can handle a certain number of users depending on their bandwidth. Ideally the ORDBs could only handle the signaling with the same protocol described above to connect peers, the traffic will then go between these peers without involving the ORDBs any longer, see below, technically this is not feasible today in a way to preserve anonymity.
 
-So the system might implement WebRTC mechanisms for peers that do not care about anonymity and might implement a secure mechanism on top of WebRTC for those who care about anonymity, based on PKI where peers will advertise their public key in addition to the files they have.
+For now, only "seeders" (those that have a complete file) can advertise a complete file they have, so unlike torrents or other systems, a peer does not connect to several seeds/peers to download pieces of the file but to only one seeder, this might be reconsidered if necessary but since the connection to each pear goes through the anonymizer network, each path created has some latency (and possible instability) and therefore the gain of using several paths is dubious compared to use only one, at least this is the result for now of some of our previous experiments like loading web pages resources with numerous circuits works worse than loading them with a retsricted number of (good) circuits. But if a download stopped (unexpectedly or by your action), you will be able to resume it from whereit stopped.
+
+So the system "might" implement WebRTC mechanisms for peers that do not care about anonymity and might implement a secure mechanism on top of WebRTC for those who care about anonymity, based on PKI where peers will advertise their public key in addition to the files they have.
+
+We say "might" because WebRTC protocol is not designed at all for anonymity since it forces you to disclose your IP address/port to some servers so the communication can go peer to peer (STUN server) or be relayed (TURN server).
 
 #####Uses, privacy and security:
 
@@ -178,7 +182,7 @@ That's up to you to disclose the hash_names and the keys for what you want to ma
 
 On browser side you have a unique user code that identifies your local database too, a bit like a password that you should never disclose (which will be used to encrypt locally your private key if private/public keys are used one day), this is protecting you somewhere too since you are responsible for what you are storing and for what you are sharing, this code uniquely indexes your own local data in case of unexpected events like law enforcement on your computer.
 
-Unlike torrents or usual direct downloads the system does defeat any attempt from a third party to know what you are doing. 
+Unlike torrents, usual direct downloads, WebRTC projects, the system does defeat any attempt from a third party to know what you are doing. 
 
 #####Others:
 
