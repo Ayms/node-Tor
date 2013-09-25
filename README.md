@@ -31,7 +31,7 @@ See live test possibility in section "Tests".
 
 ####The complete version does include the OP and OR parts, websocket protocol extension, socks proxy interface + all communication interfaces for both (tcp, http, tls, websockets), the OP inside the browser (+ everything that is required : crypto, websocket, array buffer, etc - see [iAnonym](https://www.github.com/Ayms/iAnonym) ) and proxy auto config mechanisms.
 
-Speechless to say that it's a huge and complicate work, but javascript's magic makes that the complete code is only about 6000 "normal" lines, the complete code with third party modules minified is about 400 KB.
+Speechless to say that it's a huge and complicate work, but javascript's magic makes that the complete code is only about 7000 "normal" lines, the complete code with third party modules minified is about 400 KB.
 
 It does offer numerous powerfull and easy possibilities to access anonymizer networks or create your own and do whatever you like inside them. It's really fast and much faster than whatever exists today.
 
@@ -43,7 +43,7 @@ Then we are a bit concerned about what people could do with it, that's why it's 
 
 ####The js implementation is using HTML5/latest Web APIs: WebSocket, indexedDB, File API, Workers, createObjectURL and probably later WebCrypto and WebRTC.
 
-####The usual trivial question is how can you be sure that the js OP code loaded by the browser from our site is trustable? It is if you use https with our site combined with the excellent [Interception Detector] (http://www.ianonym.com/intercept.html) or Content Security Policy mechanisms such as nonces.
+####The usual trivial question is how can you be sure that the js OP code loaded by the browser from our site is trustable? It is if you use https with our site combined with the excellent [Interception Detector] (http://www.ianonym.com/intercept.html) or Content Security Policy mechanisms such as nonces. Or simply if the system has set some own protections, see 'Uses, privacy and security' below.
 
 ####The OR-DB does act like an Exit Node except that it does only relay data from one browser to another.
 
@@ -154,7 +154,7 @@ This is assuming that half of the sender upload bandwidth is the minimal bandwid
 
 #####Hash_names management:
 
-Hash_names are used to identify a download. If the file was originally downloaded from the web, hash_name is the hash of the link (public), if the file was uploaded inside the browser, hash_name is a hash provided by the system (private). So the same file can have different hash_name which will split the traffic better than having a unique reference like its hash for all the same files. The hash information of a file does allow to detect if a file was not modified for malicious reasons.
+Hash_names are used to identify a download. If the file was originally downloaded from the web, hash_name is the hash of the link (public), if the file was uploaded inside the browser, hash_name is a hash provided by the system (private). So the same file can have different hash_name which will split the traffic better than having a unique reference like its hash for all the same files, and which makes more difficult for some potential observers to know what files you have. The hash information of a file does allow to detect if a file was not modified for malicious reasons.
 
 A name is associated to the file, for http://aaa.com/myfile.ext (public) the name is myfile.ext, for private references the name is a random string (in that case you are advised to rename it with a more intuitive name and a correct file extension) or the name of the file that was uploaded inside the browser. For private references you must provide to the receivers the hash_name and the file extension since they can not know the file extension after they have downloaded it, they only know the type of the file but this might not be enough to use it correctly (open, save, etc).
 
@@ -168,7 +168,7 @@ So, basically, people must exchange information to download private and/or encry
 
 Since the ORDBs are relaying the traffic, they can handle a certain number of users depending on their bandwidth. Ideally the ORDBs could only handle the signaling with the same protocol described above to connect peers, the traffic will then go between these peers without involving the ORDBs any longer, see below, technically this is not feasible today in a way that preserves anonymity.
 
-For now, only "seeders" (those that have a complete file) can advertise a complete file they have, so unlike torrents or other systems, a peer does not connect to several seeds/peers to download pieces of the file but to only one seeder, this might be reconsidered if necessary but since the connection to each pear goes through the anonymizer network, each path created has some latency (and possible instability) and therefore the gain of using several paths is dubious compared to use only one, at least this is the result for now of some of our previous experiments like loading web pages resources with numerous circuits works worse than loading them with a retsricted number of (good) circuits. But if a download stopped (unexpectedly or by your action), you will be able to resume it from where it stopped.
+For now, only "seeders" (those that have a complete file) can advertise a complete file they have, so unlike torrents or other systems, a peer does not connect to several seeds/peers to download pieces of the file but to only one seeder, this might be reconsidered if necessary but since the connection to each pear goes through the anonymizer network, each path created has some latency (and possible instability) and therefore the gain of using several paths is dubious compared to the one of using only one, at least this is the result for now of some of our previous experiments, like loading web pages resources with numerous circuits works worse than loading them with a retsricted number of (good) circuits. But if a download stopped (unexpectedly or by your action), you will be able to resume it from where it stopped.
 
 So the system "might" implement WebRTC mechanisms for peers that do not care about anonymity and might implement a secure mechanism on top of WebRTC for those who care about anonymity, based on PKI where peers will advertise their public key in addition to the files they have.
 
@@ -180,7 +180,17 @@ As explained several times above, the system does not know what you are doing an
 
 That's up to you to disclose the hash_names and the keys for what you want to make available to others, in a public or a private manner. The intent of the system is not to do strange things but can be as simple as sending photos to the family without having to put them on a third party site that you don't know what they will do with it, or sending them over the network in a normal way while you don't know whom is eventually sniffing the network.
 
-On browser side you have a unique user code that identifies your local database too, a bit like a password that you should never disclose (which will be used to encrypt locally your private key if private/public keys are used one day), this is protecting you somewhere too since you are responsible for what you are storing and for what you are sharing, this code uniquely indexes your own local data in case of unexpected events like law enforcement on your computer.
+You will get a code and a key from our system, we don't ask/keep any information about you, except an email address.
+
+The code is used to access the service with the URL http://peersm.com/code, http not https because of [[Bug 917829] Security error when trying to set a non SSL/TLS Websocket from a https page](https://bugzilla.mozilla.org/show_bug.cgi?id=917829)
+
+The first time you use it you will have to copy/paste the key when the system asks for it, then it will be stored inside your browser storage so you don't have to enter it each time.
+
+You must never disclose your code or your key, the key is never sent over the network and is used to check the integrity of the application (ie to check that no malicious code has been injected), for security reasons we do not detail what the application does exactly with the key, someone reversing the code can find it but let's not make it too easy, anyway even if this is known it's difficult and unlikely to break. 
+
+We can not prevent you from hacking yourself if you like (for example to retrieve your key from the browser storage), so you must take care that other people do not access your computer.
+
+Your code identifies your local database too, this is protecting you somewhere since you are responsible for what you are storing and for what you are sharing, this code uniquely indexes your own local data in case of unexpected events like law enforcement on your computer.
 
 Unlike torrents, usual direct downloads, WebRTC projects, the system does defeat any attempt from a third party to know what you are doing. 
 
