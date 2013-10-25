@@ -170,10 +170,6 @@ Since the ORDBs are relaying the traffic, they can handle a certain number of us
 
 For now, only "seeders" (those that have a complete file) can advertise a complete file they have, so unlike torrents or other systems, a peer does not connect to several seeds/peers to download pieces of the file but to only one seeder, this might be reconsidered if necessary but since the connection to each pear goes through the anonymizer network, each path created has some latency (and possible instability) and therefore the gain of using several paths is dubious compared to the one of using only one, at least this is the result for now of some of our previous experiments, like loading web pages resources with numerous circuits works worse than loading them with a retsricted number of (good) circuits. But if a download stopped (unexpectedly or by your action), you will be able to resume it from where it stopped.
 
-So the system "might" implement WebRTC mechanisms for peers that do not care about anonymity and might implement a secure mechanism on top of WebRTC for those who care about anonymity, based on PKI where peers will advertise their public key in addition to the files they have.
-
-We say "might" because WebRTC protocol is not designed at all for anonymity since it forces you to disclose your IP address/port to some servers so the communication can go peer to peer (STUN server) or be relayed (TURN server).
-
 #####Uses, privacy and security:
 
 As explained several times above, the system does not know what you are doing and what files you have personnaly, it only knows what files are available and how to connect two anonymous peers to retrieve them. The ORDB could store what is is relaying (which it is not doing) but this would require a lot of storage and this is at the end of no use (in case of law enforcement or other) since it does not know who own the files and who downloaded them, and it can not trivially know for a monitored file what it is. In addition you can encrypt the files so the ORDB has no way to know what the files are about.
