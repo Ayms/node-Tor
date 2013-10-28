@@ -43,7 +43,7 @@ Then we are a bit concerned about what people could do with it, that's why it's 
 
 ####The js implementation is using HTML5/latest Web APIs: WebSocket, indexedDB, File API, Workers, createObjectURL and probably later WebCrypto.
 
-####Use of WebRTC has been for now abandonned because even if you can distribute the ways of performing peers introduction, the first thing WebRTC does is still to tell to someone how to reach you, so this can not be used for anonymity and privacy until a real serverless WebRTC exists, and if so you still have the issue of implementing a secure protocol between peers which probably would involve some PKI mechanisms making the system not easy to put in place and not user friendly. 
+####Use of WebRTC for real peer to peer is being studied, the ORDB would then handle anonymously signaling only, see Peersm (http://www.peersm.com), signaling is used to tell the other parties how they can be reached, this must be hidden to the ORDB that could easily do the man in the middle here, so a secure protocol must be put in place between peers, to adverise how they can be reached, and to exchange data, the issue is: which one and how?
 
 ####The usual trivial question is how can you be sure that the js OP code loaded by the browser from our site is trustable? It is if you use https with our site combined with the excellent [Interception Detector] (http://www.ianonym.com/intercept.html) or Content Security Policy mechanisms such as nonces. Or simply if the system has set some own protections, see 'Uses, privacy and security' below.
 
