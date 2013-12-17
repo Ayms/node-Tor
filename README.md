@@ -8,7 +8,7 @@ Example of implementations:
 * Peersm (http://www.peersm.com) : Anonymous peer to peer download inside browsers and distributed database inside browsers (torrent like but better and safe)
 
 * iAnonym :Anonymity into your browser everywhere from any device, see https://www.github.com/Ayms/iAnonym and http://www.ianonym.com
-
+ 
 ## Presentation:
 
 This is an unofficial and extended implementation of the Tor (or Tor like) protocol (Onion Proxy and Onion Router) which anonymizes communications via the Tor (or Tor like) network. This allows to simply connect to the Tor (or Tor like) network and use it, as well as creating and adding nodes into the network, creating complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, it can be used to create separated Tor like networks.
@@ -198,23 +198,7 @@ Studies are ongoing to implement the OR-DB inside browsers too.
 
 ## Tests : 
 
-See an example of communication in [logs OP and OR] (https://github.com/Ayms/node-Tor/blob/master/test/example.txt)
-
-You can try it live :
-* set the socks proxy V5 interface of your browser to IP 213.246.53.127 port 8101 (on Firefox : Options/Advanced/Network/Parameters/Manual configuration of proxy), clear the cache/history, close your browser and reopen it
-* enter url http://www.lepoint.fr or http://www.monip.org
-
-For security reasons this test address is restricted to the domains www.lepoint.fr, www.monip.org and related IP addresses, then while loading the pages the network will not fetch resources outside of these domains (for example facebook widget on www.lepoint.fr will display "outside of authorized domains") but this is enough to give an idea and you can navigate inside the domains.
-
-www.lepoint.fr is a huge public site, so it's a good test site.
-
-www.monip.org allows you to see your anonymized IP address (if you refresh the page you will see that your anonymized IP address can change since different circuits can be used inside the network).
-
-Depending on the "health" of the circuits and associated routers when you try it, the delay for page loading might vary but it is usually fast.
-
-The test configuration is :
-
-	[Browser] <--socks--> [node-Tor_OP:8100] <-----> [node-Tor_OR] <-----> [Tor Network] <-----> [Site] 
+See the demo video on [Peersm] (http://www.peersm.com), the beta release will be available begining of January 2014.
 
 ## Install :
 
