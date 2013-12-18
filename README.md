@@ -3,6 +3,8 @@ node-Tor
 
 Javascript implementation of a Tor (or Tor like) anonymizer network (The Onion Router https://www.torproject.org/)
 
+For a quick look, see the demo video on [Peersm] (http://www.peersm.com)
+
 Example of implementations:
 
 * Peersm (http://www.peersm.com) : Anonymous peer to peer download inside browsers and distributed database inside browsers (torrent like but better and safe)
