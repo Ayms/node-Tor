@@ -31,13 +31,11 @@ See live test possibility in section "Tests".
 
 ## Why is the complete version not public?
 
-####The complete version does include the OP and OR parts, websocket protocol extension, socks proxy interface + all communication interfaces for both (tcp, http, tls, websockets), the OP inside the browser (+ everything that is required : crypto, websocket, array buffer, etc - see [iAnonym](https://www.github.com/Ayms/iAnonym) ) and proxy auto config mechanisms.
+####The complete version does include the OP and OR parts, websocket protocol extension, socks proxy interface + all communication interfaces for both (tcp, http, tls, websockets), the OP inside the browser (+ everything that is required : crypto, websocket, array buffer) and proxy auto config mechanisms.
 
 Speechless to say that it's a huge and complicate work, but javascript's magic makes that the complete code is only about 7000 "normal" lines, the complete code with third party modules minified is about 400 KB.
 
-It does offer numerous powerfull and easy possibilities to access anonymizer networks or create your own and do whatever you like inside them. It's really fast and much faster than whatever exists today.
-
-Then we are a bit concerned about what people could do with it, that's why it's not public for now.
+The minified version will be public, the complete version might be public when we have time to work on it and possibly replace some modules by built-in ones (like WebCrypto, TextEncoder/Decoder, etc)
 
 ##js OP : Anonymous peer to peer download inside browsers and distributed database inside browsers (torrent like but better and safe)
 
