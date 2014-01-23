@@ -61,7 +61,7 @@ The minified version is public, the complete version might be public when we hav
 
 ####It will be of course compatible with popular CDNs such as MEGA.
 
-####Before reading what follow you might want to take a look at the screenshots here: [Peersm demo](http://www.peersm.com)
+####Before reading what follow you might want to take a look at the video here: [Peersm demo](http://www.peersm.com)
 
 The configuration can be summarized as follow:
 
@@ -232,7 +232,7 @@ If you encounter installation problems, you might look at :
 	https://github.com/joyent/node/issues/3504 (python)
 	https://github.com/joyent/node/issues/3516 (node.js)
 	
-####Windows installation : you must wait for now, please see here why and how to proceed if you really want to install it on windows http://dailyjs.com/2012/05/17/windows-and-node-3/
+####Windows installation : everything is in javascript now, so this should work on windows too, not tested.
 
 To launch it, you need to be in the lib directory (some small inconvenient that will be fixed) :
 
