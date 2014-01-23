@@ -11,7 +11,7 @@ And try:
 
 Key: 00112233445566778899aabbccddeeff
 
-The minified code is in min directory.
+The minified code is in the min directory.
 
 Example of implementations:
 
@@ -27,15 +27,11 @@ This is an unofficial and extended implementation of the Tor (or Tor like) proto
 
 ####The most challenging goals are now to put the OP and the OR inside the browsers.
 
-####It's done for the OP, see latest screenshots here (Peersm/OR DB): http://www.peersm.com
-
-####It's already quite fast while no optimization efforts have been made.
+####It's done for the OP, see http://www.peersm.com
 
 Now we can envision the OR inside the browsers too.
 
-This repository is a subset of the complete version, the complete version is stable but not public for now, see below "Why is the complete version not public?" and "node-Tor Status".
-
-See live test possibility in section "Tests".
+The src directory is a subset of the complete version, the complete version is stable but only the minified code is public, see below "Why is the complete version not public?" and "node-Tor Status".
 
 ## Why is the complete version not public?
 
@@ -43,7 +39,7 @@ See live test possibility in section "Tests".
 
 Speechless to say that it's a huge and complicate work, but javascript's magic makes that the complete code is only about 7000 "normal" lines, the complete code with third party modules minified is about 400 KB.
 
-The minified version will be public, the complete version might be public when we have time to work on it and possibly replace some modules by built-in ones (like WebCrypto, TextEncoder/Decoder, etc)
+The minified version is public, the complete version might be public when we have time to work on it and possibly replace some modules by built-in ones (like WebCrypto, TextEncoder/Decoder, etc)
 
 ##js OP : Anonymous peer to peer download inside browsers and distributed database inside browsers (torrent like but better and safe)
 
@@ -206,7 +202,7 @@ Studies are ongoing to implement the OR-DB inside browsers too.
 
 ## Tests : 
 
-See the demo video on [Peersm] (http://www.peersm.com), the beta release will be available begining of January 2014.
+See the demo video on [Peersm] (http://www.peersm.com), the first release is available.
 
 ## Install :
 
@@ -442,7 +438,7 @@ If you like this project you can contact us and/or possibly donate : contact at 
 
 ## Some words :
 
-The recent disparition of Aaron Swartz was a shock for us as for everybody. We did not know each other but exchanged a few emails where he suggested briefly just "to implement all of Tor in JavaScript" while our intent at that time was only to access the network using server side javascript. Apparently Aaron meant to put it inside the browser recognizing a kind of technical challenge. With this idea in mind we did node-Tor and came up with iAnonym for the browser implementation, Aaron was aware of part of the result, hopefully this might help serving the causes he defended that we support too.
+The disparition of Aaron Swartz begining of 2013 was a shock for us as for everybody. We did not know each other but exchanged a few emails where he suggested briefly just "to implement all of Tor in JavaScript" while our intent at that time was only to access the network using server side javascript. Apparently Aaron meant to put it inside the browser recognizing a kind of technical challenge. With this idea in mind we did node-Tor and came up with iAnonym and Peersm for the browser implementation, Aaron was aware of part of the result, hopefully this might help serving the causes he defended that we support too.
 
 
 
