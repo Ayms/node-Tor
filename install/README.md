@@ -21,7 +21,8 @@ Launch Peersm client:
 
 	node /home/me/node-Tor-min.js /home/peersm/ 2
 
-The first argument is your directory
+The first argument is your directory.
+
 The second argument is your available bandwidth (here 2 MBytes/s)
 
 Each file that you put into the peersm directory will become something like:
@@ -64,11 +65,12 @@ Launch the Bridge:
 	node /home/me/node-Tor-min.js /home/bridge/ -P 80
 
 The first argument is your directory.
+
 The second argument is the port used for WebSockets, 80 is recommended but you can put another value if it is already used.
 
 Test it:
 
-	open http://peersm.com/peersm#IP:port
+	With your browser, open http://peersm.com/peersm#IP:port
 
 Where IP is the IP address of your machine and port the one that you have given as the second argument.
 
