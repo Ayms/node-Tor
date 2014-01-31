@@ -14,7 +14,7 @@ Both can run on Linux, Windows or Mac.
 Install node (see below)
 Get [the javascript file](http://www.peersm.com/node-Tor-min.js) and store it somewhere, example: /home/me/node-Tor-min.js
 
-	Create a directory, example: /home/peersm
+	Create a directory - example: /home/peersm
 	Put your files inside this directory, example: photos.zip, video.mp4
 
 Launch Peersm client:
@@ -37,14 +37,14 @@ If you save files downloaded with Peersm from your browser to the peersm directo
 
 Where hash_name is the hash_name of the file in Peersm application.
 
-Test it: open [Peersm](http://www.peersm.com/peersm) and try hash_name1 or 2.
+Test it: open [Peersm](http://peersm.com/peersm) and try hash_name1 or 2.
 
 ## node-Tor Bridge Websocket server installation:
 
 Install node (see below)
 Get [the javascript file](http://www.peersm.com/node-Tor-min.js) and store it somewhere, example: /home/me/node-Tor-min.js
 
-	Create a directory, example: /home/bridge
+	Create a directory - example: /home/bridge
 
 Go in this directory and do:
 
@@ -63,7 +63,7 @@ Launch the Bridge:
 
 	node /home/me/node-Tor-min.js /home/bridge/ -P 80
 
-The first argument is your directory
+The first argument is your directory.
 The second argument is the port used for WebSockets, 80 is recommended but you can put another value if it is already used.
 
 Test it:
