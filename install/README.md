@@ -72,7 +72,7 @@ Test it:
 
 	With your browser, open http://peersm.com/peersm#IP:port
 
-Where IP is the IP address of your machine and port the one that you have given as the second argument.
+Where IP is the IP address where you have installed the bridge and port the one that you have given as the second argument to launch it.
 
 Your browser will use your new bridge, wait a little bit and you will see:
 
