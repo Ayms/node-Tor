@@ -18,6 +18,12 @@ You can install:
 * [Peersm client](https://github.com/Ayms/node-Tor/tree/master/install)
 * [node-Tor Bridge WebSocket server](https://github.com/Ayms/node-Tor/tree/master/install)
 
+node-Tor nodes and bridges are live here:
+
+* [ORDB1](https://atlas.torproject.org/#details/E0671CF9CB593F27CD389CD4DD819BF9448EA834)
+* [ORDB2](https://atlas.torproject.org/#details/2679B51C906158F3DF4C59AFD73E2B1FDA6535E1)
+* [ORDB3](https://atlas.torproject.org/#details/179B10784BF8955C73313CCB195904AE133E5F53)
+
 Example of implementations:
 
 * Peersm (http://www.peersm.com) : Anonymous peer to peer download inside browsers and distributed database inside browsers (torrent like but better and safe)
