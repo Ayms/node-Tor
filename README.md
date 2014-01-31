@@ -11,7 +11,12 @@ And try:
 
 Key: 00112233445566778899aabbccddeeff
 
-The minified code is in the min directory.
+The minified code for browsers is in the min directory.
+
+You can install:
+
+* [Peersm client](https://github.com/Ayms/node-Tor/tree/master/install)
+* [node-Tor Bridge WebSocket server](https://github.com/Ayms/node-Tor/tree/master/install)
 
 Example of implementations:
 
@@ -37,7 +42,7 @@ The src directory is a subset of the complete version, the complete version is s
 
 ####The complete version does include the OP and OR parts, websocket protocol extension, socks proxy interface + all communication interfaces for both (tcp, http, tls, websockets), the OP inside the browser (+ everything that is required : crypto, websocket, array buffer) and proxy auto config mechanisms.
 
-Speechless to say that it's a huge and complicate work, but javascript's magic makes that the complete code is only about 7000 "normal" lines, the complete code with third party modules minified is about 400 KB.
+Speechless to say that it's a huge and complicate work, but javascript's magic makes that the complete code is only about 7000 "normal" lines, the complete code with third party modules minified is about 350 KB.
 
 The minified version is public, the complete version might be public when we have time to work on it and possibly replace some modules by built-in ones (like WebCrypto, TextEncoder/Decoder, etc)
 
