@@ -92,7 +92,7 @@ Send us the IP:port of the bridge so we can add it into the Bridges list and oth
 
 	http://www.peersm.com/node-Tor-min.js (358 KB)
 
-	Execute the msi file to install node, node will install to C:/Program Files/nodejs
+	Execute the msi file to install node, node will be installed in C:/Program Files/nodejs
 
 	Create a peersm directory in C:/Program Files/nodejs/node_modules
 
