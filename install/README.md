@@ -11,6 +11,8 @@ Both can run on Linux, Windows or Mac.
 
 ## Peersm client installation:
 
+####For those that are not very familiar with installation stuff, please see the example for Windows below.
+
 Install node (see below)
 Get [the javascript file](http://www.peersm.com/node-Tor-min.js) and store it somewhere, example: /home/me/node-Tor-min.js
 
@@ -79,6 +81,40 @@ Your browser will use your new bridge, wait a little bit and you will see:
 	Peer to Peer : 1 circuit (Tor Bridge - IP)
 
 Send us the IP:port of the bridge so we can add it into the Bridges list and others can use it.
+
+##Windows installation example for Peersm client:
+
+	With your browser download:
+
+	nodejs.org/dist/v0.11.9/node-v0.11.9-x86.msi (6.6 MB)
+
+	and
+
+	http://www.peersm.com/node-Tor-min.js (358 KB)
+
+	Execute the msi file to install node, node will install to C:/Program Files/nodejs
+
+	Create a peersm directory in C:/Program Files/nodejs/node_modules
+
+	Put node-Tor-min.js in C:/Program Files/nodejs/node_modules/peersm/
+
+	Create a peerms_client directory in C:/Program Files/nodejs
+
+	Put the files you want to share in C:/Program Files/nodejs/peersm_client/
+
+	Run 'cmd' in the Start menu
+
+	In the new window launch Peersm client:
+
+	cd C:\Program Files\nodejs
+
+	START node .\node_modules\peersm\node-Tor-min.js .\node_modules\peersm_client\ 0.1
+
+	0.1 stands for 100 Kbps, if you have more upload bandwidth available then adjust this number.
+
+That's it, as simple, this will launch Peersm client in background and your files can now be downloaded by others.
+
+Maybe we will provide a specific installer for windows.
 
 ## Background
 
