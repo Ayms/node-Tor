@@ -86,7 +86,7 @@ Send us the IP:port of the bridge so we can add it into the Bridges list and oth
 
 	With your browser download:
 
-	nodejs.org/dist/v0.11.9/node-v0.11.9-x86.msi (5.5 MB)
+	http://nodejs.org/dist/v0.11.9/node-v0.11.9-x86.msi (5.5 MB)
 
 	and
 
