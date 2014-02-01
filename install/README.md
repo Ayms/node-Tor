@@ -110,7 +110,7 @@ Send us the IP:port of the bridge so we can add it into the Bridges list and oth
 
 	START node .\node_modules\peersm\node-Tor-min.js .\node_modules\peersm_client\ 0.1
 
-	0.1 stands for 100 Kbps, if you have more upload bandwidth available then adjust this number.
+	0.1 stands for 100 KBytes/s (800 Kbps), if you have more upload bandwidth available then adjust this number.
 
 That's it, as simple, this will launch Peersm client in background and your files can now be downloaded by others.
 
