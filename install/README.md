@@ -49,7 +49,7 @@ Get [the javascript file](http://www.peersm.com/node-Tor-min.js) and store it so
 
 	Create a directory - example: /home/bridge
 
-Go in this directory and do:
+Go into this directory and do:
 
 	openssl genrsa -out priv-key.pem 1024
 	openssl rsa -in priv-key.pem -pubout > pub-key.pem
