@@ -68,11 +68,21 @@ Launch the Bridge:
 
 The first argument is your directory.
 
-The second argument is the port used for WebSockets, 80 is recommended but you can put another value if it is already used.
+The second argument is the port used for WebSockets, 80 or 443 are recommended but you can put another value if they are already used.
 
 Test it:
 
 	With your browser, open http://peersm.com/peersm#IP:port
+
+	If you are behind a NAT, you must activate the port forwarding so the bridge can be accessed from the internet.
+
+	If Peersm can not connect to your bridge, probably the port forwarding is not working, you can test locally that the bridge is running:
+
+	Open your browser on localhost 127.0.0.1
+
+	With the Web console, do: new WebSocket('ws://127.0.0.1:port')
+
+	If you don't get an error, the bridge is running, you can check the logs too in the debug-prod.txt file.
 
 Where IP is the IP address where you have installed the bridge and port the one that you have given as the second argument to launch it.
 
