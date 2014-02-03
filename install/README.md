@@ -74,9 +74,9 @@ Test it:
 
 	With your browser, open http://peersm.com/peersm#IP:port
 
-	If you are behind a NAT, you must activate the port forwarding so the bridge can be accessed from the internet, it depends on your equipment but the overall procedure is usually the same, you can look at [Set-Up Port Forwarding on a Router](http://www.wikihow.com/Set-Up-Port-Forwarding-on-a-Router).
+If you are behind a NAT, you must activate the port forwarding so the bridge can be accessed from the internet, it depends on your equipment but the overall procedure is usually the same, you can look at [Set-Up Port Forwarding on a Router](http://www.wikihow.com/Set-Up-Port-Forwarding-on-a-Router).
 
-	If Peersm can not connect to your bridge, probably the port forwarding is not working, you can test locally that the bridge is running:
+If Peersm can not connect to your bridge, probably the port forwarding is not working, you can test locally that the bridge is running:
 
 	Open your browser on localhost 127.0.0.1
 
