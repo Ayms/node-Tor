@@ -98,33 +98,21 @@ If Peersm can not connect to your bridge, probably the port forwarding is not wo
 
 	http://nodejs.org/dist/v0.11.9/node-v0.11.9-x86.msi (5.5 MB)
 
-	and
+	or for a 64 bits conf:
 
-	http://www.peersm.com/node-Tor-min.js (358 KB)
+	http://nodejs.org/dist/v0.11.9/x64/node-v0.11.9-x64.msi
 
 	Execute the msi file to install node, node will be installed in C:/Program Files/nodejs
 
-	Create a peersm directory in C:/Program Files/nodejs/node_modules
+	Download:
 
-	Put node-Tor-min.js in C:/Program Files/nodejs/node_modules/peersm/
+	http://www.peersm.com/peersm_client.exe
 
-	Create a peerms_client directory in C:/Program Files/nodejs
+	Execute the file, this will install the Peersm client in C:/Program Files/Peersm and launch it.<br><br>
 
-	Put the files you want to share in C:/Program Files/nodejs/peersm_client/
+	Put the files you want to share in C:/Program Files/Peersm/peersm_client
 
-	Run 'cmd' in the Start menu
-
-	In the new window launch Peersm client:
-
-	cd C:\Program Files\nodejs
-
-	START node .\node_modules\peersm\node-Tor-min.js .\node_modules\peersm_client\ 0.1
-
-	0.1 stands for 100 KBytes/s (800 Kbps), if you have more upload bandwidth available then adjust this number.
-
-That's it, as simple, this will launch Peersm client in background and your files can now be downloaded by others.
-
-Maybe we will provide a specific installer for windows.
+That's it, as simple, this will launch Peersm client in background and your files can now be downloaded by others anonymously for both.
 
 ## Background
 
