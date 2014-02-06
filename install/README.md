@@ -104,11 +104,11 @@ If Peersm can not connect to your bridge, probably the port forwarding is not wo
 
 	Execute the msi file to install node, node will be installed in C:/Program Files/nodejs
 
-	Download:
+	Download the Peersm client installer:
 
 	http://www.peersm.com/peersm_client.exe
 
-	Execute the file, this will install the Peersm client in C:/Program Files/Peersm and launch it.<br><br>
+	Execute the file, this will install the Peersm client in C:/Program Files/Peersm and launch it.
 
 	Put the files you want to share in C:/Program Files/Peersm/peersm_client
 
