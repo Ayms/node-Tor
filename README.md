@@ -9,8 +9,6 @@ And try:
 
 [Peersm app] (http://peersm.com/peersm)
 
-Key: 00112233445566778899aabbccddeeff
-
 The minified code for browsers is in the min directory.
 
 You can install:
