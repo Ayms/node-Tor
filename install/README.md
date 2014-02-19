@@ -25,7 +25,7 @@ Launch Peersm client:
 
 The first argument is your directory.
 
-The second argument is your available bandwidth (here 2 MBytes/s)
+The second argument is your available upload bandwidth (here 2 MBytes/s), this is the bandwidth you allow other peers to have when downloading things from your Peersm client.
 
 Each file that you put into the peersm directory will become something like:
 
