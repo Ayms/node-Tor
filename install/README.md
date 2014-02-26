@@ -7,7 +7,7 @@ If you want to run a Tor Bridge implementing the WebSocket interface, ie a Tor a
 
 Both can run on Linux, Windows or Mac.
 
-####The installation is quite simple: just nodejs and one js file working for both - node-Tor-min.js v0.1.0 - SHA1: 6c4f572e05d581ce24f24e1842e403c66f3d133e.
+####The installation is quite simple: just nodejs and one js file working for both - node-Tor-min.js v0.1.0 - SHA1: 305ead703dd18752345e901b030522ee99643c57.
 
 ## Peersm client installation:
 
