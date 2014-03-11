@@ -38,11 +38,11 @@ This is an unofficial and extended implementation of the Tor (or Tor like) proto
 
 ####This is done, see the 3 phases of [Peersm project](http://www.peersm.com) to achieve this.
 
-## Complete anonymous serverless P2P inside browsers - Peersm specs
-
 ## License:
 
 Only the initial code in the lib directory is under the MIT license. The complete minified versions are public but under no license for now.
+
+## Complete anonymous serverless P2P inside browsers - Peersm specs
 
 #### Architecture (with servers):
 
