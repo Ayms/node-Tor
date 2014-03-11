@@ -24,7 +24,7 @@ node-Tor nodes and bridges are live here:
 
 Example of implementations:
 
-* Peersm (http://www.peersm.com) : Anonymous peer to peer download inside browsers and distributed database inside browsers (torrent like but better and safe)
+* Peersm (http://www.peersm.com) : Anonymous P2P serverless system inside browsers, no installation, encrypted and untrackable
 
 * iAnonym :Anonymity into your browser everywhere from any device, see https://www.github.com/Ayms/iAnonym and http://www.ianonym.com
  
@@ -36,194 +36,195 @@ This is an unofficial and extended implementation of the Tor (or Tor like) proto
 
 ####The most challenging goals are now to put the OP and the OR inside the browsers.
 
-####It's done for the OP, see http://www.peersm.com
+####This is done, see the 3 phases of [Peersm project](http://www.peersm.com) to achieve this.
 
-Now we can envision the OR inside the browsers too.
+## Complete anonymous serverless P2P inside browsers - Peersm specs
 
-The src directory is a subset of the complete version, the complete version is stable but only the minified code is public, see below "Why is the complete version not public?" and "node-Tor Status".
+## License:
 
-## Why is the complete version not public?
+Only the initial code in the lib directory is under the MIT license. The complete minified versions are public but under no license for now.
 
-####The complete version does include the OP and OR parts, websocket protocol extension, socks proxy interface + all communication interfaces for both (tcp, http, tls, websockets), the OP inside the browser (+ everything that is required : crypto, websocket, array buffer) and proxy auto config mechanisms.
+#### Architecture (with servers):
 
-Speechless to say that it's a huge and complicate work, but javascript's magic makes that the complete code is only about 7000 "normal" lines, the complete code with third party modules minified is about 350 KB.
+									--- Node2 --- Node3 --- ORDB1
+									--- Node5 --- Node6 --- ORDB2
+	A (the peer)---	Node/Bridge(ws)	...
+									--- Nodey --- Nodez --- ORDBw
 
-The minified version is public, the complete version might be public when we have time to work on it and possibly replace some modules by built-in ones (like WebCrypto, TextEncoder/Decoder, etc)
+			----- ORDB2
+	ORDB1	....
+			----- ORDBn
 
-##js OP : Anonymous peer to peer download inside browsers and distributed database inside browsers (torrent like but better and safe)
+#### Final Architecture (serverless):
 
-####This section does explain the OR-DB mechanisms to download files from the internet or peer to peer from browsers anonymously. You don't need to install anything since the entry point to the anonymizer network is the javascript OP inside your browser.
+									--- A1(Peer + Node) --- A2(Peer + Node) --- A3(Peer + ORDB)
+	A(Peer + Node + ORDB)	webRTC	...
+			|						--- Z1(Peer + Node) --- Z2(Peer + Node) --- Z3(Peer + ORDB)
+			ws (direct download)
+			|
+			Bridge --- Nodea --- Nodeb --- Web site
 
-####The js implementation is using HTML5/latest Web APIs: WebSocket, indexedDB, File API, Workers, createObjectURL and probably later WebCrypto.
+Each peer is implementing the Tor protocol (Onion proxy and Onion router) and the ORDB function.
 
-####Use of WebRTC for real peer to peer is being studied, the ORDB would then handle anonymously signaling only, see Peersm (http://www.peersm.com), signaling is used to tell the other parties how they can be reached, this must be hidden to the ORDB that could easily do the man in the middle here, so a secure protocol must be put in place between peers, to adverise how they can be reached, and to exchange data, the issue is: which one and how?
+If a peer is new (A), he can know how to connect to other peers asking to some servers that know about the peers.
 
-####The usual trivial question is how can you be sure that the js OP code loaded by the browser from our site is trustable? It is if you use https with our site combined with the excellent [Interception Detector] (http://www.ianonym.com/intercept.html) or Content Security Policy mechanisms such as nonces. Or simply if the system has set some own protections, see 'Uses, privacy and security' below.
+If the servers are blocked, the peer introduction can be performed by other means : mirror servers or social networks, A just needs to know about one peer first.
 
-####The OR-DB does act like an Exit Node except that it does only relay data from one browser to another.
+Some facilitators implementing as background processes what the browsers are doing keep the peers alive and advertise their presence.
 
-####The OR-DB does not know to whom it is talking to and does not know what data it is relaying, it only knows to which anonymized streams it has to relay data, and only knows the hash identifying the source of data, not it's real name.
+Once connected to the first peer, A asks about the other peers and establish circuits with them, A decides which other peers are going to do the ORDBs, A establishes 10 circuits.
 
-####Browsers are implementing the javascript anonymizing module to access the anonymizer network (js OP) and connect to the anonymizer network using WebSockets. The anonymizer network is the Tor network or a Tor-like.
+The ORDBs tests A circuit every 5 mn.
 
-####So, unlike Torrents, nobody knows what you are doing, therefore you can not be tracked and/or caught.
+A does not test the circuits toward the ORDBs, so it's possible that it sends something that never reaches the destination (to modify ?)
 
-####It will be of course compatible with popular CDNs such as MEGA.
+A kills its circuits every hour if they are not used to renew the anonymizer nodes.
 
-####Before reading what follow you might want to take a look at the video here: [Peersm demo](http://www.peersm.com)
+A sends to the ORDBs precisely what it has: db_info 'abcd',N,nb,size,type --> I have chunks N (0 if A has all the chunks) to N+nb of hash_name 'abcd' whose total size is size (0 for a continuous stream) and type MIME-type, the list is maintained by OR_files['abcd'][N] variable and OR_stream['abcd'][N] for a continuous stream. If A does not know the size the parameters size and type are missing in the request. If N is 0, OR_files['abcd'][1 to Nb chunks] is populated.
 
-The configuration can be summarized as follow:
+The ORDBs are peers too, so they are connected to other ORDBs, they tell them globally what they know other peers have: 'abcd',size,type, the list is maintained by OR_ORDB['abcd'] variable.
 
-	[Browser 1] <-- Websocket1-1 (ephemeral for direct download)		--> 	OR1-1 	<--> OR1-2 	<--> OR1-3 <--> Web site
-				<-- Websocket1-2 (permanent for peer to peer download)	-->		OR1-1b	<--> OR1-2b	<--> OR-DB
-	[Browser 2] <-- Websocket2-1 (ephemeral for direct download)		--> 	OR2-1 	<--> OR2-2 	<--> OR2-3 <--> Web site
-				<-- Websocket2-2 (permanent for peer to peer download)	-->		OR2-1b	<--> OR2-2b	<--> OR-DB
+Chunk size : 15936 B (32x498 B, util payload of Tor protocol cells of 512 B).
 
-Each active browser has one permanent circuit/stream established with each OR-DB in the network, and some circuits established with exit nodes.
+A stores the received chunks every block and advertises the ORDBs for each chunk.
 
-In a future version the browser could have only one permanent circuit/stream established with only one OR-DB and other circuits with other OR-DBs could be establisehd on demand dynamically.
+A advertises the ORDBs of what they have when a file is uploaded too.
+
+Window size: 1035840 B - 65 blocks
+
+A requests abcd :
+
+* A selects 5 ORDBs among the 10 he is connected to.
+
+* GET [hash_name][Chunk nb][Nb of chunks][Counter] --> 'abcd' N n 0
+
+* 5 GET on 5 circuits : GET1 1 (1-13), GET2 2 (14-26), GET3 3 (27-39),GET4 4 (40-52),GET5 5 (53-65)
+
+* If the size of the file is less than 65 blocks, the ORDBs close the requests.
+
+* The ORDB receives the request:
+
+	* If the counter is equal to 5, send db_end (to avoid loops between ORDBs)
+
+		* For m in N to N+n
+
+			* The ORDB checks OR_files['abcd'][m] if it exists, the result is an array of [circ,size,type]
 			
-RELAY_DB_INFO streams are used by browsers to tell the OR-DB what files they have.
+				* if the result exists, the ORDB chooses the first one that has a valid circuit (and remove from the lists those that are not valid) and sends the request, the circuit is removed from the list and put at the end.
 
-A file is represented by a link (https://www.download.com/file), which can be an internet link or generated by the system if this is a file that you have stored/uploaded yourself inside your browser.
+				* if the result does not exist
 
-This link is processed to get a unique reference called a "Hash_name" below.
+					* if chunk nb is 0, the ORDB checks OR_Stream['abcd'], the result is an array of chunks indexes.
 
-So there are public hash_names (derived from the downloading link) and private ones for the files that you have uploaded yourself inside your browser, others don't know them unless you give them the hash_names.
+						* if the result exists, the ORDBs chooses the index M of number of elements of the result minus 4 times the window size, the result is an array of [circ,type]
 
-Files are stored inside your browser using IndexedDB. Files are stored keeping reference to the file length so if an unexpected event does occur or someone closes his browser during the download, the transfer can be resumed from another source.
+							* The ORDB chooses the first one that has a valid circuit and send the request 'abcd' N 0, A will know N in the db_data answer, the ORDB removes the first from the list and put it at the end.
 
-This does allow several users to stream files simultanously too.
+					* if chunk nb is not 0
 
-The index for storing the files is the hash of the file, so if you download several time the same file with different hash_name (from different locations for example), only one will be stored with a hash_name corresponding to the latest one downloaded.
-			
-RELAY_DB_INFO streams payload is a number of n:
-* Hash_name Length	[1 byte]
-* Hash_name			[Hash_name Length bytes]
-* Hash_file Length	[1 byte]
-* Hash_file			[Hash_file Length bytes]
-* File_size Length	[1 byte]
-* File_size			[Size Length bytes]
-* Operation			[1 byte] //0:removed, 1 added
+						* the ORDB checks OR_Stream['abcd'][chunk nb], the result is an array of [circ,type]
 
-while [CELL_LEN - n*(Hash Lenght+Hash Length bytes+Size Length+Size Lenght bytes) - 14 bytes]>0
+							* if the result exists, the ORDB chooses the first one that has a valid circuit and send the request 'abcd' N 0, the ORDB removes the first from the list and put it at the end.
 
-When receiving a RELAY_DB_INFO stream, the OR-DB does associate the files information to the socket/CIC/Stream where it has been received (Files[Hash]=Array([Socket,CIC,Stream,nb]) where nb is the number of current files being served.
+							* if the result does not exist
 
-RELAY_DB_QUERY (forward and backward) streams payload is :
-* Hash_name Length			[1 byte]
-* Hash_name					[Hash Length bytes]
-* Bytes_available_length 	[1 byte]
-* Bytes_available			[Bytes_available_length]
-* Transaction_id			[16 bytes]
+								* the ORDB checks OR_ORDB, the result is an array of circ
 
-The initiating OP has chosen a streamId1 to send the RELAY_DB_QUERY message that will be used to stream data if the operation is successfull.
+									* if one corresponds, the ORDB chooses the first one that has a valid circuit and sends the request with the counter incremented, remove it from the list and put it at the end.
 
-When receiving a RELAY_DB_QUERY stream the OR-DB looks if it can associate it to a socket,CIC,Stream choosing the one having the lowest nb, generates a Transaction_id (associated to the incoming socket/CIC/stream) and then send it forward.
+									* if no result, send db_end.
 
-Note that the Bytes_available field is for the receiver to advertise how many bytes he already has for this file (in case a download was interrupted), the sender will get this information and resume the download from this number of bytes.
+* Note: if for example only one peer has the requested chunks, all the requests will finally end up to him since the ORDBs will send the requests to one of the ORDBs he is connected to.
 
-When receiving a RELAY_DB_QUERY stream, the browser does respond with a:
+* A computes tm for every GETm, the time between the request (db_query) and the answer (db_connected). Average 250ms so 31250 B if rate of 1 Mbps, 2 blocks.
 
-(1) RELAY_DB_CONNECTED stream if it can serve the file:
-* Transaction_id		[16 bytes]
-* File_size Length		[1 byte] 
-* File_size 			[File_size Length bytes]
-* File_type Length		[2 bytes] 
-* File_type 			[File_type Length bytes]
+* A computes the effective rate for each GETm.
 
-The browser has chosen a streamId2 to reply, the OR_DB does associate streamId2 to StreamId1. 
+* A wait for the two first GET to end and sends next request on the circuit that showed the best rate, then next one on the second that has the best rate and idem for each finished requests.
 
-RELAY_DB_CONNECTED is sent backward to streamId1 (without Transaction_id) - The OR_DB increments nb. The browser receiving RELAY_DB_CONNECTED does not try to download the file connecting to an exit node and waits for data.
+* A computes now for each requests sent when he must send a new GET using tm and the effective rate (for example A will compute that he must send a new GET after having received the 10th block)
 
-The browser starts sending RELAY_DB_DATA streams on streamId2:
-* data
+* It's a bit approximative since the ORDB is rotating the peers by putting them at the end of the lists each time they are used, we suppose that the delay is more related to the connexion between A and the ORDBS.
 
-When receiving RELAY_DB_DATA streams, the OR_DB sends backward the RELAY_DB_DATA stream to StreamId1.
+* If the value is superior to 13 blocks, A sends a new GET after the 10th block.
 
-When download is finished, nb is decremented.
+* And so on.
 
-If incoming stream is destroyed, the OR_DB sends a RELAY_DB_END stream forward with Reason INCOMING_STREAM_DESTROYED and decrements nb.
+* If a circuit has a too slow rate compared to others (slow node in the path), it is destroyed and replaced by one of the 5 circuits not used, a new tenth circuit is established.
 
-If upcoming stream is destroyed, the OR_DB sends a RELAY_DB_END stream backward with Reason RESET if it can find another browser to serve the file or Reason UPCOMING_STREAM_DESTROYED
+* If a GET does not end it is resumed from where it was.
 
-(2) RELAY_DB_END stream if it can not serve the file:
-* Transaction_id	[16 bytes]
-* Reason		[1 byte]
+#### Handling the lists in the ORDBs:
 
-with Reason set to UNAVAILABLE.
+OR_files['abcd'][N] an array of : [circ,size,type] where circ is a circuit with a peer, N the chunk number, size the total size, type the MIME-type of the file.
 
-When receiving a RELAY_DB_END stream, the OR_DB looks if another browser can serve the file (limited to NB_DB attempts), then restarts the process, if not sends it backward (with payload set at Reason only).
+OR_files is used for files or finished streaming.
 
-When receiving a RELAY_DB_END stream, the receiving browser tries downloading the file connecting to an exit node if Reason is not RESET (and reset the file being dowloaded if it was the case) or reset the file being downloaded if Reason is RESET and waits for new data.
+OR_streams['abcd'][N] an array of : [circ,type] where circ is a circuit with a peer, size the total size, type the MIME-type of the file.
 
-The receiver can stop a download sending a RELAY_DB_END to the sender relayed by the ORDB, in that case the partial data downloaded so far will be stored in indexedDB at the receiver side, he will be able to resume the download later.
+OR_streams is used for continuous streaming
 
-It is possible to stream the file too (video, etc) while it is being downloaded.
+OR_ORDB['abcd'] an array of : [circ] where circ is a circuit with an ORDB
 
-#####Flow control: 
+If 'abcd' is a continuous streaming, peers and ORDBs periodically remove chunks older than 4 times the window size (4143360 B)
 
-The sender does monitor its available bandwidth and does provide 50% of its bandwidth to the receivers, so 50%/(receivers nb) for each receiver, both sender and receiver are updating a window associated to the stream that they are using to exchange data, the sender does decrement the window size by 1 for each packet received and waits for a RELAY_DB_SENDME message from the receiver if the window size drops to 0 before reinitializing the window size and sending data again. The receiver does the same and send a RELAY_DB_SENDME each time the window size comes under 80% of the initial window size.
+The peers do not advertise the ORDBs of the removed chunks and the ORDBs do not update the lists if circuits break, this is to avoid to continuously sort the lists.
 
-This is assuming that half of the sender upload bandwidth is the minimal bandwidth available in all the path between the sender and the receiver, it might not be the case since some nodes in the path might have a lower bandwidth, in that case the sender's or receiver's circuit with the ORDB is destroyed to get another one performing better.
+The lists are always manipulated as the same object, no copy/duplication/clone
 
-#####Hash_names management:
+#### Streaming:
 
-Hash_names are used to identify a download. If the file was originally downloaded from the web, hash_name is the hash of the link (public), if the file was uploaded inside the browser, hash_name is a hash provided by the system (private). So the same file can have different hash_name which will split the traffic better than having a unique reference like its hash for all the same files, and which makes more difficult for some potential observers to know what files you have. The hash information of a file does allow to detect if a file was not modified for malicious reasons.
+Add a stream button.
 
-A name is associated to the file, for http://aaa.com/myfile.ext (public) the name is myfile.ext, for private references the name is a random string (in that case you are advised to rename it with a more intuitive name and a correct file extension) or the name of the file that was uploaded inside the browser. For private references you must provide to the receivers the hash_name and the file extension since they can not know the file extension after they have downloaded it, they only know the type of the file but this might not be enough to use it correctly (open, save, etc).
+Continuous Streaming:
 
-You can encrypt files too that you have downloaded or uploaded, in that case the name of the encrypted file will become name.ext.enc, the system will keep reference to the initial type of the file and store the file in indexedDB as a binary file. The sender must provide to receivers the hash_name, the encryption key and the extension of the file. While downloading an encrypted file the receiver will receive the initial type of the file so he can decrypt it and store it with the right format (but nothing else since the ORDB must not know any other information about the files that it is relaying), then he can open/save it using the extension provided by the sender.
+* Connection to the stream: http://mytv.fr hash_name efgh
 
-The type of a file is used for consistency reasons when storing a file in indexedDB, but senders can change the real type of the file if they don't want the ORDB to be aware of it.
+* Direct download if nobody has chunks for efgh.
 
-So, basically, people must exchange information to download private and/or encrypted files, by usual means (blogs, emails, sms, etc).
+* A saves chunks from 0.
 
-#####Bandwidth:
+* ...
 
-Since the ORDBs are relaying the traffic, they can handle a certain number of users depending on their bandwidth. Ideally the ORDBs could only handle the signaling with the same protocol described above to connect peers, the traffic will then go between these peers without involving the ORDBs any longer, see below, technically this is not feasible today in a way that preserves anonymity.
+* TODO: how to correlate chunks Nbs with the source if we must reconnect to it?
 
-For now, only "seeders" (those that have a complete file) can advertise a complete file they have, so unlike torrents or other systems, a peer does not connect to several seeds/peers to download pieces of the file but to only one seeder, this might be reconsidered if necessary but since the connection to each pear goes through the anonymizer network, each path created has some latency (and possible instability) and therefore the gain of using several paths is dubious compared to the one of using only one, at least this is the result for now of some of our previous experiments, like loading web pages resources with numerous circuits works worse than loading them with a retsricted number of (good) circuits. But if a download stopped (unexpectedly or by your action), you will be able to resume it from where it stopped.
+#### Messages format:
 
-#####Uses, privacy and security:
+DB_QUERY [hash_name length 1B][hash_name][Chunk nb length 1B][Chunk nb][nb chunks length 1B][nb chunks][Counter 0 to 5 1B][file info optional 1B value 1]
 
-As explained several times above, the system does not know what you are doing and what files you have personnaly, it only knows what files are available and how to connect two anonymous peers to retrieve them. The ORDB could store what is is relaying (which it is not doing) but this would require a lot of storage and this is at the end of no use (in case of law enforcement or other) since it does not know who own the files and who downloaded them, and it can not trivially know for a monitored file what it is. In addition you can encrypt the files so the ORDB has no way to know what the files are about.
+DB_CONNECTED removed
 
-That's up to you to disclose the hash_names and the keys for what you want to make available to others, in a public or a private manner. The intent of the system is not to do strange things but can be as simple as sending photos to the family without having to put them on a third party site that you don't know what they will do with it, or sending them over the network in a normal way while you don't know whom is eventually sniffing the network.
+DB_DATA
+* answer to file_info 1:[size length 1B][file size][type length 1B][MIME-type][chunk nb length 1B][chunk nb][end 0 or 1 1B][data]
+* answer to no file_info: [end 0 or 1 1B][chunk nb length 1B][chunk nb][data]
 
-You will get a code and a key from our system, we don't ask/keep any information about you, except an email address.
+* the end field is used in case the requester does not know the total size of the file (unlikely but it can happen)
 
-The code is used to access the service with the URL http://peersm.com/code, http not https because of [[Bug 917829] Security error when trying to set a non SSL/TLS Websocket from a https page](https://bugzilla.mozilla.org/show_bug.cgi?id=917829)
+DB_INFO
+	[hash_name length][hash_name][chunk length][chunk nb][nb of chunks length][nb of chunks][size length][size][type length][type]
 
-The first time you use it you will have to copy/paste the key when the system asks for it, then it will be stored inside your browser storage so you don't have to enter it each time.
+DB_INFO_ORDB
+	[hash_name length][hash_name][size length][size][type length][type]
 
-You must never disclose your code or your key, the key is never sent over the network and is used to check the integrity of the application (ie to check that no malicious code has been injected), for security reasons we do not detail what the application does exactly with the key, someone reversing the code can find it but let's not make it too easy, anyway even if this is known it's difficult and unlikely to break. 
+DB_PEER_REQUEST
+	[nb of peers length][nb of peers]
 
-We can not prevent you from hacking yourself if you like (for example to retrieve your key from the browser storage), so you must take care that other people do not access your computer.
+DB_PEER_ANSWER (variable length message)
+	[nb of peers length][nb of peers][list of [IP length][IP][Port length][Port][fingerprint length][fingerprint][modulus length][modulus]]
 
-Your code identifies your local database too, this is protecting you somewhere since you are responsible for what you are storing and for what you are sharing, this code uniquely indexes your own local data in case of unexpected events like law enforcement on your computer.
-
-Unlike torrents, usual direct downloads, WebRTC projects, the system does defeat any attempt from a third party to know what you are doing. 
-
-#####Others:
-
-Studies are ongoing to implement the OR-DB inside browsers too.
+DB_END
+	[Reason 1B]
+		0 UNAVAILABLE
+		1 FINISHED (aborted by requesting party)
+		2 DESTROYED (destroyed by serving party)
 
 ## Tests : 
 
 See the demo video on [Peersm] (http://www.peersm.com), the first release is available.
 
-## Install :
+## Install (initial version in lib directory) :
 
 Install node.js on supported platforms : Unix, Windows, MacOS
-
-For the record, you need the following to run node-Tor :
-
-	node.js version >= v0.7.5 (getDiffieHelman function needed)
-	openssl version >= 1.0.1 (aes counter mode encryption required - evp_aes_128_ctr)
-	python >= 2.6 (node.js's requirement)
-	
-####Current release of node.js is v0.10.x with openSSL 1.0.1e (at last...)
 	
 Then as usual :
 
@@ -240,194 +241,20 @@ If you encounter installation problems, you might look at :
 	https://github.com/joyent/node/issues/3574 (openssl)
 	https://github.com/joyent/node/issues/3504 (python)
 	https://github.com/joyent/node/issues/3516 (node.js)
-	
-####Windows installation : everything is in javascript now, so this should work on windows too, not tested.
 
 To launch it, you need to be in the lib directory (some small inconvenient that will be fixed) :
 
 	node node-tor.js
 
-## Tor Network principles :
-
-Specifications of the Tor protocol and associated protocols are available here : https://www.torproject.org/docs/documentation.html.en (Design documents and official repository source tree).
-
-As a simplified summary, the Tor network is composed of Onion Proxys (OP) and Onion Routers (OR). The OP is usually located on the device that your are using to establish communications (ie on your PC for example), because communications between the application sending the instructions to the OP and the OP are not always protected. While operating, the OP does maintain a file retrieved from the Directory nodes giving it what it needs to know about the ORs to establish circuits.
-
-To establish a connection, the OP does choose a path of n ORs (the first one being theorically a Guard node, the last one being an Exit node), creates a circuit with the first OR, and then extends the circuit with each OR choosen in the path consecutively via each OR, communications between the ORs and the OP are encrypted several time along the path (onion skin) with the keys negociated with each ORs, each OR only knows the preceding and next OR along the path and can not understand a content that is not addressed to him.
-
-The Exit OR does decrypt the content, establish a TCP connection with the target server and send the instructions received (get HTTP, etc)
-
-The ORs are maintaining onion RSA keys to negociate the different keys needed for the communications with the OP, these keys are rotated once a week and the directory servers are updated by the ORs accordingly.
-
-The OP is maintaining different circuits inside the Tor Network in order to be able to quickly switch from a circuit to another.
-	
 ## node-Tor Goals and possible Future :
-
-####There are numerous possibilities mentioned below and in the introduction, the most challenging ones are to put the OP and the OR inside the browsers, it's done for the OP, now it has to be worked for the OR.
 
 The intent of this project is to provide Tor mechanisms in a web language, so it might open the Tor (or Tor like) network to web languages interfaces.
 
-It is easier to install and to scale, does not depend on specific applications and can interact with js modules, then it is possible to easily build web/js applications on top of it (chat, etc).
-
-Implementation of the OP/OR part directly into the browser is ongoing, see http://www.ianonym.com and https://www.github.com/Ayms/iAnonym .
-
-This could possibly federate the different Tor (or Tor like) projects and Tor (or Tor like) Browser Bundle into one unique code (OP, OR, Tor controller, TorButton, vidalia, tor2web, privoxy,etc)
-
-Beside anonymity, node-Tor can have other multiple uses, for example it can be used to access services in a way that the service providers can not detect you based on the requests that you are sending (see Related projects below), more to come.
+It is easy to install and to scale, does not depend on specific applications and can interact with js modules, then it is possible to easily build web/js applications on top of it (chat, etc).
 
 node-Tor's nodes can be used to create complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, it can be used to create separated Tor like networks.
-
-## node-Tor Status :
-
-This repo code source is showing a working subset version implementing the OP part, it can not be used as such.
-
-It does allow to establish n connections with the ORs, then n circuits for each connection and n streams for each circuit. In practice only a few connections and circuits are supposed to be opened, then traffic is streamed along these few circuits.
-
-The complete version does implement the OP and OR parts extended with the Websocket protocol extension (see below), it is stable and can be tested (see the "Tests" section), it is not public for now, please contact us for more information. 
-
-## node-Tor OP :
-
-Unlike Tor project, node-Tor does not maintain and parse a file containing all information about all routers.
-
-The OP does retrieve real-time periodically a trustable list of working Guards, Relays and Exit nodes running the script ./lib/build-relays_and_dirs2.js periodically which creates the guards.js, relays.js and exit.js files used by node-Tor to select the ORs. The script does some testing to check that the ORs are alive and responding correctly and retrieve the required information for routers : {fingerprint-OR_IP:OR_port-bandwidth-DIR_IP:DIR_PORT-Onion_RSA_PUBLIC_KEY}
-
-Node-Tor OP does support the V3 handshake with Guards, if Tor project's Guards are used, their release must be >= 0.2.3.6, the script mentioned above does select it automatically.
-
-Instructions to the OP can be sent via :
-
-	socks v5 proxy : you can configure your browser to use socks proxy with server:port where is installed the OP
-	websosckets : directly or via socks proxy
-	direct proxy (not recommended) : establish TCP connection with the OP and send the requests 
-	
-Socks requests are passed transparently, websockets and direct proxys can send usual HTTP GET requests for example or specific customized requests to pass parameters that you need to node-Tor, see below.
-
-## node-Tor OP options (subset) :
-
-* OP_port : OP TCP port (used for SOCKS proxy, websockets through SOCKS proxy, direct websockets and direct proxys) or OR websocket server port (see WS_OP_SOCKS below)
-* OR_port : OR port for TLS connections
-* OR_wsport : OR port for OR websocket server (see WS_OP below)
-* OP : true indicates that this is an OP request (same code is used for OP and OR)
-* OR and OR_f : OR request, backward and forward (_f)
-* host : destination server (server_address:port)
-* nb_hop : number of hops for a circuit, default 3, max 5
-* one_c : see next section
-* one_OR : first OR in the path when set, otherwise the first OR is randomely choosen
-* WS_OP : if true the OP communicates with the OR via direct websockets, the OR implements a WS server
-* WS_OP_SOCKS : if true the OP communicates with the OR using websockets via SOCKS proxy, the OR implements a TCP/SOCKS server,non websocket socks proxy messages are relayed to the OP via websockets over socks proxy
-* WS_OP and WS_OP_SOCKS are exclusive
-* anonym : if true switch to ArrayBuffers and iAnonym processing, see [Ayms/iAnonym](https://github.com/Ayms/iAnonym) and [Ayms/node-typedarray](https://github.com/Ayms/node-typedarray)
-* NB / CIRC_KA: number of circuits kept alive permanently and renewed every CIR_KA time
-* privkey : OR private key
-* window :  switch to ArrayBuffers instead of node.js's buffers (default is true)
-* window_browser : switch to js cryptography instead of node.js's one (true for the OP inside the browser, false for the OR)
-
-For now the certificates used for TLS connections with Guards are files in ./lib and can be generated as indicated here http://nodejs.org/api/tls.html. It will be generated dynamically.
-	
-## node-Tor OP circuits :
-
-If the one_c option is "true", the OP will open a few circuit and stream all incoming streams along these circuits, if "false" the OP will create a circuit for each stream, which takes more resources and is much longer.
-
-If one_c is true, the OP does establish and change circuits randomly, a certain number of circuits are always kept alive and renewed periodically, datas are streamed along these circuits randomely.
-
-See https://gitweb.torproject.org/torspec.git?a=blob_plain;hb=HEAD;f=path-spec.txt and https://www.torproject.org/docs/faq.html.en#EntryGuards and links (security issues regarding path creation, in theory the exit node should be fixed too).
-
-## node-Tor OP security :
-
-As explained above the communications between the application and the OP can be seen at the OP level, or between the application and the OP (except if you are using https or such encrypted protocol between the application and the target, see below), therefore you should normally insure that the OP is installed at a place that you are the only one to be able to access, and a place where the application is supposed to be too since communications with both can be intercepted.
-
-If you are using https or such specific encrypted protocol, the communications between the application and the OP (via the socks proxy protocol), as well as between the exit node and the target one can not be seen.
-
-## node-Tor OP response time :
-
-node-Tor OP is doing its best to create circuits as fast as possible, as soon as it does not receive the answer from a given router within an acceptable timeframe, the OP switches instantly to another one.
-
-## node-Tor OR and OP :
-
-Extended with the Websocket protocol extension (RELAY_WS and RELAY_ASSOCIATE):
-
-This is specific to [Ayms/iAnonym](https://github.com/Ayms/iAnonym).
-
-Cells :
-
-	--- New :
-	120 -- CREATE_FAST_WS
-	121 -- CREATED_FAST_WS
-	
-	Variable-length command values are:
-	7 -- VERSIONS    (Negotiate proto version) (See Sec 4)
-	128 -- VPADDING  (Variable-length padding) (See Sec 7.2)
-	129 -- CERTS     (Certificates)            (See Sec 4.2)
-	130 -- AUTH_CHALLENGE (Challenge value)    (See Sec 4.3)
-	131 -- AUTHENTICATE (Client authentication)(See Sec 4.5)
-	132 -- AUTHORIZE (Client authorization)    (Not yet used)
-	--- New :
-	190 -- RELAY_WS
-
-Streams :
-
-	The relay commands are:
-	1 -- RELAY_BEGIN     [forward]
-	2 -- RELAY_DATA      [forward or backward]
-	3 -- RELAY_END       [forward or backward]
-	4 -- RELAY_CONNECTED [backward]
-	5 -- RELAY_SENDME    [forward or backward] [sometimes control]
-	6 -- RELAY_EXTEND    [forward]             [control]
-	7 -- RELAY_EXTENDED  [backward]            [control]
-	8 -- RELAY_TRUNCATE  [forward]             [control]
-	9 -- RELAY_TRUNCATED [backward]            [control]
-	10 -- RELAY_DROP      [forward or backward] [control]
-	11 -- RELAY_RESOLVE   [forward]
-	12 -- RELAY_RESOLVED  [backward]
-	13 -- RELAY_BEGIN_DIR [forward]
-	--- New :
-	40 -- RELAY_ASSOCIATE
-	41 -- RELAY_WS
-	42 -- RELAY_INFO
-
-RELAY_WS cells act the same as RELAY cells but with a variable length (limited to 65535 bytes) allowing to transfer larger amount of data over the websocket interface more efficiently , they are used to transport RELAY_WS streams.
-
-RELAY_WS and RELAY_ASSOCIATE streams are only exchanged between the OP and first OR.
-
-RELAY_WS cells, RELAY_WS and RELAY_ASSOCIATE streams are only used in the context of [Ayms/iAnonym](https://github.com/Ayms/iAnonym) project, for normal websocket streaming between the OP and the OR the usual RELAY cells are used.
-
-RELAY_ASSOCIATE streams are sent with RELAY cells, their payload is just : [fake_domain], while receiving a RELAY_ASSOCIATE stream on circuit CID, the OR does associate fake_domain to CID, this circuit will be dedicated for the OP and OR to stream RELAY_WS cells. CID is a specific circuit that only exists between the OP and the OR (ie is not extended). The OR might send to the OP a RELAY_ASSOCIATE stream too (see "Notes" in Details [iAnonym](https://www.ianonym.com) ), in that case the OP must close the page, generate a new fake_domain and restart the process.
-
-RELAY_WS streams payload is :
-* Length  [2 bytes]
-* Addr    [Length bytes]
-* Request [CELL_LEN - Length bytes - 14 bytes]
-
-Where Addr and Request are :
- 
-from the OR : 
-* Addr :	socks_request_remoteAddress:socks_request_remotePort:socks_request_connexion_port:socks_request_id
-* Request :	socks_request_message (incoming from browser)
-
-If Request is empty, the OR will end the associated socks request.
-
-from the OP :
-* Addr :	socks_request_remoteAddress:socks_request_remotePort
-* Request :	socks_request_message (responses from network)
- 
-RELAY_WS cells are behaving exactly as RELAY cells in terms of encryption and hash, they are transported over the websocket interface and therefore encoded with the websocket protocol.
-
-The non specific iAnonym signaling traffic (circuit creation, RELAY[RELAY_BEGIN, RELAY_CONNECTED, RELAY_DATA]) is transported over the websocket interface too between the OP and first OR using different circuits than CID. Since the fake_domain is common to all urls, the browser will try to stream the requests opening only a few socks connections, the OP will stream the traffic with already relay_connected streams for the real hostname associated to the fake_domain and open new connections if the real host is different.
-
-CREATE_FAST_WS and CREATED_FAST_WS are the same as CREATE_FAST and CREATED_FAST except that X (OP to OR) is encrypted with the public onion key of the OR and Y (OR to OP) is encrypted with aes-128-ctr and the 16 first bytes of X. This is because secure websocket (wss) can not be used between the browser and the OR since the OR certificates are not valid, this does prevent that someone gets in clear X and Y. This is used only to set CID above and will be removed when RSA OAEP and Diffie-Hellman are available inside the browser, see below, then the fast circuit creation cells will not be used any longer.
-
-RSA OAEP and Diffie-Hellman are not implemented inside the browser for now. So as a temporary mechanism the RELAY_INFO streams are used to get from the OR the computation of RSA OAEP and DH, RELAY_INFO streams are transported (encrypted) with RELAY_WS cells over CID :
-
-				OP request                    OR response
-	[01][ID 16 bytes][public modulus] - [ID][X_length][X][Onion]
-	[02][ID 16 bytes][Y]              - [ID][DH secret(X,Y)]
-	
-The ID is randomely generated and identifies a transaction.
-
-The OR knows the secret keys but does not know for what circuits/ORs in the path, but it's not impossible to correlate, therefore this will be removed as soon as RSA OAEP and DH are available inside the browser.
 	
 ## Related projects :
-
-http://www.ianonym.com
 
 * [Ayms/iAnonym](https://github.com/Ayms/iAnonym)
 * [Interception Detector](http://www.ianonym.com/intercept.html)
@@ -443,7 +270,7 @@ node-Tor can advantageously be coupled with :
 
 ## Support/Sponsors :
 
-If you like this project you can contact us and/or possibly donate : contact at ianonym.com or via PayPal.
+If you like this project you can contact us and/or possibly donate : contact at peersm.com or via PayPal.
 
 ## Some words :
 
