@@ -40,9 +40,30 @@ This is an unofficial and extended implementation of the Tor (or Tor like) proto
 
 ## License:
 
-Only the initial code in the lib directory is under the MIT license. The complete minified versions are public but under no license for now.
+Only the initial code in the lib directory is under the MIT license.
 
-## Complete anonymous serverless P2P inside browsers - Peersm specs
+The complete minified versions are subject to the following modified MIT license for now (which removes the rights to modify, merge, sublicense, and sell):
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, publish, and/or distribute copies of the Software, and to permit
+persons to whom the Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+## Anonymous serverless P2P inside browsers - Peersm specs
 
 #### Architecture (with servers):
 
@@ -66,21 +87,21 @@ Only the initial code in the lib directory is under the MIT license. The complet
 
 Each peer is implementing the Tor protocol (Onion proxy and Onion router) and the ORDB function.
 
-If a peer is new (A), he can know how to connect to other peers asking to some servers that know about the peers.
+If a peer is new (A), it can know how to connect to other peers asking to some servers that know about the peers.
 
 If the servers are blocked, the peer introduction can be performed by other means : mirror servers or social networks, A just needs to know about one peer first.
 
-Some facilitators implementing as background processes what the browsers are doing keep the peers alive and advertise their presence.
+Some facilitators running as background processes are doing the same than browsers in order to keep some peers alive and to share files if the peers close their browsers. They can run on PC, Mac, servers and ADSL boxes/routers.
 
-Once connected to the first peer, A asks about the other peers and establish circuits with them, A decides which other peers are going to do the ORDBs, A establishes 10 circuits.
+Once connected to the first peer, A asks about the other peers and establishes circuits with them, A decides which other peers are going to be the anonymizer nodes and the ORDBs, A establishes 10 P2P circuits with the ORDBs.
 
-The ORDBs tests A circuit every 5 mn.
+The ORDBs test A circuits every 5 mn.
 
 A does not test the circuits toward the ORDBs, so it's possible that it sends something that never reaches the destination (to modify ?)
 
 A kills its circuits every hour if they are not used to renew the anonymizer nodes.
 
-A sends to the ORDBs precisely what it has: db_info 'abcd',N,nb,size,type --> I have chunks N (0 if A has all the chunks) to N+nb of hash_name 'abcd' whose total size is size (0 for a continuous stream) and type MIME-type, the list is maintained by OR_files['abcd'][N] variable and OR_stream['abcd'][N] for a continuous stream. If A does not know the size the parameters size and type are missing in the request. If N is 0, OR_files['abcd'][1 to Nb chunks] is populated.
+A sends to the ORDBs precisely what it has: db_info 'abcd',N,nb,size,type --> I have chunks N (0 if A has all the chunks) to N+nb of hash_name 'abcd' whose total size is size (0 for a continuous stream) and type MIME-type, the list is maintained by OR_files['abcd'][N] variable and OR_stream['abcd'][N] for a continuous stream. If A does not know the size, the parameters size and type are missing in the request. If N is 0, OR_files['abcd'][1 to Nb chunks] is populated.
 
 The ORDBs are peers too, so they are connected to other ORDBs, they tell them globally what they know other peers have: 'abcd',size,type, the list is maintained by OR_ORDB['abcd'] variable.
 
@@ -92,7 +113,7 @@ A advertises the ORDBs of what they have when a file is uploaded too.
 
 Window size: 1035840 B - 65 blocks
 
-A requests abcd :
+A requests 'abcd' :
 
 * A selects 5 ORDBs among the 10 he is connected to.
 
@@ -100,7 +121,7 @@ A requests abcd :
 
 * 5 GET on 5 circuits : GET1 1 (1-13), GET2 2 (14-26), GET3 3 (27-39),GET4 4 (40-52),GET5 5 (53-65)
 
-* If the size of the file is less than 65 blocks, the ORDBs close the requests.
+* If the size of the file is less than 65 blocks, the ORDBs close the useless requests.
 
 * The ORDB receives the request:
 
@@ -136,7 +157,7 @@ A requests abcd :
 
 * Note: if for example only one peer has the requested chunks, all the requests will finally end up to him since the ORDBs will send the requests to one of the ORDBs he is connected to.
 
-* A computes tm for every GETm, the time between the request (db_query) and the answer (db_connected). Average 250ms so 31250 B if rate of 1 Mbps, 2 blocks.
+* A computes tm for every GETm, the time between the request (db_query) and the answer (db_data). Example: 250ms so 31250 B if rate of 1 Mbps, 2 blocks.
 
 * A computes the effective rate for each GETm.
 
@@ -217,6 +238,7 @@ DB_END
 		0 UNAVAILABLE
 		1 FINISHED (aborted by requesting party)
 		2 DESTROYED (destroyed by serving party)
+		3 DO_NOT_RETRY
 
 ## Tests : 
 
