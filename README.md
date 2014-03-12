@@ -71,6 +71,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 									--- Node5 --- Node6 --- ORDB2
 	A (the peer)---	Node/Bridge(ws)	...
 									--- Nodey --- Nodez --- ORDBw
+									--- Node --- Node --- Web site
+									...
+									--- Node --- Node --- Web site
 
 			----- ORDB2
 	ORDB1	....
