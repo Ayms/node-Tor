@@ -24,7 +24,7 @@ node-Tor nodes and bridges are live here:
 
 Example of implementations:
 
-* Peersm (http://www.peersm.com) : Anonymous P2P serverless system inside browsers, no installation, encrypted and untrackable
+* Peersm (http://www.peersm.com) : Anonymous P2P serverless network inside browsers, no installation, encrypted and untrackable
 
 * iAnonym :Anonymity into your browser everywhere from any device, see https://www.github.com/Ayms/iAnonym and http://www.ianonym.com
  
@@ -32,11 +32,11 @@ Example of implementations:
 
 This is an unofficial and extended implementation of the Tor (or Tor like) protocol (Onion Proxy and Onion Router) which anonymizes communications via the Tor (or Tor like) network. This allows to simply connect to the Tor (or Tor like) network and use it, as well as creating and adding nodes into the network, creating complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, it can be used to create separated Tor like networks.
 
-####There are numerous possibilities of uses for node-Tor
+There are numerous possibilities of uses for node-Tor
 
-####The most challenging goals are now to put the OP and the OR inside the browsers.
+**The most challenging goals are now to put the OP and the OR inside the browsers.**
 
-####This is done, see the 3 phases of [Peersm project](http://www.peersm.com) to achieve this.
+**This is done, see the 3 phases of [Peersm project](http://www.peersm.com) to achieve this.**
 
 ## License:
 
@@ -191,7 +191,7 @@ If 'abcd' is a continuous streaming, peers and ORDBs periodically remove chunks 
 
 The peers do not advertise the ORDBs of the removed chunks and the ORDBs do not update the lists if circuits break, this is to avoid to continuously sort the lists.
 
-The lists are always manipulated as the same object, no copy/duplication/clone
+The lists are always manipulated as the same objects, no copy/duplication/clone
 
 #### Streaming:
 
