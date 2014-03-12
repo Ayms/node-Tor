@@ -107,7 +107,7 @@ Some facilitators running as background processes are doing the same than browse
 
 A connects to one of them (CREATE) and sends a FIND_NODE [ID, modulus], it receives up to 8 peers [ID,IP,port,modulus] closest to it. Then it does this (CREATE + FIND_NODE) to closer and closer nodes until it cannot find any closer or until it has at least 6 circuits. When A has 6 circuits it continues to discover the peers the same way just sending a FIND_NODE message.
 
-Each peer connected to A adds A in its routing table.
+Each peer connected to A adds A in its routing table (Note: if CREATE is used A must send its fingerprint and modulus too)
 
 The first 5 peers will act as the ORDBs.
 
