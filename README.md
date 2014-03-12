@@ -78,44 +78,60 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #### Final Architecture (serverless):
 
-									--- A1(Peer + Node) --- A2(Peer + Node) --- A3(Peer + ORDB)
-	A(Peer + Node + ORDB)	webRTC	...
-			|						--- Z1(Peer + Node) --- Z2(Peer + Node) --- Z3(Peer + ORDB)
+													--- A1(Peer + Node + ORDB)
+	A(Peer + Node + ORDB)	(webRTC + Tor protocol)	...
+			|										--- Z1(Peer + Node + ORDB)
 			ws (direct download)
 			|
 			Bridge --- Nodea --- Nodeb --- Web site
 
 Each peer is implementing the Tor protocol (Onion proxy and Onion router) and the ORDB function.
 
-If a peer is new (A), it can know how to connect to other peers asking to some servers that know about the peers.
+Each peer generates a public/private key, its fingerprint (or ID) is the hash of the DER format of its public key. In what follows 'modulus' is the modulus of the public key.
+
+Peers are implementing a Kadmelia DHT using their IDs (160 bits), each routing table is composed of 160 buckets of 8 peers max where for bucket j 2^j <=distance(peer,other peer)< 2^(j+1)
+
+If a peer is new (A), it can know how to connect to other peers asking to some servers (the WebSocket bridges used for direct download) that know about the peers.
 
 If the servers are blocked, the peer introduction can be performed by other means : mirror servers or social networks, A just needs to know about one peer first.
 
 Some facilitators running as background processes are doing the same than browsers in order to keep some peers alive and to share files if the peers close their browsers. They can run on PC, Mac, servers and ADSL boxes/routers.
 
-Once connected to the first peer, A asks about the other peers and establishes circuits with them, A decides which other peers are going to be the anonymizer nodes and the ORDBs, A establishes 10 P2P circuits with the ORDBs.
+A connects to one of them (CREATE) and sends a FIND_NODE [ID,public key modulus], it receives back up to 8 peers [ID,IP,port,modulus] closest to it. Then it does this (CREATE + FIND_NODE) to closer and closer nodes until it cannot find any closer or until it has at least 6 circuits. When A has 6 circuits it continues to discover the peers the same way just sending a FIND_NODE message.
 
-The ORDBs test A circuits every 5 mn.
+Each peer connected to A adds A in its routing table.
 
-A does not test the circuits toward the ORDBs, so it's possible that it sends something that never reaches the destination (to modify ?)
+The first 5 peers will act as the ORDBs.
 
-A kills its circuits every hour if they are not used to renew the anonymizer nodes.
+The peers can leave the network without telling the others (the peer closes his browser for example), so peers are testing the peers they know with a PING every 15mn (question: how many peers in average in bittorrent routing tables?). They associate to each peer its live time and sort the bucket from the older to the newer, if the bucket is full no new peer can be added.
 
-A sends to the ORDBs precisely what it has: db_info 'abcd',N,nb,size,type --> I have chunks N (0 if A has all the chunks) to N+nb of hash_name 'abcd' whose total size is size (0 for a continuous stream) and type MIME-type, the list is maintained by OR_files['abcd'][N] variable and OR_stream['abcd'][N] for a continuous stream. If A does not know the size, the parameters size and type are missing in the request. If N is 0, OR_files['abcd'][1 to Nb chunks] is populated.
+If a peers disconnects from A, A will establish a new circuit (CREATE) with a peer randomely chosen taking the first one of the selected bucket.
+
+A sends to the ORDBs precisely what it has: db_info 'abcd',N,nb,size,type --> I have chunks N (0 if A has all the chunks) to N+nb of hash_name 'abcd' whose total size is size (0 for a continuous stream) and type MIME-type.
+
+The list is maintained by OR_files['abcd'][N] variable and OR_stream['abcd'][N] for a continuous stream.
+
+If A does not know the size, the parameters size and type are missing in the request.
+
+If N is 0, OR_files['abcd'][1 to Nb chunks] is populated.
 
 The ORDBs are peers too, so they are connected to other ORDBs, they tell them globally what they know other peers have: 'abcd',size,type, the list is maintained by OR_ORDB['abcd'] variable.
-
-Chunk size : 15936 B (32x498 B, util payload of Tor protocol cells of 512 B).
 
 A stores the received chunks every block and advertises the ORDBs for each chunk.
 
 A advertises the ORDBs of what they have when a file is uploaded too.
 
+Each time A has a new hash_name 'abcd' it sends a STORE message ['abcd',ID,IP,port,modulus] to the closest node from the hash_name.
+
+Then the closest node sends the same STORE message to the closest node it knows from the hash_name.
+
+Chunk size : 15936 B (32x498 B, util payload of Tor protocol cells of 512 B).
+
 Window size: 1035840 B - 65 blocks
 
 A requests 'abcd' :
 
-* A selects 5 ORDBs among the 10 he is connected to.
+* A selects 5 ORDBs among the (at least) 6 he is connected to.
 
 * GET [hash_name][Chunk nb][Nb of chunks][Counter] --> 'abcd' N n 0
 
@@ -153,7 +169,11 @@ A requests 'abcd' :
 
 									* if one corresponds, the ORDB chooses the first one that has a valid circuit and sends the request with the counter incremented, remove it from the list and put it at the end.
 
-									* if no result, send db_end.
+									* if no result, the ORDB sends a FIND_VALUE ['abcd'] to the 4 closest peer from 'abcd'.
+										* as soon as it receives a [ID,IP,port,modulus] answer it connects to the node ID (CREATE) and inserts the new circuit in OR_ORDB['abcd']
+										* if the answer is a list of nodes (8 max), these are nodes closest from 'abcd' for the queried node, it continues to send FIND_VALUE['abcd'] to these nodes and implement the same process on reply.
+
+									The reason to do this is to avoid that the download is performed only from the first peer discovered that has the value.
 
 * Note: if for example only one peer has the requested chunks, all the requests will finally end up to him since the ORDBs will send the requests to one of the ORDBs he is connected to.
 
@@ -171,7 +191,7 @@ A requests 'abcd' :
 
 * And so on.
 
-* If a circuit has a too slow rate compared to others (slow node in the path), it is destroyed and replaced by one of the 5 circuits not used, a new tenth circuit is established.
+* If a circuit has a too slow rate compared to others (slow node in the path), it is destroyed and replaced by one of the circuits not used, a new circuit is established.
 
 * If a GET does not end it is resumed from where it was.
 
@@ -226,12 +246,6 @@ DB_INFO
 
 DB_INFO_ORDB
 	[hash_name length][hash_name][size length][size][type length][type]
-
-DB_PEER_REQUEST
-	[nb of peers length][nb of peers]
-
-DB_PEER_ANSWER (variable length message)
-	[nb of peers length][nb of peers][list of [IP length][IP][Port length][Port][fingerprint length][fingerprint][modulus length][modulus]]
 
 DB_END
 	[Reason 1B]
