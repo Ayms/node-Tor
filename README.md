@@ -76,7 +76,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 	ORDB1	....
 			----- ORDBn
 
-#### Final Architecture (serverless):
+#### Final Architecture (serverless for P2P / WS Bridges for direct download):
 
 													--- A1(Peer + Node + ORDB)
 	A(Peer + Node + ORDB)	(webRTC + Tor protocol)	...
