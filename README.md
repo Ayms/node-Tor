@@ -83,11 +83,19 @@ OTHER DEALINGS IN THE SOFTWARE.
 			|										--- Z1(Peer + Node + ORDB)
 			ws (direct download)
 			|
-			Bridge --- Nodea --- Nodeb --- Web site
+			Bridge 	--- Nodea --- Nodeb --- Web site
+					...
+					--- Nodey --- Nodez --- Web site
 
 Each peer is implementing the Tor protocol (Onion proxy and Onion router) and the ORDB function.
 
+Option 1:
+
 Each peer generates a public/private key, its fingerprint (or ID) is the hash of the DER format of its public key. In what follows 'modulus' is the modulus of the public key.
+
+Option 2:
+
+Each peer generates its ID (160 bits). In what follows 'modulus' does not apply and CREATE is a CREATE_FAST.
 
 Peers are implementing a Kadmelia DHT using their IDs (160 bits), each routing table is composed of 160 buckets of 8 peers max where for bucket j 2^j <=distance(peer,other peer)< 2^(j+1)
 
@@ -97,7 +105,7 @@ If the servers are blocked, the peer introduction can be performed by other mean
 
 Some facilitators running as background processes are doing the same than browsers in order to keep some peers alive and to share files if the peers close their browsers. They can run on PC, Mac, servers and ADSL boxes/routers.
 
-A connects to one of them (CREATE) and sends a FIND_NODE [ID,public key modulus], it receives back up to 8 peers [ID,IP,port,modulus] closest to it. Then it does this (CREATE + FIND_NODE) to closer and closer nodes until it cannot find any closer or until it has at least 6 circuits. When A has 6 circuits it continues to discover the peers the same way just sending a FIND_NODE message.
+A connects to one of them (CREATE) and sends a FIND_NODE [ID, modulus], it receives up to 8 peers [ID,IP,port,modulus] closest to it. Then it does this (CREATE + FIND_NODE) to closer and closer nodes until it cannot find any closer or until it has at least 6 circuits. When A has 6 circuits it continues to discover the peers the same way just sending a FIND_NODE message.
 
 Each peer connected to A adds A in its routing table.
 
@@ -125,7 +133,11 @@ Each time A has a new hash_name 'abcd' it sends a STORE message ['abcd',ID,IP,po
 
 Then the closest node sends the same STORE message to the closest node it knows from the hash_name.
 
-Chunk size : 15936 B (32x498 B, util payload of Tor protocol cells of 512 B).
+Chunk size : 15936 B (32x498 B, payload of Tor protocol cells of 512 B).
+
+Or for WebRTC :
+
+Chunk size : 996 B (2x498 B, < payload of IP, UDP, DTLS, and SCTP protocols ~1150 B - unreliable mode)
 
 Window size: 1035840 B - 65 blocks
 
