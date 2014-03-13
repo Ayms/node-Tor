@@ -290,11 +290,11 @@ DB_FIND_PEER and DB_FOUND_PEER
 	[hash ID length][ID][IP length][IP][port length][port][modulus length][modulus]
 
 DB_END
-	* [Reason 1B]
-		* 0 UNAVAILABLE
-		* 1 FINISHED (aborted by requesting party)
-		* 2 DESTROYED (destroyed by serving party)
-		* 3 DO_NOT_RETRY
+* [Reason 1B]
+	* 0 UNAVAILABLE
+	* 1 FINISHED (aborted by requesting party)
+	* 2 DESTROYED (destroyed by serving party)
+	* 3 DO_NOT_RETRY
 
 ## Tests : 
 
