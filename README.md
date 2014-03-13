@@ -92,19 +92,27 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 Each peer is implementing the Tor protocol (Onion proxy and Onion router) and the ORDB function.
 
+The standalone js code is loaded using http://peersm.com/peersm or can be installed as a bookmarklet from [standalone](https://github.com/Ayms/node-Tor/tree/master/min)
+
 Each peer generates a public/private key and a corresponding self-signed certificate (ID certificate), its fingerprint (or ID) is the hash of the DER format of its public key. In what follows 'modulus' is the modulus of the public key (128 B).
 
 Note: currently the number of hops for P2P is one so the modulus field does not apply below (because it's used to extend the circuits only and the circuits are never extended for one hop), TBD if one hop is enough or not.
 
 Peers are implementing a Kadmelia DHT using their IDs (160 bits), each routing table is composed of 160 buckets of 8 peers max where for bucket j 2^j <=distance(peer,other peer)< 2^(j+1)
 
+The DHT is not the only discovery means. The peers are communicating precisely what they have to the ORDBs they are connected to, and the ORDBs (as peers) do the same as well as sending globally to the ORDBs they are connected too what they know other peers have, when a reference can not be found the DHT is used.
+
 If a peer is new (A), it can know how to connect to other peers asking to some servers (the WebSocket bridges used for direct download) that know about the peers.
 
-The Websocket bridges can be a Peersm bridge or a Tor bridge.
+The Websocket bridges are a [Peersm bridge](https://github.com/Ayms/node-Tor/tree/master/install), anyone can install one, it can be an official Tor bridge but in that case it will not be able to advertise peers.
+
+Some facilitators (the [Peersm clients](https://github.com/Ayms/node-Tor/tree/master/install)) running as background processes are doing the same than browsers in order to keep some peers alive and to share files if the peers close their browsers. They can run on PC, Mac, servers and ADSL boxes/routers.
+
+A sends to the bridge a DB_FIND_PEER request [A-ID,A-IP,A-port,A-modulus], the bridge registers A and replies with a DB_FOUND_PEER request [ID,IP,port,modulus] of one peer connected to it randomely chosen if any, bridges are not numerous and at least the facilitators are connected to them, so it's unlikely that no peers are connected to a bridge.
 
 If the servers are blocked, the peer introduction can be performed by other means : mirror servers or social networks, A just needs to know about one peer first.
 
-Some facilitators running as background processes are doing the same than browsers in order to keep some peers alive and to share files if the peers close their browsers. They can run on PC, Mac, servers and ADSL boxes/routers.
+For simplification reasons, A can load http://peersm.com/peersm#Bridge_IP:Bridge_port-Peer_IP:Peer_port, simplification because it's not supposed to be very good to have this information in the URL since our server delivering the code will know it, but in that case that's not really sensitive information.
 
 A connects to one of them (CREATE_FAST) and sends a FIND_NODE [ID, modulus], it receives n (<=8) peers (n FOUND messages [ID,IP,port,modulus]) closest to it. Then it does this (CREATE_FAST + FIND_NODE) to closer and closer nodes until it cannot find any closer or until it has at least 6 circuits. When A has 6 circuits it continues to discover the peers the same way just sending a FIND_NODE message.
 
@@ -112,13 +120,15 @@ A adds the peers in its routing table.
 
 Each peer connected to A adds A in its routing table.
 
-The peers connected to A will act as the ORDBs.
+The peers A connected to will act as the ORDBs.
+
+Peers are ORDBs and ORDBs are peers but the two functions should not be mixed, an ORDB getting a request that he (as a peer) can serve directly will not serve it, it will send the request to another peer connected to it that can handle it and relay the message between the requesting and serving peers.
 
 The peers can leave the network without telling the others (the peer closes his browser for example), so peers are testing the peers they know with a PING every 15mn (question: how many peers in average in bittorrent routing tables?). They associate to each peer its live time and sort the bucket from the older to the newer, if the bucket is full no new peer can be added.
 
 If a peer disconnects from A, A will establish a new circuit (CREATE_FAST) with a peer randomely chosen taking the first one of the selected bucket.
 
-A sends to the ORDBs precisely what it has: db_info 'abcd',N,nb,size,type --> I have chunks N (0 if A has all the chunks) to N+nb of hash_name 'abcd' whose total size is size (0 for a continuous stream) and type MIME-type.
+A sends to the ORDBs precisely what it has: db_info 'abcd',N,nb,size,type --> I have chunks N (0 if A has all the chunks) to N+nb of hash_name 'abcd' whose total size is size (0 for a continuous stream) and type MIME-type. ORDBs as peers do the same, they advertise A of what they have.
 
 The list is maintained by OR_files['abcd'][N] variable and OR_stream['abcd'][N] for a continuous stream.
 
@@ -132,15 +142,15 @@ A stores the received chunks every block and advertises the ORDBs for each chunk
 
 A advertises the ORDBs of what they have when a file is uploaded too.
 
-Each time A has a new hash_name 'abcd' it sends a STORE message ['abcd',ID,IP,port,modulus] to the closest node from the hash_name.
+Each time an ORDB has a new hash_name 'abcd' it sends a STORE message ['abcd',ID,IP,port,modulus] to the closest node from the hash_name.
 
-Then the closest node sends the same STORE message to the closest node it knows from the hash_name.
+Then the closest node sends the same STORE message to the closest node it knows from the hash_name, and so on.
 
 Tor protocol cells have a size of 512 B, the payload for streams is 498 B.
 
 Tor protocol handshake is the same as the normal one except that the link certificate used in CERTS cells is the self-signed certificate of the DTLS connection.
 
-To authenticate the remote peer the certificate used for the DTLS connection is signed by the ID private key of the remote peer, A receives this certificate and the ID certificate, it checks that indeed the link certificate is correctly signed, therefore A is sure to talk to the peer with whom it has established the DTLS connection.
+To identify the remote peer the certificate used for the DTLS connection is signed by the ID private key of the remote peer, A receives this certificate and the ID certificate, it checks that indeed the link certificate is correctly signed (as well as the ID certificate), therefore A is sure to talk to the peer with whom it has established the DTLS connection.
 
 Chunk size : 1024 B (2x512 B, < payload of IP, UDP, DTLS, and SCTP protocols ~1150 B - unreliable mode)
 
@@ -158,7 +168,7 @@ A requests 'abcd' :
 
 * The ORDB receives the request:
 
-	* If the counter is equal to 5, send db_end (to avoid loops between ORDBs)
+	* If the counter is equal to TBD (5?), send db_end (to avoid loops between ORDBs)
 
 		* For m in N to N+n
 
@@ -186,19 +196,19 @@ A requests 'abcd' :
 
 									* if one corresponds, the ORDB chooses the first one that has a valid circuit and sends the request with the counter incremented, remove it from the list and put it at the end.
 
-									* if no result, the ORDB sends a FIND_VALUE ['abcd'] to the 4 closest peers from 'abcd'.
+									* if no result, the ORDB sends a FIND_VALUE ['abcd'] to the 4 closest peers from 'abcd':
 
-										* as soon as it receives a [ID,IP,port,modulus] answer it connects to the node ID (CREATE_FAST), inserts the new circuit in OR_ORDB['abcd'] and sends the request.
+									as soon as it receives a [ID,IP,port,modulus] answer it connects to the other ORDB node ID (CREATE_FAST) and sends the request, they advertise both globally of what they have.
 
-										* if the answer is a list of nodes (8 max), these are nodes closest from 'abcd' for the queried node, it continues to send FIND_VALUE['abcd'] to these nodes and implement the same process on reply.
+									if the answer is a list of nodes (8 max), these are nodes closest from 'abcd' for the queried node, it continues to send FIND_VALUE['abcd'] to these nodes and implement the same process on reply.
 
-									The reason to do this is to avoid that the download is performed only from the first peer discovered that has the value.
+									The reason to iterate is to avoid that the download is performed only from the first peer discovered that has the value.
 
 * A computes tm for every GETm, the time between the request (db_query) and the answer (db_data). Example: 250ms so 31250 B if rate of 1 Mbps, 30 blocks.
 
 * A computes the effective rate for each GETm.
 
-* A wait for the two first GET to end and sends next request on the circuit that showed the best rate, then next one on the second that has the best rate and idem for each finished requests.
+* A waits for the two first GET to end and sends next request on the circuit that showed the best rate, then next one on the second that has the best rate and idem for each finished requests.
 
 * A computes now for each requests sent when he must send a new GET using tm and the effective rate (for example A will compute that he must send a new GET after having received the 10th block)
 
@@ -263,6 +273,9 @@ DB_INFO
 
 DB_INFO_ORDB
 	[hash_name length][hash_name][size length][size][type length][type]
+
+DB_FIND_PEER and DB_FOUND_PEER
+	[hash ID length][ID][IP length][IP][port length][port][modulus length][modulus]
 
 DB_END
 	[Reason 1B]
