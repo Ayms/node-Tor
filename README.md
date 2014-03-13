@@ -92,6 +92,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 Each peer is implementing the Tor protocol (Onion proxy and Onion router) and the ORDB function.
 
+The ORDB function consists in relaying the anonymized messages between a Peer A and a Peer B.
+
 The standalone js code is loaded using http://peersm.com/peersm or can be installed as a bookmarklet from [standalone](https://github.com/Ayms/node-Tor/tree/master/min)
 
 Each peer generates a public/private key and a corresponding self-signed certificate (ID certificate), its fingerprint (or ID) is the hash of the DER format of its public key. In what follows 'modulus' is the modulus of the public key (128 B).
@@ -122,7 +124,7 @@ Each peer connected to A adds A in its routing table.
 
 The peers where A connected to will act as the ORDBs.
 
-Peers are ORDBs and ORDBs are peers but the two functions should not be mixed, an ORDB getting a request that he (as a peer) could serve directly will not serve it, it will send the request to another peer connected to it that can handle it and relay the messages between the requesting and serving peers.
+Peers are ORDBs and ORDBs are peers but the two functions should not be mixed, even if it can be confusing since the same code and port are used for both functions, an ORDB getting a request that he (as a peer) could serve directly will not serve it, it will send the request to another peer connected to it that can handle it and relay the messages between the requesting and serving peers.
 
 The peers can leave the network without telling the others (the peer closes his browser for example), so peers are testing the peers they know with a PING every 15mn (question: how many peers in average in bittorrent routing tables?). They associate to each peer its live time and sort the bucket from the older to the newer, if the bucket is full no new peer can be added.
 
@@ -136,7 +138,7 @@ If A does not know the size, the parameters size and type are missing in the req
 
 If N is 0, OR_files['abcd'][1 to Nb chunks] is populated.
 
-The ORDBs are peers too, so they are connected to other ORDBs, they tell them globally what they know other peers have: 'abcd',size,type, the list is maintained by OR_ORDB['abcd'] variable.
+The ORDBs are peers too, so they are connected to other ORDBs, they tell them globally what they know other peers have: 'abcd',size,type, but they do this only when they get a reference from a peer and they know the ORDBs they are connected to don't know it (ie they don't send all their references each time they discover another ORDB in order not to overload the network), the list is maintained by OR_ORDB['abcd'] variable.
 
 A stores the received chunks every block and advertises the ORDBs for each chunk.
 
@@ -174,13 +176,13 @@ A requests 'abcd' :
 
 			* The ORDB checks OR_files['abcd'][m] if it exists, the result is an array of [circ,size,type]
 			
-				* if the result exists, the ORDB chooses the first one that has a valid circuit (and remove from the lists those that are not valid) and sends the request, the circuit is removed from the list and put at the end.
+				* if the result exists, the ORDB chooses the first one that has a valid circuit (and remove from the list those that are not valid) and sends the request, the circuit is removed from the list and put at the end.
 
 				* if the result does not exist:
 
 					* if chunk nb is 0, the ORDB checks OR_Stream['abcd'], the result is an array of chunks indexes.
 
-						* if the result exists, the ORDBs chooses the index M of number of elements of the result minus 4 times the window size, the result is an array of [circ,type]
+						* if the result exists, the ORDBs chooses the index M of number of elements of the result minus 4 times the window size (N), the result is an array of [circ,type]
 
 							* The ORDB chooses the first one that has a valid circuit and sends the request 'abcd' N 0, A will know N in the db_data answer, the ORDB removes the first from the list and put it at the end.
 
@@ -196,9 +198,9 @@ A requests 'abcd' :
 
 									* if one corresponds, the ORDB chooses the first one that has a valid circuit and sends the request with the counter incremented, remove it from the list and put it at the end.
 
-									* if no result, the ORDB sends a FIND_VALUE ['abcd'] to the 4 closest peers from 'abcd':
+									* if no result, the ORDB sends a FIND_VALUE ['abcd'] to the 4 closest peers from 'abcd' it knows:
 
-									as soon as it receives a [ID,IP,port,modulus] answer it connects to the other ORDB node ID (CREATE_FAST), add the new circuit in OR_ORDB['abcd'], increments the counter and sends the request, they advertise both globally what they have.
+									as soon as it receives a [ID,IP,port,modulus] answer it connects to the other ORDB node ID (CREATE_FAST), add the new circuit in OR_ORDB['abcd'], increments the counter and sends the request.
 
 									if the answer is a list of nodes (8 max), these are nodes closest from 'abcd' for the queried node, it continues to send FIND_VALUE['abcd'] to these nodes and implement the same process on reply.
 
