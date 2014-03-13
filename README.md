@@ -94,9 +94,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 	with two layers:
 
 	- the Peers connected to the ORDBs via encrypted links
-	- the ORDBs (that are the peers too) that are talking "bittorrent" but encrypted
+	- the ORDBs (that are the peers too) are talking "bittorrent" but encrypted and
+	are acting as "bittorrent users".
 
-	The peers are anonymized by the other ones in their ORDB function.
+	The peers are anonymized by the "bittorrent users" which are hiding what they are doing
+	an what they have.
 
 Each peer is implementing the Tor protocol (Onion proxy and Onion router) and the ORDB function.
 
