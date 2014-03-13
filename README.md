@@ -210,7 +210,7 @@ A requests 'abcd' :
 
 									* if no result, the ORDB sends a FIND_VALUE ['abcd'] to the 4 closest peers from 'abcd' it knows:
 
-									as soon as it receives a [ID,IP,port,modulus] answer it connects to the other ORDB node ID (CREATE_FAST), add the new circuit in OR_ORDB['abcd'], increments the counter and sends the request.
+									as soon as it receives a [ID,IP,port,modulus] answer it connects to the other ORDB node ID (CREATE_FAST), add the new circuit in OR_ORDB['abcd'], increments the counter and sends the request if not already sent.
 
 									if the answer is a list of nodes (8 max), these are nodes closest from 'abcd' for the queried node, it continues to send FIND_VALUE['abcd'] to these nodes and implement the same process on reply.
 
@@ -262,7 +262,7 @@ Continuous Streaming:
 
 * Direct download if nobody has chunks for efgh.
 
-* A saves chunks from ???
+* A saves chunks from (a value derived from timestamp, something like this???)
 
 * ...
 
