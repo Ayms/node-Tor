@@ -112,7 +112,7 @@ A sends to the bridge a DB_FIND_PEER request [A-ID,A-IP,A-port,A-modulus], the b
 
 If the servers are blocked, the peer introduction can be performed by other means : mirror servers or social networks, A just needs to know about one peer first.
 
-For simplification reasons, A can load http://peersm.com/peersm#Bridge_IP:Bridge_port-Peer_IP:Peer_port, simplification because it's not supposed to be very good to have this information in the URL since our server delivering the code will know it, but in that case that's not really sensitive information.
+For simplification reasons, A can load http://peersm.com/peersm#Bridge_IP:Bridge_port-Peer_IP:Peer_port, simplification because it's not supposed to be very good to have this information in the URL since our server delivering the code will know it, but in that case that's not really a sensitive information.
 
 A connects to one of them (CREATE_FAST) and sends a FIND_NODE [ID, modulus], it receives n (<=8) peers (n FOUND messages [ID,IP,port,modulus]) closest to it. Then it does this (CREATE_FAST + FIND_NODE) to closer and closer nodes until it cannot find any closer or until it has at least 6 circuits. When A has 6 circuits it continues to discover the peers the same way just sending a FIND_NODE message.
 
@@ -120,9 +120,9 @@ A adds the peers in its routing table.
 
 Each peer connected to A adds A in its routing table.
 
-The peers A connected to will act as the ORDBs.
+The peers where A connected to will act as the ORDBs.
 
-Peers are ORDBs and ORDBs are peers but the two functions should not be mixed, an ORDB getting a request that he (as a peer) can serve directly will not serve it, it will send the request to another peer connected to it that can handle it and relay the message between the requesting and serving peers.
+Peers are ORDBs and ORDBs are peers but the two functions should not be mixed, an ORDB getting a request that he (as a peer) could serve directly will not serve it, it will send the request to another peer connected to it that can handle it and relay the messages between the requesting and serving peers.
 
 The peers can leave the network without telling the others (the peer closes his browser for example), so peers are testing the peers they know with a PING every 15mn (question: how many peers in average in bittorrent routing tables?). They associate to each peer its live time and sort the bucket from the older to the newer, if the bucket is full no new peer can be added.
 
@@ -198,7 +198,7 @@ A requests 'abcd' :
 
 									* if no result, the ORDB sends a FIND_VALUE ['abcd'] to the 4 closest peers from 'abcd':
 
-									as soon as it receives a [ID,IP,port,modulus] answer it connects to the other ORDB node ID (CREATE_FAST) and sends the request, they advertise both globally of what they have.
+									as soon as it receives a [ID,IP,port,modulus] answer it connects to the other ORDB node ID (CREATE_FAST), add the new circuit in OR_ORDB['abcd'], increments the counter and sends the request, they advertise both globally what they have.
 
 									if the answer is a list of nodes (8 max), these are nodes closest from 'abcd' for the queried node, it continues to send FIND_VALUE['abcd'] to these nodes and implement the same process on reply.
 
@@ -234,7 +234,7 @@ OR_streams is used for continuous streaming
 
 OR_ORDB['abcd'] an array of : [circ] where circ is a circuit with an ORDB
 
-If 'abcd' is a continuous streaming, peers and ORDBs periodically remove chunks older than 4 times the window size (4143360 B)
+If 'abcd' is a continuous streaming, peers and ORDBs periodically remove chunks older than 4 times the window size.
 
 The peers do not advertise the ORDBs of the removed chunks and the ORDBs do not update the lists if circuits break, this is to avoid to continuously sort the lists.
 
@@ -250,7 +250,7 @@ Continuous Streaming:
 
 * Direct download if nobody has chunks for efgh.
 
-* A saves chunks from 0.
+* A saves chunks from ???
 
 * ...
 
@@ -266,7 +266,7 @@ DB_DATA
 * answer to file_info 1:[size length 1B][file size][type length 1B][MIME-type][chunk nb length 1B][chunk nb][end 0 or 1 1B][data]
 * answer to no file_info: [end 0 or 1 1B][chunk nb length 1B][chunk nb][data]
 
-* the end field is used in case the requester does not know the total size of the file (unlikely but it can happen)
+* the end field is used in case the requester does not know the total size of the file (TBD can it really happen?)
 
 DB_INFO
 	[hash_name length][hash_name][chunk length][chunk nb][nb of chunks length][nb of chunks][size length][size][type length][type]
