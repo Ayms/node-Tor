@@ -93,7 +93,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 	To give a visual representation of the P2P network it is similar to a bittorrent network
 	with two layers:
 
-	- the Peers connected to the ORDBs via encrypted links
+	- the Peers are connected to the ORDBs via encrypted links
 	- the ORDBs (that are the peers too) are talking "bittorrent" but encrypted and
 	are acting as "bittorrent users".
 
