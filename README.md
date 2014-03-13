@@ -90,6 +90,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 					...
 					--- Nodey --- Nodez --- Web site
 
+	To give a visual representation of the P2P network it is similar to a bittorrent network with two layers:
+	- the Peers connected to the ORDBs via encrypted links
+	- the ORDBs (that are the peers too) that are talking "bittorrent" but encrypted
+	The peers are anonymized by the other ones in their ORDB function.
+
 Each peer is implementing the Tor protocol (Onion proxy and Onion router) and the ORDB function.
 
 The standalone js code is loaded using http://peersm.com/peersm or can be installed as a bookmarklet from [standalone](https://github.com/Ayms/node-Tor/tree/master/min)
