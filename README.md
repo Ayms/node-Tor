@@ -92,13 +92,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 Each peer is implementing the Tor protocol (Onion proxy and Onion router) and the ORDB function.
 
-The ORDB function consists in relaying the anonymized messages between a Peer A and a Peer B.
-
 The standalone js code is loaded using http://peersm.com/peersm or can be installed as a bookmarklet from [standalone](https://github.com/Ayms/node-Tor/tree/master/min)
 
 Each peer generates a public/private key and a corresponding self-signed certificate (ID certificate), its fingerprint (or ID) is the hash of the DER format of its public key. In what follows 'modulus' is the modulus of the public key (128 B).
 
-Note: currently the number of hops for P2P is one so the modulus field does not apply below (because it's used to extend the circuits only and the circuits are never extended for one hop), TBD if one hop is enough or not.
+Note: currently the number of hops for P2P is one so the modulus field does not apply below (because it is used to extend the circuits only and the circuits are never extended for one hop), TBD if one hop is enough or not.
+
+The ORDB function consists in relaying the anonymized messages between a Peer A and a Peer B, several ORDBs can be in the path.
 
 Peers are implementing a Kadmelia DHT using their IDs (160 bits), each routing table is composed of 160 buckets of 8 peers max where for bucket j 2^j <=distance(peer,other peer)< 2^(j+1)
 
