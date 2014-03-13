@@ -34,7 +34,7 @@ This is an unofficial and extended implementation of the Tor (or Tor like) proto
 
 There are numerous possibilities of uses for node-Tor
 
-**The most challenging goals are now to put the OP and the OR inside the browsers.**
+**The most challenging goals are to put the OP and the OR inside the browsers.**
 
 **This is done, see the 3 phases of [Peersm project](http://www.peersm.com) to achieve this.**
 
@@ -82,7 +82,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #### Final Architecture (serverless for P2P / WS Bridges for direct download):
 
 													--- A1(Peer + Node + ORDB)
-	A(Peer + Node + ORDB)	(webRTC + Tor protocol)	...
+	A(Peer + Node + ORDB)	(WebRTC + Tor protocol)	...
 			|										--- Z1(Peer + Node + ORDB)
 			ws (direct download)
 			|
@@ -92,31 +92,31 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 Each peer is implementing the Tor protocol (Onion proxy and Onion router) and the ORDB function.
 
-Option 1:
+Each peer generates a public/private key and a corresponding self-signed certificate (ID certificate), its fingerprint (or ID) is the hash of the DER format of its public key. In what follows 'modulus' is the modulus of the public key (128 B).
 
-Each peer generates a public/private key, its fingerprint (or ID) is the hash of the DER format of its public key. In what follows 'modulus' is the modulus of the public key.
-
-Option 2:
-
-Each peer generates its ID (160 bits). In what follows 'modulus' does not apply and CREATE is a CREATE_FAST.
+Note: currently the number of hops for P2P is one so the modulus field does not apply below (because it's used to extend the circuits only and the circuits are never extended for one hop), TBD if one hop is enough or not.
 
 Peers are implementing a Kadmelia DHT using their IDs (160 bits), each routing table is composed of 160 buckets of 8 peers max where for bucket j 2^j <=distance(peer,other peer)< 2^(j+1)
 
 If a peer is new (A), it can know how to connect to other peers asking to some servers (the WebSocket bridges used for direct download) that know about the peers.
 
+The Websocket bridges can be a Peersm bridge or a Tor bridge.
+
 If the servers are blocked, the peer introduction can be performed by other means : mirror servers or social networks, A just needs to know about one peer first.
 
 Some facilitators running as background processes are doing the same than browsers in order to keep some peers alive and to share files if the peers close their browsers. They can run on PC, Mac, servers and ADSL boxes/routers.
 
-A connects to one of them (CREATE) and sends a FIND_NODE [ID, modulus], it receives up to 8 peers [ID,IP,port,modulus] closest to it. Then it does this (CREATE + FIND_NODE) to closer and closer nodes until it cannot find any closer or until it has at least 6 circuits. When A has 6 circuits it continues to discover the peers the same way just sending a FIND_NODE message.
+A connects to one of them (CREATE_FAST) and sends a FIND_NODE [ID, modulus], it receives n (<=8) peers (n FOUND messages [ID,IP,port,modulus]) closest to it. Then it does this (CREATE_FAST + FIND_NODE) to closer and closer nodes until it cannot find any closer or until it has at least 6 circuits. When A has 6 circuits it continues to discover the peers the same way just sending a FIND_NODE message.
 
-Each peer connected to A adds A in its routing table (Note: if CREATE is used A must send its fingerprint and modulus too)
+A adds the peers in its routing table.
 
-The first 5 peers will act as the ORDBs.
+Each peer connected to A adds A in its routing table.
+
+The peers connected to A will act as the ORDBs.
 
 The peers can leave the network without telling the others (the peer closes his browser for example), so peers are testing the peers they know with a PING every 15mn (question: how many peers in average in bittorrent routing tables?). They associate to each peer its live time and sort the bucket from the older to the newer, if the bucket is full no new peer can be added.
 
-If a peers disconnects from A, A will establish a new circuit (CREATE) with a peer randomely chosen taking the first one of the selected bucket.
+If a peer disconnects from A, A will establish a new circuit (CREATE_FAST) with a peer randomely chosen taking the first one of the selected bucket.
 
 A sends to the ORDBs precisely what it has: db_info 'abcd',N,nb,size,type --> I have chunks N (0 if A has all the chunks) to N+nb of hash_name 'abcd' whose total size is size (0 for a continuous stream) and type MIME-type.
 
@@ -136,13 +136,15 @@ Each time A has a new hash_name 'abcd' it sends a STORE message ['abcd',ID,IP,po
 
 Then the closest node sends the same STORE message to the closest node it knows from the hash_name.
 
-Chunk size : 15936 B (32x498 B, payload of Tor protocol cells of 512 B).
+Tor protocol cells have a size of 512 B, the payload for streams is 498 B.
 
-Or for WebRTC :
+Tor protocol handshake is the same as the normal one except that the link certificate used in CERTS cells is the self-signed certificate of the DTLS connection.
 
-Chunk size : 996 B (2x498 B, < payload of IP, UDP, DTLS, and SCTP protocols ~1150 B - unreliable mode)
+To authenticate the remote peer the certificate used for the DTLS connection is signed by the ID private key of the remote peer, A receives this certificate and the ID certificate, it checks that indeed the link certificate is correctly signed, therefore A is sure to talk to the peer with whom it has established the DTLS connection.
 
-Window size: 1035840 B - 65 blocks
+Chunk size : 1024 B (2x512 B, < payload of IP, UDP, DTLS, and SCTP protocols ~1150 B - unreliable mode)
+
+Window size: 501760 B - NBLOCKS=490 blocks
 
 A requests 'abcd' :
 
@@ -150,9 +152,9 @@ A requests 'abcd' :
 
 * GET [hash_name][Chunk nb][Nb of chunks][Counter] --> 'abcd' N n 0
 
-* 5 GET on 5 circuits : GET1 1 (1-13), GET2 2 (14-26), GET3 3 (27-39),GET4 4 (40-52),GET5 5 (53-65)
+* 5 GET on 5 circuits : GET1 1 (1-98), GET2 2 (99-196), GET3 3 (197-294),GET4 4 (295-392),GET5 5 (393-490)
 
-* If the size of the file is less than 65 blocks, the ORDBs close the useless requests.
+* If the size of the file is less than NBLOCKS, the ORDBs close the useless requests (db_end DO_NOT_RETRY).
 
 * The ORDB receives the request:
 
@@ -164,19 +166,19 @@ A requests 'abcd' :
 			
 				* if the result exists, the ORDB chooses the first one that has a valid circuit (and remove from the lists those that are not valid) and sends the request, the circuit is removed from the list and put at the end.
 
-				* if the result does not exist
+				* if the result does not exist:
 
 					* if chunk nb is 0, the ORDB checks OR_Stream['abcd'], the result is an array of chunks indexes.
 
 						* if the result exists, the ORDBs chooses the index M of number of elements of the result minus 4 times the window size, the result is an array of [circ,type]
 
-							* The ORDB chooses the first one that has a valid circuit and send the request 'abcd' N 0, A will know N in the db_data answer, the ORDB removes the first from the list and put it at the end.
+							* The ORDB chooses the first one that has a valid circuit and sends the request 'abcd' N 0, A will know N in the db_data answer, the ORDB removes the first from the list and put it at the end.
 
-					* if chunk nb is not 0
+					* if chunk nb is not 0:
 
 						* the ORDB checks OR_Stream['abcd'][chunk nb], the result is an array of [circ,type]
 
-							* if the result exists, the ORDB chooses the first one that has a valid circuit and send the request 'abcd' N 0, the ORDB removes the first from the list and put it at the end.
+							* if the result exists, the ORDB chooses the first one that has a valid circuit and sends the request 'abcd' N 0, the ORDB removes the first from the list and put it at the end.
 
 							* if the result does not exist
 
@@ -184,15 +186,15 @@ A requests 'abcd' :
 
 									* if one corresponds, the ORDB chooses the first one that has a valid circuit and sends the request with the counter incremented, remove it from the list and put it at the end.
 
-									* if no result, the ORDB sends a FIND_VALUE ['abcd'] to the 4 closest peer from 'abcd'.
-										* as soon as it receives a [ID,IP,port,modulus] answer it connects to the node ID (CREATE) and inserts the new circuit in OR_ORDB['abcd']
+									* if no result, the ORDB sends a FIND_VALUE ['abcd'] to the 4 closest peers from 'abcd'.
+
+										* as soon as it receives a [ID,IP,port,modulus] answer it connects to the node ID (CREATE_FAST), inserts the new circuit in OR_ORDB['abcd'] and sends the request.
+
 										* if the answer is a list of nodes (8 max), these are nodes closest from 'abcd' for the queried node, it continues to send FIND_VALUE['abcd'] to these nodes and implement the same process on reply.
 
 									The reason to do this is to avoid that the download is performed only from the first peer discovered that has the value.
 
-* Note: if for example only one peer has the requested chunks, all the requests will finally end up to him since the ORDBs will send the requests to one of the ORDBs he is connected to.
-
-* A computes tm for every GETm, the time between the request (db_query) and the answer (db_data). Example: 250ms so 31250 B if rate of 1 Mbps, 2 blocks.
+* A computes tm for every GETm, the time between the request (db_query) and the answer (db_data). Example: 250ms so 31250 B if rate of 1 Mbps, 30 blocks.
 
 * A computes the effective rate for each GETm.
 
@@ -202,7 +204,7 @@ A requests 'abcd' :
 
 * It's a bit approximative since the ORDB is rotating the peers by putting them at the end of the lists each time they are used, we suppose that the delay is more related to the connexion between A and the ORDBS.
 
-* If the value is superior to 13 blocks, A sends a new GET after the 10th block.
+* If the value is superior to 98 blocks, A sends a new GET after the 68th block.
 
 * And so on.
 
