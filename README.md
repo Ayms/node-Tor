@@ -98,7 +98,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 	are acting as "bittorrent users".
 
 	The peers are anonymized by the "bittorrent users" which are hiding what they are doing
-	an what they have.
+	and what they have.
 
 Each peer is implementing the Tor protocol (Onion proxy and Onion router) and the ORDB function.
 
