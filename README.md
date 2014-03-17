@@ -124,6 +124,8 @@ If the servers are blocked, the peer introduction can be performed by other mean
 
 For simplification reasons, A can load http://peersm.com/peersm#Bridge_IP:Bridge_port-Peer_IP:Peer_port, simplification because it's not supposed to be very good to have this information in the URL since our server delivering the code will know it, but in that case that's not really a sensitive information.
 
+A can send different requests to differents bridges to discover some peers.
+
 A connects to one of them (CREATE_FAST) and sends a FIND_NODE [ID, modulus], it receives n (<=8) peers (n FOUND messages [ID,IP,port,modulus]) closest to it.
 
 Then it does this (CREATE_FAST + FIND_NODE) to closer and closer nodes until it cannot find any closer or until it has at least 6 circuits. When A has 6 circuits it continues to discover the peers the same way just sending a FIND_NODE message.
@@ -182,14 +184,6 @@ A requests 'abcd' :
 
 	* If the counter is equal to TBD (5?), send db_end (to avoid loops between ORDBs)
 
-		* If the ORDB have chunks N to N+n it sends it to the stream that requested it.
-
-		* If not the ORDB checks OR_files['abcd'], the result is an array of [circ,size,type]
-
-			* if the result exists, the ORDB chooses the first one that has a valid circuit (and remove from the list those that are not valid) and sends the request, the circuit is removed from the list and put at the end.
-
-			* if the result does not exist:
-
 	* if chunk nb is 0, the ORDB checks OR_Stream['abcd'], the result is an array of chunks indexes.
 
 		* if the result exists, the ORDBs chooses the index M of number of elements of the result minus 4 times the window size (N), the result is an array of [circ,type]
@@ -204,15 +198,13 @@ A requests 'abcd' :
 
 			* if the result exists, the ORDB chooses the first one that has a valid circuit and sends the request, the ORDB removes the first from the list and put it at the end.
 
-			* if the result does not exist
+			* if no result, the ORDB sends a FIND_VALUE ['abcd'] to the 4 closest peers from 'abcd' it knows:
 
-				* if no result, the ORDB sends a FIND_VALUE ['abcd'] to the 4 closest peers from 'abcd' it knows:
+				* as soon as it receives a [ID,IP,port,modulus] answer it connects to the other ORDB node ID (CREATE_FAST), add the new circuit in OR_ORDB['abcd'], increments the counter and sends the request if not already sent.
 
-					* as soon as it receives a [ID,IP,port,modulus] answer it connects to the other ORDB node ID (CREATE_FAST), add the new circuit in OR_ORDB['abcd'], increments the counter and sends the request if not already sent.
+				* if the answer is a list of nodes (8 max), these are nodes closest from 'abcd' for the queried node, it continues to send FIND_VALUE['abcd'] to these nodes and implement the same process on reply.
 
-					* if the answer is a list of nodes (8 max), these are nodes closest from 'abcd' for the queried node, it continues to send FIND_VALUE['abcd'] to these nodes and implement the same process on reply.
-
-					* The reason to iterate is to avoid that the download is performed only from the first peer discovered that has the value.
+				* The reason to iterate is to avoid that the download is performed only from the first peer discovered that has the value.
 
 * A computes tm for every GETm, the time between the request (db_query) and the answer (db_data). Example: 250ms so 31250 B if rate of 1 Mbps, 30 blocks.
 
