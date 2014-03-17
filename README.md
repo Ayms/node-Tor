@@ -234,7 +234,7 @@ OR_streams['abcd'][N] an array of : [circ,type] where circ is a circuit with a p
 
 OR_streams is used for continuous streaming
 
-If 'abcd' is a continuous streaming, peers and ORDBs periodically remove chunks older than 4 times the window size.
+If 'abcd' is a continuous streaming, the peers periodically remove from indexedDB chunks older than 4 times the window size.
 
 The peers do not advertise the ORDBs of the removed chunks and the ORDBs do not update the lists if circuits break, this is to avoid to continuously sort the lists.
 
