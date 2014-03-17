@@ -132,7 +132,7 @@ Then it does this (CREATE_FAST + FIND_NODE) to closer and closer nodes until it 
 
 A adds the peers in its routing table.
 
-A extends each circuit to another peer it know randomely chosen and different from the ones it has already connected to.
+A extends each circuit to another peer it knows randomely chosen and different from the ones it has already connected to.
 
 Each peer connected to A adds A in its routing table.
 
@@ -167,6 +167,8 @@ Tor protocol handshake is the same as the normal one except that the link certif
 To identify the remote peer the certificate used for the DTLS connection is signed by the ID private key of the remote peer, A receives this certificate and the ID certificate, it checks that indeed the link certificate is correctly signed (as well as the ID certificate), therefore A is sure to talk to the peer with whom it has established the DTLS connection.
 
 Chunk size : 1024 B (2x512 B, < payload of IP, UDP, DTLS, and SCTP protocols ~1150 B - unreliable mode)
+
+TBD: this chunk size seems too small but is advised by WebRTC empiric uses regarding packet loss possibilities.
 
 Window size: 501760 B - NBLOCKS=490 blocks
 
@@ -281,7 +283,7 @@ DB_END
 	* 2 DESTROYED (destroyed by serving party)
 	* 3 DO_NOT_RETRY
 
-#### Security (to be reviewed by experts):
+#### Security (comments welcome):
 
 The initial peers returned by the bridge could be compromised, therefore they could send only compromised peers.
 
