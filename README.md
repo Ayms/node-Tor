@@ -102,9 +102,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 Each peer is implementing the Tor protocol (Onion proxy and Onion router) and the ORDB function.
 
+IndexedDB and File APIs are used to store and manipulate the files.
+
 The standalone js code is loaded using http://peersm.com/peersm or can be installed as a bookmarklet from [standalone](https://github.com/Ayms/node-Tor/tree/master/min)
 
 Each peer generates a public/private key and a corresponding self-signed certificate (ID certificate), its fingerprint (or ID) is the hash of the DER format of its public key. In what follows 'modulus' is the modulus of the public key (128 B).
+
+Keys are generated for each session using the WebCrypto API generateKey method with 'extractable' parameter set to false. In WebCrypto the keys are handled in an opaque format, you can not access them and you can not export them if extractable is false, except the public key whose extractable parameter is always true (fingerprint=exportKey(spki)+digest(), modulus: RsaKeyAlgorithm object that hangs off Key.algorithm). Keys do support the structured clone algorithm, so could be stored in indexedDB but, even if expensive, we generate a new pair for each session so users ID change and users can not be tracked based on their keys.
 
 The ORDB function consists in relaying the anonymized messages between a Peer A and a Peer B, several ORDBs can be in the path.
 
@@ -165,6 +169,8 @@ Tor protocol cells have a size of 512 B, the payload for streams is 498 B.
 Tor protocol handshake is the same as the normal one except that the link certificate used in CERTS cells is the self-signed certificate of the DTLS connection.
 
 To identify the remote peer the certificate used for the DTLS connection is signed by the ID private key of the remote peer, A receives this certificate and the ID certificate, it checks that indeed the link certificate is correctly signed (as well as the ID certificate), therefore A is sure to talk to the peer with whom it has established the DTLS connection.
+
+If for unknown security reasons the application can not access the DTLS certificates, it will implement the same mechanism with the fingerprint of the DTLS certificate present in the SDP offer.
 
 Chunk size : 1024 B (2x512 B, < payload of IP, UDP, DTLS, and SCTP protocols ~1150 B - unreliable mode)
 
@@ -234,7 +240,7 @@ OR_files is used for files or finished streaming.
 
 OR_streams['abcd'][N] an array of : [circ,type] where circ is a circuit with a peer, size the total size, type the MIME-type of the file.
 
-OR_streams is used for continuous streaming
+OR_streams is used for continuous streaming.
 
 If 'abcd' is a continuous streaming, the peers periodically remove from indexedDB chunks older than 4 times the window size.
 
@@ -293,7 +299,9 @@ The DHT represents the public table of all the peers, it's unlikely that it's en
 
 If you don't trust the bridges you can choose your peers as explained above yourself.
 
-WebRTC is using self-signed certificates for DTLS, these certificates are changed so you can not be tracked, the SDP (peer introduction) does include the fingerprint of the certificate, this is not enough at all to guarantee there is not a MITM peer in the middle. Therefore it is foreseen to add another mechanism where the fingerprint of the DTLS certificate will be signed by a third party that knows you, typically a social network where you have an account.
+As explained above, the users keys can not be accessed or used by a potential attacker.
+
+WebRTC is using self-signed certificates for DTLS, these certificates are changed so you can not be tracked, the SDP (peer introduction) does include the fingerprint of the certificate, this is not enough to guarantee that there is not a MITM peer in the middle. Therefore it is foreseen to add another mechanism where the fingerprint of the DTLS certificate will be signed by a third party that knows you, typically a social network where you have an account.
 
 This is of course far from protecting your anonymity and privacy and can not be used in Peersm context, so Peersm is using the Tor protocol Certs cells mechanism explained above to make sure that you are talking to the peer with whom you have established the DTLS connection. This peer can still be a MITM but since you are extending the circuit to another peer known in the DHT, per the Tor protocol the possible MITM will not know what happens next, as mentionned above it becomes unlikely that the second peers are all compromised.
 
