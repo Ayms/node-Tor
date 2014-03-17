@@ -36,7 +36,7 @@ There are numerous possibilities of uses for node-Tor
 
 **The most challenging goals are to put the OP and the OR inside the browsers.**
 
-**This is done, see the 3 phases of [Peersm project](http://www.peersm.com) to achieve this.**
+**This is done, see the 2 phases of [Peersm project](http://www.peersm.com) to achieve this.**
 
 ## License:
 
