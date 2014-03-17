@@ -200,7 +200,7 @@ A requests 'abcd' :
 
 	* if chunk nb is not 0:
 
-		* If the ORDB have chunks N to N+n it sends it to the stream that requested it.
+		* If the ORDB has chunks N to N+n it sends it to the stream that requested it.
 
 		* If not the ORDB checks OR_files['abcd'], the result is an array of [circ,size,type]
 
