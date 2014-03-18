@@ -110,7 +110,7 @@ Each peer generates a public/private key and a corresponding self-signed certifi
 
 Keys are generated for each session using the WebCrypto API generateKey method with 'extractable' parameter set to false. In WebCrypto the keys are handled in an opaque format, you can not access them and you can not export them if extractable is false, except the public key whose extractable parameter is always true (fingerprint=exportKey(spki)+digest(), modulus: RsaKeyAlgorithm object that hangs off Key.algorithm). Keys do support the structured clone algorithm, so could be stored in indexedDB but, even if expensive, we generate a new pair for each session so users ID change and users can not be tracked based on their keys.
 
-The ORDB function consists in relaying the anonymized messages between a Peer A and a Peer B, several ORDBs can be in the path.
+The ORDB function consists in serving a file or relaying the anonymized messages between a Peer A and a Peer B, several ORDBs can be in the path.
 
 Peers are implementing a Kadmelia DHT using their IDs (160 bits), each routing table is composed of 160 buckets of 8 peers max where for bucket j 2^j <=distance(peer,other peer)< 2^(j+1)
 
