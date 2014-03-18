@@ -168,7 +168,7 @@ Tor protocol cells have a size of 512 B, the payload for streams is 498 B.
 
 Tor protocol handshake is the same as the normal one except that the link certificate used in CERTS cells is the fingerprint of the self-signed certificate of the DTLS connection.
 
-To identify the remote peer the fingerprint of the certificate used for the DTLS connection available in the SDP offer is encrypted with the ID private key of the remote peer, A receives this encrypted fingerprint and the ID certificate, it checks that indeed the ID certificate is correctly signed and that the decrypted fingerprint corresponds to the right one, therefore A is sure to talk to the peer with whom it has established the DTLS connection.
+To identify the remote peer the fingerprint of the certificate used for the DTLS connection available in the SDP offer is encrypted with the ID private key of the remote peer, A receives this encrypted fingerprint and the ID certificate, it checks that indeed the ID certificate is correctly signed and that the decrypted fingerprint corresponds to the right one, therefore, since the DTLS layer has checked too that the fingerprint was matching the certificate used, A is sure to talk to the peer with whom it has established the DTLS connection.
 
 Chunk size : 1024 B (2x512 B, < payload of IP, UDP, DTLS, and SCTP protocols ~1150 B - unreliable mode)
 
