@@ -100,6 +100,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 	The peers are anonymized by the "bittorrent users" which are hiding what they are doing
 	and what they have.
 
+####General
+
 Each peer is implementing the Tor protocol (Onion proxy and Onion router) and the ORDB function.
 
 IndexedDB and File APIs are used to store and manipulate the files.
@@ -109,6 +111,8 @@ The standalone js code is loaded using http://peersm.com/peersm or can be instal
 Each peer generates a public/private key and a corresponding self-signed certificate (ID certificate), its fingerprint (or ID) is the hash of the DER format of its public key. In what follows 'modulus' is the modulus of the public key (128 B).
 
 Keys are generated for each session using the WebCrypto API generateKey method with 'extractable' parameter set to false. In WebCrypto the keys are handled in an opaque format, you can not access them and you can not export them if extractable is false, except the public key whose extractable parameter is always true (fingerprint=exportKey(spki)+digest(), modulus: RsaKeyAlgorithm object that hangs off Key.algorithm). Keys do support the structured clone algorithm, so could be stored in indexedDB but, even if expensive, we generate a new pair for each session so users ID change and users can not be tracked based on their keys.
+
+####DHT and Bridges
 
 The ORDB function consists in serving a file or relaying the anonymized messages between a Peer A and a Peer B, several ORDBs can be in the path.
 
@@ -120,7 +124,13 @@ If a peer is new (A), it can know how to connect to other peers asking to some s
 
 The Websocket bridges are a [Peersm bridge](https://github.com/Ayms/node-Tor/tree/master/install), anyone can install one, it can be an official Tor bridge but in that case it will not be able to advertise peers.
 
+####Facilitators and Bittorrent
+
 Some facilitators (the [Peersm clients](https://github.com/Ayms/node-Tor/tree/master/install)) running as background processes are doing the same than browsers in order to keep some peers alive and to share files if the peers close their browsers. They can run on PC, Mac, servers and ADSL boxes/routers.
+
+The facilitators are implementing a bittorrent client and therefore allow Peersm users to stream or download torrents.
+
+####Boostrap and peers discovery
 
 A sends to the bridge a DB_FIND_PEER request [A-ID,A-IP,A-port,A-modulus], the bridge registers A and replies with a DB_FOUND_PEER request [ID,IP,port,modulus] of one peer connected to it randomely chosen if any, bridges are not numerous and at least the facilitators are connected to them, so it's unlikely that no peers are connected to a bridge.
 
@@ -148,15 +158,15 @@ The peers can leave the network without telling the others (the peer closes his 
 
 If a peer disconnects from A, A will establish a new circuit (CREATE_FAST) with a peer randomely chosen taking the first one of the selected bucket and extend to another one randomely chosen too.
 
-A sends to the ORDBs what it has: db_info 'abcd',size,type --> I have something from 'abcd' whose total size is size (0 for a continuous stream) and type MIME-type. ORDBs as peers do the same, they advertise A of what they have.
+####Content discovery
+
+A sends to the ORDBs what it has: db_info 'abcd',size,type,modulus --> I have something from 'abcd' whose total size is size (0 for a continuous stream), type MIME-type and use modulus to check data integrity. ORDBs as peers do the same, they advertise A of what they have.
 
 The list is maintained by OR_files['abcd'] variable and OR_streams['abcd'] for a continuous stream.
 
-If A does not know the size, the parameters size and type are missing in the request.
-
 The ORDBs are peers too, so they are connected to other ORDBs, they tell them what they know other peers have: 'abcd',size,type, but they do this only when they get a reference from a peer and they know the ORDBs they are connected to don't know it (ie they don't send all their references each time they discover another ORDB in order not to overload the network), the list is maintained by OR_files and OR_streams variable too.
 
-A stores the received chunks every block and advertises the ORDBs for the first chunk.
+A advertises the ORDBs for the first chunk.
 
 A advertises the ORDBs of what they have when a file is uploaded too.
 
@@ -164,17 +174,31 @@ Each time an ORDB has a new hash_name 'abcd' it sends a STORE message ['abcd',ID
 
 Then the closest node sends the same STORE message to the closest node it knows from the hash_name, and so on.
 
+####Data validation
+
+Unlike bittorrent, there is no metadata file to describe pieces and check their integrity.
+
+A file or a stream has been brought initially to the network by one seeder has a private key used to sign each piece, the corresponding public key is sent with the answer to the first chunk query: [size, type, public key]
+
+The signing process is based on asymmetric crypography and short signature concepts (LBS?+/- 160b), it does include a timestamp for live streaming.
+
+####Pieces and sliding window
+
 Tor protocol cells have a size of 512 B, the payload for streams is 498 B.
 
 Tor protocol handshake is the same as the normal one except that the link certificate used in CERTS cells is the fingerprint of the self-signed certificate of the DTLS connection.
 
 To identify the remote peer the fingerprint of the certificate used for the DTLS connection available in the SDP offer is encrypted with the ID private key of the remote peer, A receives this encrypted fingerprint and the ID certificate, it checks that indeed the ID certificate is correctly signed and that the decrypted fingerprint corresponds to the right one, therefore, since the DTLS layer has checked too that the fingerprint was matching the certificate used, A is sure to talk to the peer with whom it has established the DTLS connection.
 
-Chunk size : 1024 B (2x512 B, < payload of IP, UDP, DTLS, and SCTP protocols ~1150 B - unreliable mode)
+Chunk size : 512 B (28x512 B)
 
-TBD: this chunk size seems too small but is advised by WebRTC empiric uses regarding packet loss possibilities.
+WebRTC empiric uses regarding packet loss possibilities advises a size of 1024B < payload of IP, UDP, DTLS, and SCTP protocols ~1150 B - unreliable mode
 
-Window size: 501760 B - NBLOCKS=490 blocks
+This chunk size can look small but since the Tor protocol is fragmenting by blocks of 512B it seems logical to keep this size (we could change this but the system must be compatible with the Tor network)
+
+Window size: ~500 kB - divided in 5 blocks W1 to W5
+
+####Requests
 
 A requests 'abcd' :
 
@@ -182,9 +206,11 @@ A requests 'abcd' :
 
 * GET [hash_name][Chunk nb][Nb of chunks][Counter] --> 'abcd' N n 0
 
-* 5 GET on 5 circuits : GET1 1 (1-98), GET2 2 (99-196), GET3 3 (197-294),GET4 4 (295-392),GET5 5 (393-490)
+* 5 GET on 5 circuits : GET1 1 (W1), GET2 2 (W2), GET3 3 (W3),GET4 4 (W4),GET5 5 (W5)
 
-* If the size of the file is less than NBLOCKS, the ORDBs close the useless requests (db_end DO_NOT_RETRY).
+* Request for chunk 1 will be answered with file info [file size, file type, public key]
+
+* If the size of the file is less than C, the ORDBs close the useless requests (db_end).
 
 * The ORDB receives the request:
 
@@ -192,9 +218,13 @@ A requests 'abcd' :
 
 	* if chunk nb is 0, the ORDB checks OR_Stream['abcd'], the result is an array of chunks indexes.
 
-		* if the result exists, the ORDBs chooses the index M of number of elements of the result minus 4 times the window size (N), the result is an array of [circ,type]
+		* if the result exists, the ORDBs chooses the index M of number of elements of the result minus 2 times the window size (N), the result is an array of [circ,type]
 
 			* The ORDB chooses the first one that has a valid circuit and sends the request 'abcd' N 0, A will know N in the db_data answer, the ORDB removes the first from the list and put it at the end.
+
+			* the indexes of the sliding window are rotated and reused (here when the user reaches N+window size the next chunk requested will be 1)
+
+			* timestamp in message signature is used to make sure the requested chunk corresponds to the timing of its sliding window
 
 	* if chunk nb is not 0:
 
@@ -212,7 +242,9 @@ A requests 'abcd' :
 
 				* The reason to iterate is to avoid that the download is performed only from the first peer discovered that has the value.
 
-* A computes tm for every GETm, the time between the request (db_query) and the answer (db_data). Example: 250ms so 31250 B if rate of 1 Mbps, 30 blocks.
+				* If the FIND process is unsuccessful, the ORDB sends the request to several facilitators which will research the file in bittorrent network (see bridging with bittorrent section).
+
+* A computes tm for every GETm, the time between the request (db_query) and the answer (db_data). Example: 250ms so 31250 B if rate of 1 Mbps, 2 blocks (c).
 
 * A computes the effective rate for each GETm.
 
@@ -222,7 +254,7 @@ A requests 'abcd' :
 
 * It's a bit approximative since the ORDB is rotating the peers by putting them at the end of the lists each time they are used, we suppose that the delay is more related to the connexion between A and the ORDBS.
 
-* If the value is superior to 98 blocks, A sends a new GET after the 68th block.
+* If the value is superior to C blocks, A sends a new GET after the C-c block.
 
 * And so on.
 
@@ -236,7 +268,7 @@ OR_files['abcd'] an array of : [circ,size,type] where circ is a circuit with a p
 
 OR_files is used for files or finished streaming.
 
-OR_streams['abcd'][N] an array of : [circ,type] where circ is a circuit with a peer, size the total size, type the MIME-type of the file.
+OR_streams['abcd'][N] an array of : [circ,type] where circ is a circuit with a peer, type the MIME-type of the file.
 
 OR_streams is used for continuous streaming.
 
@@ -248,34 +280,44 @@ The lists are always manipulated as the same objects, no copy/duplication/clone
 
 #### Streaming:
 
-Add a stream button.
+The Media Source API is used, the supported formats are fragmented MP4 and WebM.
 
-Continuous Streaming:
+Live Streaming:
 
 * Connection to the stream: http://mytv.fr hash_name efgh
 
 * Direct download if nobody has chunks for efgh.
 
-* A saves chunks from (a value derived from timestamp, something like this???)
+#### Differences with Bittorrent:
 
-* ...
+It's unlikely with WebRTC and Tor protocol to be able to establish as many connections as bittorrent is doing with peers, therefore there is no swarm concepts where you connect to a big number of peers and every peer know what the others have.
 
-* TODO: how to correlate chunks Nbs with the source if we must reconnect to it?
+Then there is no rarest first algorithm and random first policy.
+
+Pieces size in bittorrent are usually in the range of 200 kB to 1 MB, they are much smaller in Peersm, which is not a problem since no metadata descriptor is needed.
+
+Chunks are requested sequentially, they are then reordered and streamed or stored in indexedDB.
+
+The info about the pieces available is not sent at any moment, the peers only know globally who has what, since the chunks are stored sequentially a new peer requesting something will get quickly the first pieces. But the new peer is becoming a seeder for the others, so it can be selected by an ORDB to serve an older peer for pieces it does not have, it will just reply with a db_end, the ORDB will rotate it in the list and select another peer for the next request.
+
+#### Bridging with Bittorrent:
+
+Each facilitator will be requested to retrieve a part of the file, which it will do using the bittorrent protocol, reorder the pieces and send them ordered to the requester.
+
+The hash_name of the file will correspond to the infohash of the bittorrent file (ie the hash of the info part of metadata file descriptor), to retrieve a bittorrent file a magnet link can be entered or the hash of the magnet link alone, in both cases the system will initiate the search based on the hash.
 
 #### Messages format:
 
-DB_QUERY [hash_name length 1B][hash_name][Counter 0 to 5 1B][file info optional 1B value 1]
+DB_QUERY [hash_name length 1B][hash_name][chunk nb length 1B][chunk nb][nb chunks 2B][Counter 0 to 5 1B]
 
 DB_CONNECTED removed
 
 DB_DATA
-* answer to file_info 1:[size length 1B][file size][type length 1B][MIME-type][chunk nb length 1B][chunk nb][end 0 or 1 1B][data]
-* answer to no file_info: [end 0 or 1 1B][chunk nb length 1B][chunk nb][data]
-
-* the end field is used in case the requester does not know the total size of the file (TBD can it really happen?)
+* answer to chunk nb 1:[size length 1B][file size][type length 1B][MIME-type][chunk nb length 1B][chunk nb][public key length][public key]
+* answer to other chunks: [chunk nb length 1B][chunk nb][signature length][signature][data]
 
 DB_INFO
-	[hash_name length][hash_name][size length][size][type length][type]
+	[hash_name length][hash_name][size length][size][type length][type][public key length][public key]
 
 DB_FIND_PEER and DB_FOUND_PEER
 	[hash ID length][ID][IP length][IP][port length][port][modulus length][modulus]
@@ -285,9 +327,8 @@ DB_END
 	* 0 UNAVAILABLE
 	* 1 FINISHED (aborted by requesting party)
 	* 2 DESTROYED (destroyed by serving party)
-	* 3 DO_NOT_RETRY
 
-#### Security (comments welcome):
+#### Security:
 
 The initial peers returned by the bridge could be compromised, therefore they could send only compromised peers.
 
