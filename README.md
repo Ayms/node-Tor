@@ -79,8 +79,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 	ORDB1	....
 			----- ORDBn
 
-#### Final Architecture (serverless for P2P / WS Bridges for direct download):
+#### Final Architecture (serverless for P2P / WS Bridges for direct download / Facilitators to bridge with bittorrent):
 
+																		Bittorent network
+																				|
+																				|
+																				|
 													--- A1(Peer + Node) --- A2(Peer + Node + ORDB)
 	A(Peer + Node + ORDB)	(WebRTC + Tor protocol)	...
 			|										--- Z1(Peer + Node) --- Z2(Peer + Node + ORDB)
