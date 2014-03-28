@@ -110,6 +110,8 @@ Each peer is implementing the Tor protocol (Onion proxy and Onion router) and th
 
 IndexedDB and File APIs are used to store and manipulate the files.
 
+WebRTC is used to connect peers and exchange UDP data.
+
 The standalone js code is loaded using http://peersm.com/peersm or can be installed as a bookmarklet from [standalone](https://github.com/Ayms/node-Tor/tree/master/min)
 
 Each peer generates a public/private key and a corresponding self-signed certificate (ID certificate), its fingerprint (or ID) is the hash of the DER format of its public key. In what follows 'modulus' is the modulus of the public key (128 B).
