@@ -182,7 +182,7 @@ Then the closest node sends the same STORE message to the closest node it knows 
 
 Unlike bittorrent, there is no metadata file to describe pieces and check their integrity.
 
-A file or a stream has been brought initially to the network by one seeder has a private key used to sign each piece, the corresponding public key is sent with the answer to the first chunk query: [size, type, public key]
+A file or a stream has been brought initially to the network by one seeder that has used his private key to sign each piece, the corresponding public key is sent with the answer to the first chunk query: [size, type, public key]
 
 The signing process is based on asymmetric crypography and short signature concepts (LBS?+/- 160b), it does include a timestamp for live streaming.
 
