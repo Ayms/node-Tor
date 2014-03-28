@@ -312,7 +312,7 @@ The info about the pieces available is not sent at any moment, the peers only kn
 
 Each facilitator will be requested to retrieve a part of the file, which it will do using the bittorrent protocol, reorder the pieces and send them ordered to the requester.
 
-The facilitators are not storing pieces that they are relaying, so they do not become seeders for Peersm world and nobody still know what they have, the requester becomes a seeder for the given file in Peersm world.
+The facilitators are not storing the pieces that they are relaying, so they do not become seeders for Peersm world and nobody knows what they have, the requester becomes a seeder for the given file in Peersm world.
 
 The facilitators are real free riders for the torrent side, for anonymity purposes they do not contribue to the torrents, neither inform peers, answer to pieces requests and populate the DHT, other torrent peers can just know the IP address of the facilitator but can not know who is the requester.
 
@@ -325,8 +325,8 @@ DB_QUERY [hash_name length 1B][hash_name][chunk nb length 1B][chunk nb][nb chunk
 DB_CONNECTED removed
 
 DB_DATA
-* answer to chunk nb 0:[size length 1B][file size][type length 1B][MIME-type][public key length][public key]
-* answer to chunk nb not 0: [chunk nb 4B][signature 8B][data]
+* answer to nb chunks 0:[size length 1B][file size][type length 1B][MIME-type][public key length][public key]
+* answer to nb chunks not 0: [chunk nb 4B][signature 8B][data]
 
 DB_INFO
 	[hash_name length][hash_name][size length][size][type length][type][public key length][public key]
