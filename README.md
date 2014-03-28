@@ -164,7 +164,7 @@ If a peer disconnects from A, A will establish a new circuit (CREATE_FAST) with 
 
 ####Content discovery
 
-A sends to the ORDBs what it has: db_info 'abcd',size,type,modulus --> I have something from 'abcd' whose total size is size (0 for a continuous stream), type MIME-type and use modulus to check data integrity. ORDBs as peers do the same, they advertise A of what they have.
+A sends to the ORDBs what it has: db_info 'abcd',size,type,public key --> I have something from 'abcd' whose total size is size (0 for a continuous stream), type MIME-type and use this public key to check data integrity. ORDBs as peers do the same, they advertise A of what they have.
 
 The list is maintained by OR_files['abcd'] variable and OR_streams['abcd'] for a continuous stream.
 
@@ -226,7 +226,9 @@ A requests 'abcd' :
 
 		* if the result exists, the ORDBs chooses the index M of number of elements of the result minus 2 times the window size (N), the result is an array of [circ,type]
 
-			* The ORDB chooses the first one that has a valid circuit and sends the request 'abcd' N 0, A will know N in the db_data answer, the ORDB removes the first from the list and put it at the end.
+			* The ORDB chooses the first one that has a valid circuit and sends the request 'abcd' N 1, A will know N in the db_data answer, the ORDB removes the first from the list and put it at the end.
+
+			* after receiving the first chunk, A will request other pieces 'abcd' N Wx_size
 
 			* the indexes of the sliding window are rotated and reused (here when the user reaches N+window size the next chunk requested will be 1)
 
@@ -323,8 +325,8 @@ DB_QUERY [hash_name length 1B][hash_name][chunk nb length 1B][chunk nb][nb chunk
 DB_CONNECTED removed
 
 DB_DATA
-* answer to chunk nb 1:[size length 1B][file size][type length 1B][MIME-type][public key length][public key]
-* answer to other chunks: [chunk nb 4B][signature 8B][data]
+* answer to chunk nb 0:[size length 1B][file size][type length 1B][MIME-type][public key length][public key]
+* answer to chunk nb not 0: [chunk nb 4B][signature 8B][data]
 
 DB_INFO
 	[hash_name length][hash_name][size length][size][type length][type][public key length][public key]
