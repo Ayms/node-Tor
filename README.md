@@ -302,7 +302,7 @@ It's unlikely with WebRTC and Tor protocol to be able to establish as many conne
 
 Then there is no rarest first algorithm and random first policy.
 
-Pieces size in bittorrent are usually in the range of 200 kB to 1 MB, they are much smaller in Peersm, which is not a problem since no metadata descriptor is needed.
+Pieces size in bittorrent are usually in the range of 200 kB to 1 MB, they are much smaller in Peersm, which is not a problem since no metadata descriptor is needed and the small size is adapted to devices such as smartphones and live streaming.
 
 Chunks are requested sequentially, they are then reordered and streamed or stored in indexedDB.
 
