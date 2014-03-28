@@ -186,6 +186,8 @@ A file or a stream has been brought initially to the network by one seeder has a
 
 The signing process is based on asymmetric crypography and short signature concepts (LBS?+/- 160b), it does include a timestamp for live streaming.
 
+The format of the signature is: [timestamp in seconds 4B][4 first bytes of the signature 4B]
+
 ####Pieces and sliding window
 
 Tor protocol cells have a size of 512 B, the payload for streams is 498 B.
@@ -284,7 +286,7 @@ The lists are always manipulated as the same objects, no copy/duplication/clone
 
 #### Streaming:
 
-The Media Source API is used, the supported formats are fragmented MP4 and WebM.
+The Media Source API is used, the supported formats are fragmented MP4 (MPEG-DASH) and WebM.
 
 Live Streaming:
 
@@ -308,7 +310,11 @@ The info about the pieces available is not sent at any moment, the peers only kn
 
 Each facilitator will be requested to retrieve a part of the file, which it will do using the bittorrent protocol, reorder the pieces and send them ordered to the requester.
 
-The hash_name of the file will correspond to the infohash of the bittorrent file (ie the hash of the info part of metadata file descriptor), to retrieve a bittorrent file a magnet link can be entered or the hash of the magnet link alone, in both cases the system will initiate the search based on the hash.
+The facilitators are not storing pieces that they are relaying, so they do not become seeders for Peersm world and nobody still know what they have, the requester becomes a seeder for the given file in Peersm world.
+
+The facilitators are real free riders for the torrent side, for anonymity purposes they do not contribue to the torrents, neither inform peers, answer to pieces requests and populate the DHT, other torrent peers can just know the IP address of the facilitator but can not know who is the requester.
+
+The hash_name of the file will correspond to the infohash of the bittorrent file (ie the hash of the info part of the metadata file descriptor), to retrieve a bittorrent file a magnet link can be entered or the hash of the magnet link alone, in both cases the system will initiate the search based on the hash.
 
 #### Messages format:
 
@@ -317,8 +323,8 @@ DB_QUERY [hash_name length 1B][hash_name][chunk nb length 1B][chunk nb][nb chunk
 DB_CONNECTED removed
 
 DB_DATA
-* answer to chunk nb 1:[size length 1B][file size][type length 1B][MIME-type][chunk nb length 1B][chunk nb][public key length][public key]
-* answer to other chunks: [chunk nb length 1B][chunk nb][signature length][signature][data]
+* answer to chunk nb 1:[size length 1B][file size][type length 1B][MIME-type][public key length][public key]
+* answer to other chunks: [chunk nb 4B][signature 8B][data]
 
 DB_INFO
 	[hash_name length][hash_name][size length][size][type length][type][public key length][public key]
