@@ -168,17 +168,17 @@ If a peer disconnects from A, A will establish a new circuit (CREATE_FAST) with 
 
 ####Content discovery
 
-A sends to the ORDBs what it has: db_info 'abcd',size,type,public key --> I have something from 'abcd' whose total size is size (0 for a continuous stream), type MIME-type and use this public key to check data integrity. ORDBs as peers do the same, they advertise A of what they have.
+A advertises the ORDBs when they have 25%, 50%, 75% and 100% of a file.
 
-The list is maintained by OR_files['abcd'] variable and OR_streams['abcd'] for a continuous stream.
+A sends to the ORDBs what it has: db_info 'abcd',size,type,public key,P --> I have something from 'abcd' whose total size is size (0 for a continuous stream), type MIME-type, use this public key to check data integrity and I have P pieces (0 (25%) to 3(100%). ORDBs as peers do the same, they advertise A of what they have.
 
-The ORDBs are peers too, so they are connected to other ORDBs, they tell them what they know other peers have: 'abcd',size,type, but they do this only when they get a reference from a peer and they know the ORDBs they are connected to don't know it (ie they don't send all their references each time they discover another ORDB in order not to overload the network), the list is maintained by OR_files and OR_streams variable too.
+The list is maintained by OR_files_P['abcd'] variables and OR_streams_P['abcd'] for a continuous stream.
 
-A advertises the ORDBs for the first chunk.
+The ORDBs are peers too, so they are connected to other ORDBs, they tell them what they know other peers have: 'abcd',size,type, but they do this only when they get a reference from a peer and they know the ORDBs they are connected to don't know it (ie they don't send all their references each time they discover another ORDB in order not to overload the network), the list is maintained by OR_files_P and OR_streams_P variables too.
 
 A advertises the ORDBs of what they have when a file is uploaded too.
 
-Each time an ORDB has a new hash_name 'abcd' it sends a STORE message ['abcd',ID,IP,port,modulus] to the closest node from the hash_name.
+Each time an ORDB has a new hash_name 'abcd' it sends a STORE message ['abcd',ID,IP,port,modulus,P] to the closest node from the hash_name.
 
 Then the closest node sends the same STORE message to the closest node it knows from the hash_name, and so on.
 
@@ -214,19 +214,19 @@ A requests 'abcd' :
 
 * A selects 5 ORDBs among the (at least) 6 he is connected to.
 
+* GET [hash_name][Chunk nb][Nb of chunks][Counter] --> 'abcd' 1 0 0
+
+* A gets the file info [file size, file type, public key]
+
 * GET [hash_name][Chunk nb][Nb of chunks][Counter] --> 'abcd' N n 0
 
 * 5 GET on 5 circuits : GET1 1 (W1), GET2 2 (W2), GET3 3 (W3),GET4 4 (W4),GET5 5 (W5)
-
-* Request for chunk 1 will be answered with file info [file size, file type, public key]
-
-* If the size of the file is less than C, the ORDBs close the useless requests (db_end).
 
 * The ORDB receives the request:
 
 	* If the counter is equal to TBD (5?), send db_end (to avoid loops between ORDBs)
 
-	* if chunk nb is 0, the ORDB checks OR_Stream['abcd'], the result is an array of chunks indexes.
+	* if chunk nb is 0, the ORDB checks OR_Stream_P['abcd'], the result is an array of chunks indexes.
 
 		* if the result exists, the ORDBs chooses the index M of number of elements of the result minus 2 times the window size (N), the result is an array of [circ,type]
 
@@ -234,7 +234,9 @@ A requests 'abcd' :
 
 			* after receiving the first chunk, A will request other pieces 'abcd' N Wx_size
 
-			* the indexes of the sliding window are rotated and reused (here when the user reaches N+window size the next chunk requested will be 1)
+			* the injector uses a sliding window of size 4x the window size.
+
+			* the indexes of the sliding window are rotated and reused (here when the user reaches the sliding window size the next chunk requested will be 1) - TODO explain this
 
 			* timestamp in message signature is used to make sure the requested chunk corresponds to the timing of its sliding window
 
@@ -242,7 +244,7 @@ A requests 'abcd' :
 
 		* If the ORDB has chunks N to N+n it sends it to the stream that requested it.
 
-		* If not the ORDB checks OR_files['abcd'], the result is an array of [circ,size,type]
+		* If not the ORDB checks OR_files_P['abcd'], the result is an array of [circ,size,type]
 
 			* if the result exists, the ORDB chooses the first one that has a valid circuit and sends the request, the ORDB removes the first from the list and put it at the end.
 
@@ -276,13 +278,13 @@ A requests 'abcd' :
 
 #### Handling the lists in the ORDBs:
 
-OR_files['abcd'] an array of : [circ,size,type] where circ is a circuit with a peer, size the total size, type the MIME-type of the file.
+OR_files_P['abcd'] an array of : [circ,size,type] where circ is a circuit with a peer, size the total size, type the MIME-type of the file.
 
-OR_files is used for files or finished streaming.
+OR_files_P are used for files or non live streaming.
 
-OR_streams['abcd'][N] an array of : [circ,type] where circ is a circuit with a peer, type the MIME-type of the file.
+OR_streams_P['abcd'][N] an array of : [circ,type] where circ is a circuit with a peer, type the MIME-type of the file.
 
-OR_streams is used for continuous streaming.
+OR_streams_P are used for continuous streaming.
 
 If 'abcd' is a continuous streaming, the peers periodically remove from indexedDB chunks older than 4 times the window size.
 
@@ -310,7 +312,7 @@ Pieces size in bittorrent are usually in the range of 200 kB to 1 MB, they are m
 
 Chunks are requested sequentially, they are then reordered and streamed or stored in indexedDB.
 
-The info about the pieces available is not sent at any moment, the peers only know globally who has what, since the chunks are stored sequentially a new peer requesting something will get quickly the first pieces. But the new peer is becoming a seeder for the others, so it can be selected by an ORDB to serve an older peer for pieces it does not have, it will just reply with a db_end, the ORDB will rotate it in the list and select another peer for the next request.
+A new peer requesting something will get quickly the first pieces. The new peer is becoming a seeder for the others as soon as it advertises to have at least 25% of pieces.
 
 #### Bridging with Bittorrent:
 
@@ -318,7 +320,7 @@ Each facilitator will be requested to retrieve a part of the file, which it will
 
 The facilitators are not storing the pieces that they are relaying, so they do not become seeders for Peersm world and nobody knows what they have, the requester becomes a seeder for the given file in Peersm world.
 
-The facilitators are real free riders for the torrent side, for anonymity purposes they do not contribue to the torrents, neither inform peers, answer to pieces requests and populate the DHT, other torrent peers can just know the IP address of the facilitator but can not know who is the requester.
+The facilitators are total free riders for the torrent side, for anonymity purposes they do not contribue to the torrents, neither inform peers, answer to pieces requests and populate the DHT, other torrent peers can just know the IP address of the facilitator but can not know who is the requester.
 
 The hash_name of the file will correspond to the infohash of the bittorrent file (ie the hash of the info part of the metadata file descriptor), to retrieve a bittorrent file a magnet link can be entered or the hash of the magnet link alone, in both cases the system will initiate the search based on the hash.
 
@@ -333,7 +335,7 @@ DB_DATA
 * answer to nb chunks not 0: [chunk nb 4B][signature 8B][data]
 
 DB_INFO
-	[hash_name length][hash_name][size length][size][type length][type][public key length][public key]
+	[hash_name length][hash_name][size length][size][type length][type][public key length][public key][P 1B]
 
 DB_FIND_PEER and DB_FOUND_PEER
 	[hash ID length][ID][IP length][IP][port length][port][modulus length][modulus]
