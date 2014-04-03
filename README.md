@@ -328,10 +328,10 @@ The hash_name of the file will correspond to the infohash of the bittorrent file
 
 DB_QUERY [hash_name length 1B][hash_name][chunk nb length 1B][chunk nb][nb chunks 2B][Counter 0 to 5 1B]
 
-DB_CONNECTED removed
+DB_CONNECTED
+* answer to nb chunks 0:[size length 1B][file size][type length 1B][MIME-type][public key length][public key]
 
 DB_DATA
-* answer to nb chunks 0:[size length 1B][file size][type length 1B][MIME-type][public key length][public key]
 * answer to nb chunks not 0: [chunk nb 4B][signature 8B][data]
 
 DB_INFO
