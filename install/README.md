@@ -7,7 +7,7 @@ If you want to run a Tor Bridge implementing the WebSocket interface, ie a Tor a
 
 Both can run on Linux, Windows or Mac.
 
-####The installation is quite simple: just nodejs and one js file working for both - node-Tor-min.js v0.1.0 - SHA1: 2fa4b4dd6188a6da986abee9bb6a8706e001dd19.
+####The installation is quite simple: just nodejs and one js file working for both - node-Tor-min.js v0.1.0 - SHA1: b477e784ad75458ea9fe638c715777bb2567bbd5.
 
 ## Peersm client installation:
 
@@ -41,6 +41,18 @@ If you save files downloaded with Peersm from your browser to the peersm directo
 Where hash_name is the hash_name of the file in Peersm application.
 
 Test it: open [Peersm](http://peersm.com/peersm) and try hash_name1 or 2.
+
+If you want to add a video file for streaming, create a file video.json with:
+
+	{"Duration":"PT0H3M1.63S","AdaptationSet1": {"Representation":{"bandwidth":"686521","height":"360","width":"640","mimeType":"video/mp4","codecs":"avc1.4d401e","BaseURL":"14bfd05a2bec5cd722aee9d7310cef53506b8c3e"}},"AdaptationSet2": {"Representation":{"bandwidth":"127236","mimeType":"audio/mp4","codecs":"mp4a.40.2","BaseURL":"6feb54209e9c42f437a53b0d21e9d4e803cdab63"}}}
+
+Where the Representation fields match the tracks that you have in your video and the BaseURL is the hash_name of the media files in your Peersm client.
+
+Supported formats are mp4 and webm, you can use ffmpeg and MP4box to manipulate your files.
+
+The files must be fragmented, the typical command to achieve this is: MP4Box -dash 500 -frag 500 -rap video.mp4
+
+Then put the video.json file in your Peersm client, this will become video#hash_name.json, use this hash_name to stream the video.
 
 ## node-Tor Bridge Websocket server installation:
 
