@@ -170,7 +170,7 @@ If a peer disconnects from A, A will establish a new circuit (CREATE_FAST) with 
 
 A advertises the ORDBs when they have 25%, 50%, 75% and 100% of a file.
 
-A sends to the ORDBs what it has: db_info 'abcd',size,type,public key,P --> I have something from 'abcd' whose total size is size (0 for a continuous stream), type MIME-type, use this public key to check data integrity and I have P pieces (0 (25%) to 3(100%). ORDBs as peers do the same, they advertise A of what they have.
+A sends to the ORDBs what it has: db_info 'abcd',P,F --> I have something from 'abcd', I have P pieces (0 (25%) to 3(100%) and I am a facilitator (F=1) or not (no F). ORDBs as peers do the same, they advertise A of what they have.
 
 The list is maintained by OR_files_P['abcd'] variables and OR_streams_P['abcd'] for a continuous stream.
 
@@ -335,7 +335,7 @@ DB_DATA
 * answer to nb chunks not 0: [chunk nb 4B][signature 8B][data]
 
 DB_INFO
-	[hash_name length][hash_name][size length][size][type length][type][public key length][public key][P 1B]
+	[hash_name length][hash_name][P 1B][F 1B optional]
 
 DB_FIND_PEER and DB_FOUND_PEER
 	[hash ID length][ID][IP length][IP][port length][port][modulus length][modulus]
