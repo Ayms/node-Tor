@@ -3,7 +3,7 @@ Installing Peersm client and node-Tor Bridge WebSocket server
 
 Peersm client allows you to store files (downloaded with Peersm or not) that you want to share with others using Peersm without having to keep your browser open.
 
-They are facilitators including a bittorrent client in order to bridge Peersm world with bittorrent clients, allowing to download and stream anonymously torrents, Peersm clients are anonymizing the torrent traffic for the requesters, they are just relaying the traffic and do not keep any data.
+They are facilitators including a bittorrent client in order to bridge Peersm world with bittorrent world, allowing to download and stream anonymously torrents, Peersm clients are anonymizing the torrent traffic for the requesters, they are just relaying the traffic and do not keep any data.
 
 If you want to run a Tor Bridge implementing the WebSocket interface, ie a Tor access node for the browsers using Peersm, then install node-Tor Bridge WebSocket server.
 

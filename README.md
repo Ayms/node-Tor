@@ -16,6 +16,8 @@ You can install:
 * [Peersm client](https://github.com/Ayms/node-Tor/tree/master/install)
 * [node-Tor Bridge WebSocket server](https://github.com/Ayms/node-Tor/tree/master/install)
 
+Several routers are live and inserted inside the Tor network.
+
 Example of implementations:
 
 * Peersm (http://www.peersm.com) : Anonymous P2P serverless network inside browsers, no installation, encrypted and untrackable
