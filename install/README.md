@@ -3,25 +3,31 @@ Installing Peersm client and node-Tor Bridge WebSocket server
 
 Peersm client allows you to store files (downloaded with Peersm or not) that you want to share with others using Peersm without having to keep your browser open.
 
+They are facilitators including a bittorrent client in order to bridge Peersm world with bittorrent clients, allowing to download and stream anonymously torrents, Peersm clients are anonymizing the torrent traffic for the requesters, they are just relaying the traffic and do not keep any data.
+
 If you want to run a Tor Bridge implementing the WebSocket interface, ie a Tor access node for the browsers using Peersm, then install node-Tor Bridge WebSocket server.
 
 Both can run on Linux, Windows or Mac.
 
-####The installation is quite simple: just nodejs and one js file working for both - node-Tor-min.js v0.1.0 - SHA1: b477e784ad75458ea9fe638c715777bb2567bbd5.
+####The installation is quite simple: just nodejs, node-Tor file and torrent-stream bittorrent client.
 
 ## Peersm client installation:
 
-####For those that are not very familiar with installation stuff, please see the example for Windows below.
+####For those that are not very familiar with installation stuff, please see the installer for Windows below.
 
 Install node (see below)
-Get [the javascript file](http://www.peersm.com/node-Tor-min.js) and store it somewhere, example: /home/me/node-Tor-min.js
+Get [the javascript file](http://www.peersm.com/node-Tor-min.js) and [the bittorrent client files](http://www.peersm.com/torrent-stream.zip) and store them somewhere.
 
 	Create a directory - example: /home/peersm
+	Create a subdirectory node_modules
+	Put node-Tor-min.js in node_modules
+	Unzip torrent-stream.zip in node_modules directory
+	Files must be unzipped inside the torrent-stream subfolder
 	Put your files inside this directory, example: photos.zip, video.mp4
 
 Launch Peersm client:
 
-	node /home/me/node-Tor-min.js /home/peersm/ 2
+	node /home/peersm/node_modules/node-Tor-min.js /home/peersm/ 2
 
 The first argument is your directory.
 
@@ -132,7 +138,7 @@ You can of course run both processes in background and use respawn options to re
 
 ## Updates
 
-Just update the node-Tor-min.js file when we notify here a new release.
+Just update the node-Tor-min.js file when we notify here a new release or uninstall/reinstall.
 
 ## Troubleshooting
 
