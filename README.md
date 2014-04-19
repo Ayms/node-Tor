@@ -18,6 +18,8 @@ You can install:
 
 Several routers are live and inserted inside the Tor network.
 
+The bittorrent client inside Peersm clients is based on a modified version of [torrent-stream] (https://github.com/mafintosh/torrent-stream) implementation.
+
 Example of implementations:
 
 * Peersm (http://www.peersm.com) : Anonymous P2P serverless network inside browsers, no installation, encrypted and untrackable
