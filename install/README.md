@@ -5,6 +5,8 @@ Peersm client allows you to store files (downloaded with Peersm or not) that you
 
 They are facilitators including a bittorrent client in order to bridge Peersm world with bittorrent world, allowing to download and stream anonymously torrents, Peersm clients are anonymizing the torrent traffic for the requesters, they are just relaying the traffic and do not keep any data.
 
+The bittorrent client inside Peersm clients is based on a modified version of [torrent-stream] (https://github.com/mafintosh/torrent-stream) implementation.
+
 If you want to run a Tor Bridge implementing the WebSocket interface, ie a Tor access node for the browsers using Peersm, then install node-Tor Bridge WebSocket server.
 
 Both can run on Linux, Windows or Mac.
@@ -130,7 +132,7 @@ If Peersm can not connect to your bridge, probably the port forwarding is not wo
 
 	Put the files you want to share in C:/Program Files/Peersm/peersm_client
 
-That's it, as simple, this will launch Peersm client in background and your files can now be downloaded by others anonymously for both.
+That's it, as simple, this will launch Peersm client in background and your files can now be downloaded by others anonymously for both, your Peersm client will relay also anonymously the bittorrent traffic for others.
 
 ## Background
 
