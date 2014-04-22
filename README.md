@@ -83,10 +83,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 																				|
 																				|
 																				|
-													--- A1(Peer + Node) --- A2(Peer + Node + ORDB)
-	A(Peer + Node + ORDB)	(WebRTC + Tor protocol)	...
-			|										--- Z1(Peer + Node) --- Z2(Peer + Node + ORDB)
-			ws (direct download)
+													--- A1(Peer + Node) --- A2(Peer + Node + ordb)
+	A(Peer + Node)(WebRTC + encrypted Tor protocol)	...
+			|										--- Z1(Peer + Node) --- Z2(Peer + Node + ordb)
+		WebSockets + encrypted Tor protocol (direct download)
 			|
 			Bridge 	--- Nodea --- Nodeb --- Web site
 					...
@@ -100,7 +100,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 	are acting as "bittorrent users".
 
 	The peers are anonymized by the "bittorrent users" which are hiding what they are doing
-	and what they have.
+	and what they have. The Peersm clients are bridging the Peersm world (browsers) with the bittorrent world.
 
 ####General
 
