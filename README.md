@@ -100,7 +100,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 	are acting as "bittorrent users".
 
 	The peers are anonymized by the "bittorrent users" which are hiding what they are doing
-	and what they have. The Peersm clients are bridging the Peersm world (browsers) with the bittorrent world.
+	and what they have. The Peersm clients are bridging the Peersm world (browsers)
+	with the bittorrent world.
 
 ####General
 
