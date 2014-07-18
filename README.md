@@ -9,6 +9,10 @@ And try:
 
 [Peersm app] (http://peersm.com/peersm)
 
+Or a side effect project (Download and stream live (while the download is in progress) torrents with your browser, as a total freerider minimize your visibility, send it to your TV, avoid spies and trackers):
+
+[torrent-live](https://github.com/Ayms/torrent-live)
+
 The minified code for browsers is in the min directory.
 
 You can install:
