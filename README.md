@@ -181,6 +181,8 @@ The ORDBs are peers too, so they are connected to other ORDBs, they tell them wh
 
 A advertises the ORDBs of what they have when a file is uploaded too.
 
+The content is referenced by hash_names, which are the hash of the DB_CONNECTED answers so a malicious ORDB can not fake the content while relaying it.
+
 Each time an ORDB has a new hash_name 'abcd' it sends a STORE message ['abcd',ID,IP,port,modulus,P] to the closest node from the hash_name.
 
 Then the closest node sends the same STORE message to the closest node it knows from the hash_name, and so on.
@@ -325,7 +327,7 @@ The facilitators are not storing the pieces that they are relaying, so they do n
 
 The facilitators are total free riders for the torrent side, for anonymity purposes they do not contribue to the torrents, neither inform peers, answer to pieces requests and populate the DHT, other torrent peers can just know the IP address of the facilitator but can not know who is the requester.
 
-The hash_name of the file will correspond to the infohash of the bittorrent file (ie the hash of the info part of the metadata file descriptor), to retrieve a bittorrent file a magnet link can be entered or the hash of the magnet link alone, in both cases the system will initiate the search based on the hash.
+The hash_name of the file will correspond to the infohash of the bittorrent file (ie the hash of the info part of the metadata file descriptor), to retrieve a bittorrent file a magnet link can be entered or the hash of the magnet link alone, in both cases the system will initiate the search based on the hash. (TODO: see compatibility with Peersm hash_names)
 
 #### Messages format:
 
@@ -403,6 +405,7 @@ node-Tor's nodes can be used to create complementary and/or parallel networks, i
 	
 ## Related projects :
 
+* [Ayms/torrent-live](https://github.com/Ayms/torrent-live)
 * [Ayms/iAnonym](https://github.com/Ayms/iAnonym)
 * [Interception Detector](http://www.ianonym.com/intercept.html)
 * [Ayms/abstract-tls](https://github.com/Ayms/abstract-tls)
