@@ -40,6 +40,12 @@ There are numerous possibilities of uses for node-Tor
 
 **This is done, see the 2 phases of [Peersm project](http://www.peersm.com) to achieve this.**
 
+## Code:
+
+The code in the lib directory is outdated and corresponds to the initial commit a few years ago, but this can be a good starting point for those that would like to redevelop the Tor protocol from scratch or understand it.
+
+The up to date (minified) code is in the install (Peersm clients/bridges) and min (browsers) directories.
+
 ## License:
 
 Only the initial code in the lib directory is under the MIT license.
