@@ -7,6 +7,8 @@ They are facilitators including a bittorrent client in order to bridge Peersm wo
 
 The bittorrent client inside Peersm clients is based on a modified version of [torrent-stream] (https://github.com/mafintosh/torrent-stream) implementation.
 
+It does implement the freerider, find spies and block spies features as explained in [torrent-live](https://github.com/Ayms/torrent-live) which to summarize makes very unlikely for your client's bittorrent activity to be detected by persona non grata people like copyright trolls.
+
 If you want to run a Tor Bridge implementing the WebSocket interface, ie a Tor access node for the browsers using Peersm, then install node-Tor Bridge WebSocket server.
 
 Both can run on Linux, Windows or Mac.
@@ -50,17 +52,7 @@ Where hash_name is the hash_name of the file in Peersm application.
 
 Test it: open [Peersm](http://peersm.com/peersm) and try hash_name1 or 2.
 
-If you want to add a video file for streaming, create a file video.json with:
-
-	{"Duration":"PT0H3M1.63S","AdaptationSet1": {"Representation":{"bandwidth":"686521","height":"360","width":"640","mimeType":"video/mp4","codecs":"avc1.4d401e","BaseURL":"14bfd05a2bec5cd722aee9d7310cef53506b8c3e"}},"AdaptationSet2": {"Representation":{"bandwidth":"127236","mimeType":"audio/mp4","codecs":"mp4a.40.2","BaseURL":"6feb54209e9c42f437a53b0d21e9d4e803cdab63"}}}
-
-Where the Representation fields match the tracks that you have in your video and the BaseURL is the hash_name of the media files in your Peersm client.
-
-Supported formats are mp4 and webm, you can use ffmpeg and MP4box to manipulate your files.
-
-The files must be fragmented, the typical command to achieve this is: MP4Box -dash 500 -frag 500 -rap video.mp4
-
-Then put the video.json file in your Peersm client, this will become video#hash_name.json, use this hash_name to stream the video.
+If you want to add a video file for streaming, supported formats are mp4 and webm, you can look at [Peersm links](http://www.peersm.com/?links-en) if you want to know more about adaptive streaming or you can just put the video.mp4/webm file in your Peersm client, this will become video#hash_name.mp4/webm, use this hash_name to stream the video.
 
 ## node-Tor Bridge Websocket server installation:
 
