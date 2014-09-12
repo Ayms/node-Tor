@@ -149,7 +149,7 @@ The facilitators are implementing a bittorrent client and therefore allow Peersm
 
 ####Boostrap and peers discovery
 
-A sends to the bridge a DB_FIND_PEER request [A-ID,A-IP,A-port,A-modulus], the bridge registers A and replies with a DB_FOUND_PEER request [ID,IP,port,modulus] of one peer connected to it randomely chosen if any, bridges are not numerous and at least the facilitators are connected to them, so it's unlikely that no peers are connected to a bridge.
+A sends to the bridge a DB_FIND_PEER request [A-ID,A-modulus], the bridge registers A and replies with a DB_FOUND_PEER request [ID,IP,port,modulus] of one peer connected to it randomely chosen where IP:port corresponds to the node that will perform the peers introduction, it can be a bridge or a peer. Bridges are not numerous and at least the facilitators are connected to them, so it's unlikely that no peers are connected to a bridge.
 
 If the servers are blocked, the peer introduction can be performed by other means : mirror servers or social networks, A just needs to know about one peer first.
 
@@ -171,7 +171,7 @@ The peers where A connected to will act as the ORDBs.
 
 Peers are ORDBs and ORDBs are peers but the two functions should not be mixed, even if it can be confusing since the same code and port are used for both functions.
 
-The peers can leave the network without telling the others (the peer closes his browser for example), so peers are testing the peers they know with a PING every 15mn (question: how many peers in average in bittorrent routing tables?). They associate to each peer its live time and sort the bucket from the older to the newer, if the bucket is full no new peer can be added.
+The peers can leave the network without telling the others (the peer closes his browser for example), so peers are testing the peers they know with a PING every 15mn. They associate to each peer its live time and sort the bucket from the older to the newer, if the bucket is full no new peer can be added.
 
 If a peer disconnects from A, A will establish a new circuit (CREATE_FAST) with a peer randomely chosen taking the first one of the selected bucket and extend to another one randomely chosen too.
 
@@ -199,7 +199,7 @@ Unlike bittorrent, there is no metadata file to describe pieces and check their 
 
 A file or a stream has been brought initially to the network by one seeder that has used his private key or generated one to sign each piece, the corresponding public key is sent with the answer to the first chunk query: [size, type, public key]
 
-The signing process is based on asymmetric crypography and short signature concepts (LBS?+/- 160b), it does include a timestamp for live streaming.
+The signing process is based on asymmetric crypography (TODO, clarify this), it does include a timestamp for live streaming.
 
 The format of the signature is: [timestamp in seconds 4B][4 first bytes of the signature 4B]
 
@@ -225,17 +225,17 @@ A requests 'abcd' :
 
 * A selects 5 ORDBs among the (at least) 6 he is connected to.
 
-* GET [hash_name][Chunk nb][Nb of chunks][Counter] --> 'abcd' 1 0 0
+* GET [hash_name][Chunk nb][Nb of chunks][Counter] --> 'abcd' 1 0 [random <5]
 
 * A gets the file info [file size, file type, public key]
 
-* GET [hash_name][Chunk nb][Nb of chunks][Counter] --> 'abcd' N n 0
+* GET [hash_name][Chunk nb][Nb of chunks][Counter] --> 'abcd' N n [random <5]
 
 * 5 GET on 5 circuits : GET1 1 (W1), GET2 2 (W2), GET3 3 (W3),GET4 4 (W4),GET5 5 (W5)
 
 * The ORDB receives the request:
 
-	* If the counter is equal to TBD (5?), send db_end (to avoid loops between ORDBs)
+	* If the counter is equal to 5, send db_end (to avoid loops between ORDBs)
 
 	* if chunk nb is 0, the ORDB checks OR_Stream_P['abcd'], the result is an array of chunks indexes.
 
@@ -332,6 +332,8 @@ Each facilitator will be requested to retrieve a part of the file, which it will
 The facilitators are not storing the pieces that they are relaying, so they do not become seeders for Peersm world and nobody knows what they have, the requester becomes a seeder for the given file in Peersm world.
 
 The facilitators are total free riders for the torrent side, for anonymity purposes they do not contribue to the torrents, neither inform peers, answer to pieces requests and populate the DHT, other torrent peers can just know the IP address of the facilitator but can not know who is the requester.
+
+In addition they implement the find spies and block spies functions as described in [torrent-live](https://github.com/Ayms/torrent-live), hidding in the first step what they are really requesting, so it's really unlikely that some can track their real activity.
 
 The hash_name of the file will correspond to the infohash of the bittorrent file (ie the hash of the info part of the metadata file descriptor), to retrieve a bittorrent file a magnet link can be entered or the hash of the magnet link alone, in both cases the system will initiate the search based on the hash. (TODO: see compatibility with Peersm hash_names)
 
