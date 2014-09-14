@@ -149,31 +149,21 @@ The facilitators are implementing a bittorrent client and therefore allow Peersm
 
 ####Boostrap and peers discovery
 
-A sends to the bridge a DB_FIND_PEER request [A-ID,A-modulus], the bridge registers A and replies with a DB_FOUND_PEER request [ID,IP,port,modulus] of one peer connected to it randomely chosen where IP:port corresponds to the node that will perform the peers introduction, it can be a bridge or a peer. Bridges are not numerous and at least the facilitators are connected to them, so it's unlikely that no peers are connected to a bridge.
+A sends to the bridge a DB_FIND_PEER request [IDA,modulusA], the bridge registers A and replies with a DB_FOUND_PEER request [IDB,modulusB,[ID,modulus]] of one peer B connected to it close to A where [ID,modulus] corresponds to a list of nodes (limited to 5 closest to A) that can perform the peers introduction. Bridges are not numerous and at least the facilitators are connected to them, so it's unlikely that no peers are connected to a bridge.
 
 If the servers are blocked, the peer introduction can be performed by other means : mirror servers or social networks, A just needs to know about one peer first.
 
-For simplification reasons, A can load http://peersm.com/peersm#Bridge_IP:Bridge_port-Peer_IP:Peer_port, simplification because it's not supposed to be very good to have this information in the URL since our server delivering the code will know it, but in that case that's not really a sensitive information.
-
 A can send different requests to differents bridges to discover some peers.
 
-A connects to one of them (CREATE_FAST) and sends a FIND_NODE [ID, modulus], it receives n (<=8) peers (n FOUND messages [ID,IP,port,modulus]) closest to it.
+A connects to B and create circuits with the nodes connected to B.
 
-Then it does this (CREATE_FAST + FIND_NODE) to closer and closer nodes until it cannot find any closer or until it has at least 6 circuits. When A has 6 circuits it continues to discover the peers the same way just sending a FIND_NODE message.
+A adds the peers in its routing table [ID,modulus,[ID,modulus]] and advertises the bridge it is connected to [IDA,modulusA,IDx,modulusx].
 
-A adds the peers in its routing table.
-
-A extends each circuit to another peer it knows randomely chosen and different from the ones it has already connected to.
-
-Each peer connected to A adds A in its routing table.
+Each peer connected to A adds A in its routing table and does the same as above.
 
 The peers where A connected to will act as the ORDBs.
 
 Peers are ORDBs and ORDBs are peers but the two functions should not be mixed, even if it can be confusing since the same code and port are used for both functions.
-
-The peers can leave the network without telling the others (the peer closes his browser for example), so peers are testing the peers they know with a PING every 15mn. They associate to each peer its live time and sort the bucket from the older to the newer, if the bucket is full no new peer can be added.
-
-If a peer disconnects from A, A will establish a new circuit (CREATE_FAST) with a peer randomely chosen taking the first one of the selected bucket and extend to another one randomely chosen too.
 
 ####Content discovery
 
@@ -261,7 +251,7 @@ A requests 'abcd' :
 
 			* if no result, the ORDB sends a FIND_VALUE ['abcd'] to the 4 closest peers from 'abcd' it knows:
 
-				* as soon as it receives a [ID,IP,port,modulus] answer it connects to the other ORDB node ID (CREATE_FAST), add the new circuit in OR_ORDB['abcd'], increments the counter and sends the request if not already sent.
+				* as soon as it receives a [ID,IP,port,modulus] answer it connects to the other ORDB node ID, add the new circuit in OR_ORDB['abcd'], increments the counter and sends the request if not already sent.
 
 				* if the answer is a list of nodes (8 max), these are nodes closest from 'abcd' for the queried node, it continues to send FIND_VALUE['abcd'] to these nodes and implement the same process on reply.
 
@@ -433,7 +423,3 @@ If you like this project you can contact us and/or possibly donate : contact at 
 ## Some words :
 
 The disparition of Aaron Swartz begining of 2013 was a shock for us as for everybody. We did not know each other but exchanged a few emails where he suggested briefly just "to implement all of Tor in JavaScript" while our intent at that time was only to access the network using server side javascript. Apparently Aaron meant to put it inside the browser recognizing a kind of technical challenge. With this idea in mind we did node-Tor and came up with iAnonym and Peersm for the browser implementation, Aaron was aware of part of the result, hopefully this might help serving the causes he defended that we support too.
-
-
-
-
