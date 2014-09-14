@@ -157,7 +157,7 @@ A can send different requests to differents bridges to discover some peers.
 
 A connects to B and create circuits with the nodes connected to B.
 
-A adds the peers in its routing table [ID,modulus,[ID,modulus]] and advertises the bridge it is connected to [IDA,modulusA,IDx,modulusx].
+A adds the peers in its routing table [ID,modulus,[ID,modulus]] and advertises the bridge it is connected to [IDA,modulusA,IDX,modulusX].
 
 Each peer connected to A adds A in its routing table and does the same as above.
 
