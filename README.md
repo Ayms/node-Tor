@@ -151,7 +151,7 @@ Some facilitators (the [Peersm clients](https://github.com/Ayms/node-Tor/tree/ma
 
 The facilitators are implementing a bittorrent client and therefore allow Peersm users to stream or download torrents.
 
-####Boostrap and peers discovery
+####Bootstrap and peers discovery
 
 A connects to a bridge, the bridge registers A in the bridges DHT.
 
