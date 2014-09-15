@@ -133,13 +133,17 @@ Keys are generated for each session using the WebCrypto API generateKey method w
 
 The ORDB function consists in serving a file or relaying the anonymized messages between a Peer A and a Peer B, several ORDBs can be in the path.
 
-Peers are implementing a Kadmelia DHT using their IDs (160 bits), each routing table is composed of 160 buckets of 8 peers max where for bucket j 2^j <=distance(peer,other peer)< 2^(j+1)
+Peers are implementing a Kademlia DHT using their IDs (160 bits), each routing table is composed of 160 buckets of 8 peers max where for bucket j 2^j <=distance(peer,other peer)< 2^(j+1)
 
 The DHT is not the only discovery means. The peers are communicating what they have to the ORDBs they are connected to, and the ORDBs (as peers) do the same as well as sending globally to the ORDBs they are connected too what they know other peers have, when a reference can not be found the DHT is used.
 
 If a peer is new (A), it can know how to connect to other peers asking to some servers (the WebSocket bridges used for direct download) that know about the peers.
 
 The Websocket bridges are a [Peersm bridge](https://github.com/Ayms/node-Tor/tree/master/install), anyone can install one, it can be an official Tor bridge but in that case it will not be able to advertise peers.
+
+Each peer is connected to at least one bridge.
+
+Bridges themselves have an ID and are implementing a Kademlia DHT for peers discovery.
 
 ####Facilitators and Bittorrent
 
@@ -149,19 +153,27 @@ The facilitators are implementing a bittorrent client and therefore allow Peersm
 
 ####Boostrap and peers discovery
 
-A sends to the bridge a DB_FIND_PEER request [IDA,modulusA], the bridge registers A and replies with a DB_FOUND_PEER request [IDB,modulusB,[ID,modulus]] of one peer B connected to it close to A where [ID,modulus] corresponds to a list of nodes (limited to 5 closest to A) that can perform the peers introduction. Bridges are not numerous and at least the facilitators are connected to them, so it's unlikely that no peers are connected to a bridge.
+A connects to a bridge, the bridge registers A in the bridges DHT.
+
+A sends to the bridge it is connected to a DB_FIND_PEER request [IDA,modulusA], the bridge registers A, queries the other bridges to find the closest node to A and replies with a DB_FOUND_PEER request [IDB,modulusB,IP:port] of several peers close to A where [IP:port] corresponds to the bridge that can perform the peers introduction, if missing the queried bridge can perform it. Bridges are not numerous and at least the facilitators are connected to them, so it's unlikely that no peers are connected to a bridge.
 
 If the servers are blocked, the peer introduction can be performed by other means : mirror servers or social networks, A just needs to know about one peer first.
 
 A can send different requests to differents bridges to discover some peers.
 
-A connects to B and create circuits with the nodes connected to B.
+A connects to B using the related bridge for peers introduction (INTRODUCE [IDB,SDPA offer], INTRODUCED [IDA,SDPB answer] )
 
-A adds the peers in its routing table [ID,modulus,[ID,modulus]] and advertises the bridge it is connected to [IDA,modulusA,IDX,modulusX].
+A sends a FIND_NODE to B, B replies with the closest nodes to A connected to it [IDN,modulusN,IP:port] where IP:port is the bridge where N is connected to in B routing tables.
+
+If B is connected to nobody (rare and unlikely case since all the nodes are connected to others), B does the same than A to discover the peers and connect to them, then passes the result to A.
+
+A create circuits (Tor protocol) with the nodes connected to B that will act as the ORDBs.
+
+A adds the peers in its routing table [IDN,modulusN,IP:port(N bridge),[IDx]] where [IDx] is a list of peers that can perform the introduction to N without requesting the bridges (A and B at least here).
+
+B does the same [IDA,modulusA,IP:port(B bridge),IDB]
 
 Each peer connected to A adds A in its routing table and does the same as above.
-
-The peers where A connected to will act as the ORDBs.
 
 Peers are ORDBs and ORDBs are peers but the two functions should not be mixed, even if it can be confusing since the same code and port are used for both functions.
 
@@ -179,7 +191,7 @@ A advertises the ORDBs of what they have when a file is uploaded too.
 
 The content is referenced by hash_names, which are the hash of the DB_CONNECTED answers so a malicious ORDB can not fake the content while relaying it.
 
-Each time an ORDB has a new hash_name 'abcd' it sends a STORE message ['abcd',ID,IP,port,modulus,P] to the closest node from the hash_name.
+Each time an ORDB has a new hash_name 'abcd' it sends a STORE message ['abcd',ID,modulus,IP:port,P] to the closest node from the hash_name (the ORDB queries the nodes and the bridge it is connected to and performs a lookup based on the closest one until no closest nodes can be found, the peers introduction during the lookup is performed by bridges or peers as for the peers discovery).
 
 Then the closest node sends the same STORE message to the closest node it knows from the hash_name, and so on.
 
@@ -251,7 +263,7 @@ A requests 'abcd' :
 
 			* if no result, the ORDB sends a FIND_VALUE ['abcd'] to the 4 closest peers from 'abcd' it knows:
 
-				* as soon as it receives a [ID,IP,port,modulus] answer it connects to the other ORDB node ID, add the new circuit in OR_ORDB['abcd'], increments the counter and sends the request if not already sent.
+				* as soon as it receives a [ID,modulus,IP:port] answer it connects to the other ORDB node ID, add the new circuit in OR_ORDB['abcd'], increments the counter and sends the request if not already sent.
 
 				* if the answer is a list of nodes (8 max), these are nodes closest from 'abcd' for the queried node, it continues to send FIND_VALUE['abcd'] to these nodes and implement the same process on reply.
 
@@ -314,6 +326,8 @@ Pieces size in bittorrent are usually in the range of 200 kB to 1 MB, they are m
 Chunks are requested sequentially, they are then reordered and streamed or stored in indexedDB.
 
 A new peer requesting something will get quickly the first pieces. The new peer is becoming a seeder for the others as soon as it advertises to have at least 25% of pieces.
+
+Unlike with the bittorrent protocol, the peers can not freeride (see [torrent-live](https://github.com/Ayms/torrent-live) ie not doing anything except requesting pieces from others, not answering to anything and not sharing anything) since they are referenced by others, they must participate to the common effort, a peer attempting to freeride will get disconnected.
 
 #### Bridging with Bittorrent:
 
