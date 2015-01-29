@@ -13,6 +13,10 @@ Or a side effect project (Download and stream live (while the download is in pro
 
 [torrent-live](https://github.com/Ayms/torrent-live)
 
+or
+
+Check out [torrent-live](http://www.torrent-live.org) for a more general presentation and to get the dynamic blocklist.
+
 The minified code for browsers is in the min directory.
 
 You can install:
