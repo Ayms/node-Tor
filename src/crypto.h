@@ -1,4 +1,5 @@
 #include <v8.h>
+
 #include <node.h>
 #include <node_object_wrap.h>
 #include <node_buffer.h>
@@ -14,13 +15,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+
 #include "common.h"
+
+#include <nan.h>
 
 using namespace v8;
 using namespace node;
 
 
-class PEM_: node::ObjectWrap {
+class PEM_: public node::ObjectWrap {
   public:
     static Persistent<FunctionTemplate> constructor;
     static void Initialize(Handle<Object> target);
@@ -28,14 +32,14 @@ class PEM_: node::ObjectWrap {
     PEM_();
 
   protected:
-    static Handle<Value> New(const Arguments &args);
-    static Handle<Value> PEMtoModulus(const Arguments &args);
+    static NAN_METHOD(New);
+    static NAN_METHOD(PEMtoModulus);
   private:
     ~PEM_();
 };
 
 
-class AES: node::ObjectWrap {
+class AES: public node::ObjectWrap {
   public:
     static Persistent<FunctionTemplate> constructor;
     static void Initialize(Handle<Object> target);
@@ -43,14 +47,14 @@ class AES: node::ObjectWrap {
     AES();
 
   protected:
-    static Handle<Value> New(const Arguments &args);
-    static Handle<Value> AESEncrypt(const Arguments &args);
-    static Handle<Value> AESDecrypt(const Arguments &args);
+    static NAN_METHOD(New);
+    static NAN_METHOD(AESEncrypt);
+    static NAN_METHOD(AESDecrypt);
   private:
     ~AES();
 };
 
-class RSA_: node::ObjectWrap {
+class RSA_: public node::ObjectWrap {
   public:
     static Persistent<FunctionTemplate> constructor;
     static void Initialize(Handle<Object> target);
@@ -58,14 +62,14 @@ class RSA_: node::ObjectWrap {
     RSA_();
 
   protected:
-    static Handle<Value> New(const Arguments &args);
-    static Handle<Value> RSAEncrypt(const Arguments &args);
-    static Handle<Value> RSADecrypt(const Arguments &args);
+    static NAN_METHOD(New);
+    static NAN_METHOD(RSAEncrypt);
+    static NAN_METHOD(RSADecrypt);
   private:
     ~RSA_();
 };
 
-class Hash: node::ObjectWrap {	
+class Hash: public node::ObjectWrap {	
   public:
 	EVP_MD_CTX mdctx; /* coverity[member_decl] */
 	const EVP_MD *md; /* coverity[member_decl] */
@@ -77,9 +81,9 @@ class Hash: node::ObjectWrap {
     Hash();
 
   protected:
-    static Handle<Value> New(const Arguments &args);
-    static Handle<Value> HashUpdate(const Arguments &args);
-    static Handle<Value> HashDigest(const Arguments &args);
+    static NAN_METHOD(New);
+    static NAN_METHOD(HashUpdate);
+    static NAN_METHOD(HashDigest);
 	
   private:
     ~Hash();

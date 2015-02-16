@@ -17,7 +17,7 @@ using namespace node;
 
 #define ASSERT_IS_STRING_OR_BUFFER(val) \
 if (!val->IsString() && !Buffer::HasInstance(val)) { \
-return ThrowException(Exception::TypeError(String::New("Not a string or buffer"))); \
+return NanThrowTypeError("Not a string or buffer"); \
 }
 
 #define hex2i(c) ((c) <= '9' ? ((c) - '0') : (c) <= 'Z' ? ((c) - 'A' + 10) : ((c) - 'a' + 10))
