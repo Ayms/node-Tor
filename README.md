@@ -387,7 +387,7 @@ This is of course far from protecting your anonymity and privacy and can not be 
 
 ##Convergence
 
-We are working now on a project reusing the Peersm global concepts/architecture (for personal digital ID and data management) as a global "Convergence" distributed/P2P network inside browsers allowing privacy/anonymity and secure:
+We are working now on a project reusing the Peersm global concepts/architecture (for personal digital ID and data management) and node-Tor concepts as a global "Convergence" distributed/P2P network inside browsers allowing privacy/anonymity and secure:
 
 * chat and messenging
 * file sharing/streaming
