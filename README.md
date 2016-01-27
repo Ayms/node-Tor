@@ -369,6 +369,8 @@ DB_END
 
 #### Security:
 
+For all security aspects, please see [The technical FAQs](http://www.peersm.com/?news), what follows describes some specifics.
+
 The initial peers returned by the bridge could be compromised, therefore they could send only compromised peers.
 
 But your ID does change for each session then if the peers are continuously returning peers that do not seem close enough to your ID, you could detect that they are compromised.
@@ -383,13 +385,26 @@ WebRTC is using self-signed certificates for DTLS, these certificates are change
 
 This is of course far from protecting your anonymity and privacy and can not be used in Peersm context, so Peersm is using the Tor protocol Certs cells mechanism explained above to make sure that you are talking to the peer with whom you have established the DTLS connection. This peer can still be a MITM but since you are extending the circuit to another peer known in the DHT, per the Tor protocol the possible MITM will not know what happens next, as mentionned above it becomes unlikely that the second peers are all compromised.
 
-#### Technical FAQs:
+####Convergence
 
-Please see [Technical FAQs](http://www.peersm.com/?news)
+We are working now on a project reusing the Peersm global concepts/architecture (for personal digital ID and data management) as a global "Convergence" distributed/P2P network inside browsers allowing privacy/anonymity and secure:
+
+* chat and messenging
+* file sharing/streaming
+* social networking
+* cooperative application
+* crypto currency
+
+and:
+
+* anonymous browsing
+* uProxy application inside browsers
+* Tor nodes inside browsers
+* protecting IOT (objects/users)
 
 ## Tests : 
 
-See the demo video on [Peersm] (http://www.peersm.com), the first release is available.
+See the demo video on [Peersm] (http://www.peersm.com)
 
 ## Install (initial version in lib directory) :
 
