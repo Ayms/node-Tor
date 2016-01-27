@@ -437,11 +437,3 @@ node-Tor can advantageously be coupled with :
 * [Ayms/node-dom](https://github.com/Ayms/node-dom)
 * [Ayms/node-bot](https://github.com/Ayms/node-bot)
 * [Ayms/node-gadgets](https://github.com/Ayms/node-gadgets)
-
-## Support/Sponsors :
-
-If you like this project you can contact us and/or possibly donate : contact at peersm.com or via PayPal.
-
-## Some words :
-
-The disparition of Aaron Swartz begining of 2013 was a shock for us as for everybody. We did not know each other but exchanged a few emails where he suggested briefly just "to implement all of Tor in JavaScript" while our intent at that time was only to access the network using server side javascript. Apparently Aaron meant to put it inside the browser recognizing a kind of technical challenge. With this idea in mind we did node-Tor and came up with iAnonym and Peersm for the browser implementation, Aaron was aware of part of the result, hopefully this might help serving the causes he defended that we support too.
