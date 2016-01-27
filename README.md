@@ -385,7 +385,7 @@ WebRTC is using self-signed certificates for DTLS, these certificates are change
 
 This is of course far from protecting your anonymity and privacy and can not be used in Peersm context, so Peersm is using the Tor protocol Certs cells mechanism explained above to make sure that you are talking to the peer with whom you have established the DTLS connection. This peer can still be a MITM but since you are extending the circuit to another peer known in the DHT, per the Tor protocol the possible MITM will not know what happens next, as mentionned above it becomes unlikely that the second peers are all compromised.
 
-####Convergence
+##Convergence
 
 We are working now on a project reusing the Peersm global concepts/architecture (for personal digital ID and data management) as a global "Convergence" distributed/P2P network inside browsers allowing privacy/anonymity and secure:
 
