@@ -437,9 +437,12 @@ The intent of this project is to provide Tor mechanisms in a web language, so it
 It is easy to install and to scale, does not depend on specific applications and can interact with js modules, then it is possible to easily build web/js applications on top of it (chat, etc).
 
 node-Tor's nodes can be used to create complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, it can be used to create separated Tor like networks.
+
+See the Convergence section above
 	
 ## Related projects :
 
+* [Ayms/bittorrent-nodeID](https://github.com/Ayms/bittorrent-nodeid)
 * [Ayms/torrent-live](https://github.com/Ayms/torrent-live)
 * [Ayms/iAnonym](https://github.com/Ayms/iAnonym)
 * [Interception Detector](http://www.ianonym.com/intercept.html)
