@@ -387,7 +387,7 @@ This is of course far from protecting your anonymity and privacy and can not be 
 
 ##Convergence
 
-We are working now on a project reusing the Peersm global concepts/architecture (for personal digital ID and data management) and node-Tor concepts as a global "Convergence" distributed/P2P network handling peer ID management/discovery inside browsers allowing privacy/anonymity and secure:
+We are working now on a project reusing the Peersm (Peer Shared Mesh technology) global concepts/architecture (for personal digital ID and data management) and node-Tor concepts as a global "Convergence" distributed/P2P network handling peer ID management/discovery inside browsers allowing privacy/anonymity and secure:
 
 * chat and messenging
 * file sharing/streaming
@@ -442,6 +442,7 @@ See the Convergence section above
 	
 ## Related projects :
 
+* [Ayms/bitcoin-wallets](https://github.com/Ayms/bitcoin-wallets)
 * [Ayms/bittorrent-nodeID](https://github.com/Ayms/bittorrent-nodeid)
 * [Ayms/torrent-live](https://github.com/Ayms/torrent-live)
 * [Ayms/iAnonym](https://github.com/Ayms/iAnonym)
