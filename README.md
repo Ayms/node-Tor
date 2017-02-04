@@ -402,6 +402,8 @@ and:
 * Tor nodes inside browsers
 * protecting IOT (objects/users)
 
+Please see the description [here](http://www.peersm.com/Convergence.pdf)
+
 ## Tests : 
 
 See the demo video on [Peersm] (http://www.peersm.com)
