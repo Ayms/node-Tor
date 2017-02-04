@@ -33,6 +33,8 @@ Example of implementations:
 * Peersm (http://www.peersm.com) : Anonymous P2P serverless network inside browsers, no installation, encrypted and untrackable
 
 * iAnonym :Anonymity into your browser everywhere from any device, see https://www.github.com/Ayms/iAnonym and http://www.ianonym.com
+
+Convergence project (please see below) specs: [Convergence](http://www.peersm.com/Convergence.pdf)
  
 ## Presentation:
 
