@@ -119,7 +119,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 	and what they have. The Peersm clients are bridging the Peersm world (browsers)
 	with the bittorrent world.
 
-####General
+#### General
 
 Each peer is implementing the Tor protocol (Onion proxy and Onion router) and the ORDB function.
 
@@ -129,13 +129,13 @@ WebRTC is used to connect peers and exchange UDP data.
 
 The standalone js code is loaded using http://peersm.com/peersm or can be installed as a bookmarklet from [standalone](https://github.com/Ayms/node-Tor/tree/master/min)
 
-####ID and Onion keys
+#### ID and Onion keys
 
 Each peer generates a public/private key and a corresponding self-signed certificate (ID certificate), its fingerprint (or ID) is the hash of the DER format of its public key. In what follows 'modulus' is the modulus of the public key (128 B).
 
 Keys are generated for each session using the WebCrypto API generateKey method with 'extractable' parameter set to false. In WebCrypto the keys are handled in an opaque format, you can not access them and you can not export them if extractable is false, except the public key whose extractable parameter is always true (fingerprint=exportKey(spki)+digest(), modulus: RsaKeyAlgorithm object that hangs off Key.algorithm). Keys do support the structured clone algorithm, so could be stored in indexedDB but, even if expensive, we generate a new pair for each session so users ID change and users can not be tracked based on their keys.
 
-####DHT and Bridges
+#### DHT and Bridges
 
 The ORDB function consists in serving a file or relaying the anonymized messages between a Peer A and a Peer B, several ORDBs can be in the path.
 
@@ -151,13 +151,13 @@ Each peer is connected to at least one bridge.
 
 Bridges themselves have an ID and are implementing a Kademlia DHT for peers discovery.
 
-####Facilitators and Bittorrent
+#### Facilitators and Bittorrent
 
 Some facilitators (the [Peersm clients](https://github.com/Ayms/node-Tor/tree/master/install)) running as background processes are doing the same than browsers in order to keep some peers alive and to share files if the peers close their browsers. They can run on PC, Mac, servers and ADSL boxes/routers.
 
 The facilitators are implementing a bittorrent client and therefore allow Peersm users to stream or download torrents.
 
-####Bootstrap and peers discovery
+#### Bootstrap and peers discovery
 
 A connects to a bridge, the bridge registers A in the bridges DHT.
 
@@ -183,7 +183,7 @@ Each peer connected to A adds A in its routing table and does the same as above.
 
 Peers are ORDBs and ORDBs are peers but the two functions should not be mixed, even if it can be confusing since the same code and port are used for both functions.
 
-####Content discovery
+#### Content discovery
 
 A advertises the ORDBs when they have 25%, 50%, 75% and 100% of a file.
 
@@ -201,7 +201,7 @@ Each time an ORDB has a new hash_name 'abcd' it sends a STORE message ['abcd',ID
 
 Then the closest node sends the same STORE message to the closest node it knows from the hash_name, and so on.
 
-####Data validation
+#### Data validation
 
 Unlike bittorrent, there is no metadata file to describe pieces and check their integrity.
 
@@ -211,7 +211,7 @@ The signing process is based on asymmetric crypography (TODO, clarify this), it 
 
 The format of the signature is: [timestamp in seconds 4B][4 first bytes of the signature 4B]
 
-####Pieces and sliding window
+#### Pieces and sliding window
 
 Tor protocol cells have a size of 512 B, the payload for streams is 498 B.
 
@@ -227,7 +227,7 @@ This chunk size can look small but since the Tor protocol is fragmenting by bloc
 
 Window size: ~500 kB - divided in 5 blocks W1 to W5
 
-####Requests
+#### Requests
 
 A requests 'abcd' :
 
@@ -387,7 +387,7 @@ WebRTC is using self-signed certificates for DTLS, these certificates are change
 
 This is of course far from protecting your anonymity and privacy and can not be used in Peersm context, so Peersm is using the Tor protocol Certs cells mechanism explained above to make sure that you are talking to the peer with whom you have established the DTLS connection. This peer can still be a MITM but since you are extending the circuit to another peer known in the DHT, per the Tor protocol the possible MITM will not know what happens next, as mentionned above it becomes unlikely that the second peers are all compromised.
 
-##Convergence
+## Convergence
 
 We are working now on a project reusing the Peersm (Peer Shared Mesh technology) global concepts/architecture (for personal digital ID and data management) and node-Tor concepts as a global "Convergence" distributed/P2P network handling peer ID management/discovery inside browsers allowing privacy/anonymity and secure:
 
