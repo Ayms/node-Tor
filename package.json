@@ -4,34 +4,32 @@
   "version": "0.1.0",
   "homepage": "http://www.jcore.fr",
   "keywords": [
-		"bot",
-		"gadget",
-		"widget",
-		"crawler",
-        "dom",
-		"html",
-		"js",
-		"style",
-		"css",
-        "w3c",
-        "javascript",
-		"ajax"
+    "bot",
+    "gadget",
+    "widget",
+    "crawler",
+    "dom",
+    "html",
+    "js",
+    "style",
+    "css",
+    "w3c",
+    "javascript",
+    "ajax"
   ],
-  "maintainers": [
-      {
-          "name": "Aymeric Vitte"
-      }
-  ],
-  "contributors": [
-  ],
+  "maintainers": [{
+    "name": "Aymeric Vitte"
+  }],
+  "contributors": [],
+  "dependencies": {
+    "nan": "^1.6.1"
+  },
   "repository": {
     "url": ""
   },
-  "licenses": [
-      {
-          "type": "MIT"
-      }
-  ],
+  "licenses": [{
+    "type": "MIT"
+  }],
   "author": "Aymeric Vitte <vitteaymeric@gmail.com> (http://www.jcore.fr)",
   "main": "./lib/tor.js",
   "engines": {

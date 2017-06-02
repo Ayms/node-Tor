@@ -1,5 +1,6 @@
 //Copyright 2012 jCore Aymeric Vitte (+ some parts of node.js crypto code)
 
+#include <nan.h>
 #include "crypto.h"
 
 static char* LoadBuf (Handle<Value> buf) {
@@ -17,7 +18,7 @@ static BIO* LoadBIO (Handle<Value> v) {
 	BIO *bio = BIO_new(BIO_s_mem());
 	if (!bio) return NULL;
 
-	HandleScope scope;
+	NanScope();
 
 	int r = -1;
 
@@ -42,64 +43,60 @@ static BIO* LoadBIO (Handle<Value> v) {
 Persistent<FunctionTemplate> AES::constructor;
 
 void AES::Initialize(Handle<Object> target) {
-	HandleScope scope;
+	NanScope();
 
-	constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(AES::New));
+	Local<FunctionTemplate> constructor = NanNew<FunctionTemplate>(AES::New);
+
 	constructor->InstanceTemplate()->SetInternalFieldCount(1);
-	constructor->SetClassName(String::NewSymbol("AES"));
+	constructor->SetClassName(NanNew("AES"));
 
 	NODE_SET_PROTOTYPE_METHOD(constructor, "encrypt", AESEncrypt);
 	NODE_SET_PROTOTYPE_METHOD(constructor, "decrypt", AESDecrypt);
 
-	Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
-	target->Set(String::NewSymbol("AES"), constructor->GetFunction());
+	target->Set(NanNew("AES"), constructor->GetFunction());
 }
 
-Handle<Value> AES::New(const Arguments &args) {
-	HandleScope scope;
+NAN_METHOD(AES::New) {
+	NanScope();
 	AES *d = new AES();
 	d->Wrap(args.This());
-	return args.This();
 }
 
-Handle<Value> AES::AESEncrypt(const Arguments& args) {
+NAN_METHOD(AES::AESEncrypt) {
 }
  
-Handle<Value> AES::AESDecrypt(const Arguments& args) {
+NAN_METHOD(AES::AESDecrypt) {
 }
 
 Persistent<FunctionTemplate> RSA_::constructor;
 
 void RSA_::Initialize(Handle<Object> target) {
-	HandleScope scope;
+	NanScope();
 
-	constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(RSA_::New));
+	Local<FunctionTemplate> constructor = NanNew<FunctionTemplate>(RSA_::New);
+
 	constructor->InstanceTemplate()->SetInternalFieldCount(1);
-	constructor->SetClassName(String::NewSymbol("Rsa"));
+	constructor->SetClassName(NanNew("Rsa"));
 
 	NODE_SET_PROTOTYPE_METHOD(constructor, "encrypt", RSAEncrypt);
 	NODE_SET_PROTOTYPE_METHOD(constructor, "decrypt", RSADecrypt);
 
-	Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
-	target->Set(String::NewSymbol("Rsa"), constructor->GetFunction());
+	target->Set(NanNew("Rsa"), constructor->GetFunction());
 }
 
 
-Handle<Value> RSA_::New(const Arguments &args) {
-	HandleScope scope;
+NAN_METHOD(RSA_::New) {
+	NanScope();
 	RSA_ *d = new RSA_();
 	d->Wrap(args.This());
-	return args.This();
 }
 
-Handle<Value> RSA_::RSAEncrypt(const Arguments& args) {
+NAN_METHOD(RSA_::RSAEncrypt) {
 
-	HandleScope scope;
+	NanScope();
 	
 	RSA *rsa_pub = RSA_new();
 	unsigned char pad;
-
-	enum encoding enc = BINARY;
 	
 	char *n = LoadBuf(args[0]);
 	
@@ -135,7 +132,7 @@ Handle<Value> RSA_::RSAEncrypt(const Arguments& args) {
 	String::Utf8Value encoding(args[4]->ToString());
 
 	if (written == 0) {
-		outString = String::New("");
+		outString = NanNew<String>("");
 	} else if (strcasecmp(*encoding, "hex") == 0) {
 		char *out_hex;
 		int out_hex_len;
@@ -157,16 +154,14 @@ Handle<Value> RSA_::RSAEncrypt(const Arguments& args) {
 	delete [] n;
 	delete [] e;
 	RSA_free(rsa_pub);
-	return scope.Close(outString);
+	NanReturnValue(outString);
 }
 
-Handle<Value> RSA_::RSADecrypt(const Arguments &args) {
+NAN_METHOD(RSA_::RSADecrypt) {
 
-	HandleScope scope;
+	NanScope();
 	
 	RSA *rsa_priv = RSA_new();
-	
-	enum encoding enc = BINARY;
 	
 	char *n = LoadBuf(args[0]);
 
@@ -235,7 +230,7 @@ Handle<Value> RSA_::RSADecrypt(const Arguments &args) {
 	int written = RSA_private_decrypt(ct_len, (unsigned char*)ct_buf, out_buf, rsa_priv, pad);
 	
 	if (written < 0) {
-		return ThrowException(Exception::Error(String::New("Problem Decrypting Message")));
+		return NanThrowError("Problem Decrypting Message");
 	}
 
 	delete [] ciphertext;
@@ -256,34 +251,33 @@ Handle<Value> RSA_::RSADecrypt(const Arguments &args) {
 	HexEncode(out_buf, written, &out_hex, &out_hex_len);
 	outString = Encode(out_hex, out_hex_len, BINARY);
 
-	return scope.Close(outString);
+	NanReturnValue(outString);
 }
 
 Persistent<FunctionTemplate> PEM_::constructor;
 
 void PEM_::Initialize(Handle<Object> target) {
-	HandleScope scope;
+	NanScope();
 
-	constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(PEM_::New));
+	Local<FunctionTemplate> constructor = NanNew<FunctionTemplate>(PEM_::New);
+
 	constructor->InstanceTemplate()->SetInternalFieldCount(1);
-	constructor->SetClassName(String::NewSymbol("PEM"));
+	constructor->SetClassName(NanNew("PEM"));
 
 	NODE_SET_PROTOTYPE_METHOD(constructor, "modulus", PEMtoModulus);
 
-	Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
-	target->Set(String::NewSymbol("PEM"), constructor->GetFunction());
+	target->Set(NanNew("PEM"), constructor->GetFunction());
 }
 
-Handle<Value> PEM_::New(const Arguments &args) {
-	HandleScope scope;
+NAN_METHOD(PEM_::New) {
+	NanScope();
 	PEM_ *d = new PEM_();
 	d->Wrap(args.This());
-	return args.This();
 }
 
-Handle<Value> PEM_::PEMtoModulus(const Arguments &args) {
+NAN_METHOD(PEM_::PEMtoModulus) {
 
-	HandleScope scope;
+	NanScope();
 	
 	int len = 256;
 	char *m[len];
@@ -299,24 +293,24 @@ Handle<Value> PEM_::PEMtoModulus(const Arguments &args) {
 	Local<Value> outString;
 	outString = Encode(m,len,BINARY);
 
-	return scope.Close(outString);
+	NanReturnValue(outString);
 
 };
 
 Persistent<FunctionTemplate> Hash::constructor;
 
 void Hash::Initialize(Handle<Object> target) {
-	HandleScope scope;
+	NanScope();
 
-	constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(Hash::New));
+	Local<FunctionTemplate> constructor = NanNew<FunctionTemplate>(Hash::New);
+
 	constructor->InstanceTemplate()->SetInternalFieldCount(1);
-	constructor->SetClassName(String::NewSymbol("Hash"));
+	constructor->SetClassName(NanNew("Hash"));
 
 	NODE_SET_PROTOTYPE_METHOD(constructor, "update", HashUpdate);
 	NODE_SET_PROTOTYPE_METHOD(constructor, "digest", HashDigest);
 
-	Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
-	target->Set(String::NewSymbol("Hash"), constructor->GetFunction());
+	target->Set(NanNew("Hash"), constructor->GetFunction());
 }
 
 bool Hash::HashInit (const char* hashType) {
@@ -334,30 +328,29 @@ int Hash::HashUpdate(char* data, int len) {
 	return 1;
 }
 
-Handle<Value> Hash::New(const Arguments &args) {
+NAN_METHOD(Hash::New) {
 
-	HandleScope scope;
+	NanScope();
 
 	if (args.Length() == 0 || !args[0]->IsString()) {
-		return ThrowException(Exception::Error(String::New(
-		"Must give hashtype string as argument")));
+		return NanThrowError(NanNew<String>("Must give hashtype string as argument"));
 	}
 
 	String::Utf8Value hashType(args[0]);
 	
 	Hash *hash = new Hash();
+	
 	if (!hash->HashInit(*hashType)) {
-	delete hash;
-	return ThrowException(Exception::Error(String::New(
-		"Digest method not supported")));
+		delete hash;
+		return NanThrowError(NanNew<String>("Digest method not supported"));
 	}
+	
 	hash->Wrap(args.This());
-	return args.This();
 }
 
-Handle<Value> Hash::HashUpdate(const Arguments& args) {
+NAN_METHOD(Hash::HashUpdate) {
 
-	HandleScope scope;
+	NanScope();
 	
 	Hash *hash = ObjectWrap::Unwrap<Hash>(args.This());
 
@@ -366,8 +359,7 @@ Handle<Value> Hash::HashUpdate(const Arguments& args) {
 	ssize_t len = DecodeBytes(args[0], enc);
 
 	if (len < 0) {
-		Local<Value> exception = Exception::TypeError(String::New("Bad argument"));
-		return ThrowException(exception);
+		return NanThrowError(NanNew<String>("Bad argument"));
 	}
 
 	int r;
@@ -386,20 +378,18 @@ Handle<Value> Hash::HashUpdate(const Arguments& args) {
 		}
 
 	if (!r) {
-		Local<Value> exception = Exception::TypeError(String::New("HashUpdate fail"));
-		return ThrowException(exception);
+		return NanThrowError(NanNew<String>("HashUpdate fail"));
 	}
 
-	return args.This();
 }
 
-Handle<Value> Hash::HashDigest(const Arguments& args) {
-	HandleScope scope;
+NAN_METHOD(Hash::HashDigest) {
+	NanScope();
 	
 	Hash *hash = ObjectWrap::Unwrap<Hash>(args.This());
 
 	//if (!hash->initialised_) {
-	//	return ThrowException(Exception::Error(String::New("Not initialized")));
+	//	return NanThrowError("Not initialized");
 	//}
 
 	unsigned char md_value[EVP_MAX_MD_SIZE];
@@ -415,7 +405,7 @@ Handle<Value> Hash::HashDigest(const Arguments& args) {
 	//hash->initialised_ = false;
 
 	if (md_len == 0) {
-		return scope.Close(String::New(""));
+		NanReturnValue(NanNew<String>(""));
 	}
 
 	Local<Value> outString;
@@ -439,7 +429,7 @@ Handle<Value> Hash::HashDigest(const Arguments& args) {
 		fprintf(stderr, "node-crypto : Hash .digest encoding "
                       "can be binary, hex or base64\n");
 	}
-	return scope.Close(outString);
+	NanReturnValue(outString);
 }
 
 Hash::Hash () : ObjectWrap () {
@@ -471,7 +461,7 @@ PEM_::~PEM_() {
 }
 
 void init(Handle<Object> target) {
-    AES::Initialize(target);
+    	AES::Initialize(target);
 	RSA_::Initialize(target);
 	PEM_::Initialize(target);
 	Hash::Initialize(target);
