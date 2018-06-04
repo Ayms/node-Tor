@@ -3,11 +3,11 @@ node-Tor
 
 Javascript implementation of a Tor (or Tor like) anonymizer network (The Onion Router https://www.torproject.org/)
 
-For a quick look, see the demo video on [Peersm] (http://www.peersm.com), download and stream anonymously inside your browser, serverless anonynous P2P network compatible with torrents.
+For a quick look, see the demo video on [Peersm](http://www.peersm.com), download and stream anonymously inside your browser, serverless anonynous P2P network compatible with torrents.
 
 And try:
 
-[Peersm app] (http://peersm.com/peersm)
+[Peersm app](http://peersm.com/peersm)
 
 Or a side effect project (Download and stream live (while the download is in progress) torrents with your browser, as a total freerider minimize your visibility, send it to your TV, avoid spies and trackers):
 
@@ -26,13 +26,13 @@ You can install:
 
 Several routers are live and inserted inside the Tor network.
 
-The bittorrent client inside Peersm clients is based on a modified version of [torrent-stream] (https://github.com/mafintosh/torrent-stream) implementation.
+The bittorrent client inside Peersm clients is based on a modified version of [torrent-stream](https://github.com/mafintosh/torrent-stream) implementation.
 
 Example of implementations:
 
 * Peersm (http://www.peersm.com) : Anonymous P2P serverless network inside browsers, no installation, encrypted and untrackable
 
-* iAnonym :Anonymity into your browser everywhere from any device, see https://www.github.com/Ayms/iAnonym and http://www.ianonym.com
+* iAnonym : Anonymity into your browser everywhere from any device, see https://www.github.com/Ayms/iAnonym and http://www.ianonym.com
 
 Convergence project (please see below) specs: [Convergence](http://www.peersm.com/Convergence.pdf)
  
