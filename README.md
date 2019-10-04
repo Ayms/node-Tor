@@ -85,7 +85,7 @@ Launch the Websocket OR:
 
 Create circuits from the OP:
 
-	Tor((socket interface connected to an OR))
+	Tor((socket interface connected to an OR), this can be a Duplex stream too)
 
 where socket.params_ is ``{OP:true,nb_hop:NB_DB_HOP}``
 
