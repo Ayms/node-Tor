@@ -1,3 +1,5 @@
+Warning: this branch of the repo is now deprecated, we keep it for historical reasons now that node-Tor is open source in clear
+
 Installing Peersm client and node-Tor Bridge WebSocket server
 ===
 
