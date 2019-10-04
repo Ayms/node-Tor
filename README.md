@@ -89,6 +89,8 @@ Create circuits from the OP:
 
 where socket.params_ is ``{OP:true,nb_hop:NB_DB_HOP}``
 
+or
+
 	Tor({params_:{OP:true,nb_hop:NB_DB_HOP,ws:(Websocket interface)}});
 
 or
