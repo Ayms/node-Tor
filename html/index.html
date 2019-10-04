@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+<style nonce="811484f7160adfc00ee7d9989bfb58753af62f53">
+body, td, th {
+    font-family: 'Open Sans',Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    color: rgb(51, 51, 51);
+    line-height: 15px;
+}
+li {
+	margin-top:5px;
+	font-weight:500;
+}
+.top{
+    height: 50px;
+    background-color: rgb(21, 20, 18);
+}
+.logo {
+    display: block;
+    background-image: url("http://www.peersm.com/img/logo_peersm.png");
+    background-size: 180px 50px;
+    background-position: left top;
+    background-repeat: no-repeat;
+    width: 178px;
+    height: 39px;
+    float: left;
+    margin: 0px 0px 0px 6px;
+}
+.twrap {
+    background-color: #EDEDED;
+    background-repeat: no-repeat;
+    background-position: center 50px;
+    min-height: 100%;
+    position: relative;
+	font-family: 'Open Sans',Arial,Helvetica,sans-serif;
+}
+.wrap {
+    width: 979px;
+    margin: 0px auto;
+    min-height: 520px;
+}
+.chart {
+    width: 900px;
+	margin: 20px auto;
+}
+.circuit {
+	margin: 5px auto;
+	font-size: 12px;
+	font-weight: 600;
+}
+.console {
+    width: 900px;
+	height: 100px;
+	margin: 20px auto;
+	background-color: white;
+	overflow: scroll;
+}
+.download {
+    width: 900px;
+	margin: 20px auto;
+	background-color: white;
+	min-height:100px;
+	border-radius: 3px 3px 3px 3px;
+	clear: both;
+}
+.left {
+    width: 405px;
+    float: left;
+}
+.url.em {
+    background-image: url("http://www.peersm.com/img/loading2.png");
+    background-size: 35px 50px;
+    background-repeat: no-repeat;
+    background-position: 11px -6px;
+}
+.url {
+    background-color: white;
+    border-radius: 6px 6px 6px 6px;
+    height: 50px;
+    margin-top: 30px;
+    padding: 7px 7px 0px 43px;
+    -moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+    border: 3px solid rgba(21, 20, 19, 0.5);
+    background-clip: padding-box;
+	width: 50%;
+	float: left;
+}
+
+.iprompt {
+    background-color: white;
+    border-radius: 6px 6px 6px 6px;
+    height: 30px;
+    margin-top: 30px;
+    padding-left: 7px;
+    -moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+    border: 3px solid rgba(21, 20, 19, 0.5);
+    background-clip: padding-box;
+	width: 60%;
+	margin-left: 20%;
+	margin-top: 15px;
+}
+.box {
+	margin-top:5px;
+	width: 60%;
+	margin-left: 20%;
+}
+.url input {
+    border: 0px none;
+    background-color: white;
+    width: 100%;
+    outline: medium none;
+    font-family: 'Open Sans',Arial,Helvetica,sans-serif;
+    font-size: 16px;
+    line-height: 25px;
+    color: rgb(113, 113, 113);
+    margin: 0px;
+}
+input, div {
+    outline: medium none;
+}
+p {
+	color: #3F3E3E;
+    font-family: 'Open Sans Semibold',Arial,Helvetica;
+}
+.middle {
+    font-size: 20px;
+    padding-top: 5px;
+	text-align: center;
+}
+.log {
+	font-size: 10px;
+    padding: 0;
+	margin: 0;
+}
+.bar {
+	font-size: 12px;
+	font-weight:600;
+	margin:0;
+	padding:0;
+}
+.button {
+	background-color: #D9290B;
+    border-radius: 4px 4px 4px 4px;
+	text-align: center;
+    height: 50px;
+    margin-top: 30px;
+    padding-top: 10px;
+	margin-left: 2.5%;
+    -moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	font-family: 'Open Sans',Arial,Helvetica,sans-serif;
+    font-size: 16px;
+    line-height: 25px;
+    color: white;
+	cursor: pointer;
+	width: 13%;
+	float: left;
+}
+.button:hover {
+	background-color: #FF3B2B;
+}
+.hidden {
+	display: none;
+}
+.progress{
+	width: 125px;
+	padding: 10px
+	font-size: 12px;
+	padding: 5px;
+	display: inline-block;
+	margin-top: 25px;
+}
+.progressalert{
+	width: 80%;
+	margin-top: 5px;
+	margin-left: 10%;
+}
+.progcont {
+	background-color:grey;
+	height: 16px;
+	padding: 4px;
+	overflow: hidden;
+	border-radius: 15px 15px 15px 15px;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	box-sizing: border-box;
+}
+.progint {
+	height: 8px;
+	background-color: red;
+	margin: 0px;
+	width: 0px;
+	border-radius: 15px 15px 15px 15px;
+	cursor: pointer;
+}
+
+.thumbwrap {
+	cursor: pointer;
+    background-color: #F2F2F2;
+    border: 0 none;
+    border-radius: 5px 5px 5px 5px;
+	display: inline-block;
+    margin: 5px;
+    padding: 5px;
+}
+.thumb {
+	padding: 3px 3px 0;
+    text-align: center;
+}
+.thumbimg {
+	width: 60px;
+	height: 60px;
+}
+.thumbspan {
+
+}
+.menu {
+	position: absolute;
+	left: 100px;
+	top: 100px;
+	z-index: 10000;
+	width: 150px;
+	border-radius: 3px 3px 3px 3px;
+	background-color: #FDFDFD;
+	cursor: pointer;
+	display: none;
+	box-shadow: 0px 0px 4px rgb(136, 136, 136);
+}
+.item_menu_txt {
+	font-size: 13px;
+	padding:5px;
+	font-weight: 600;
+	vertical-align: 7px;
+}
+.item_menu_lnk {
+	text-decoration: none;
+	color: rgb(51, 51, 51);
+}
+.item_cont:hover {
+	background-color:	#D9290B;
+	color: white;
+}
+.item_cont {
+	background-color:#FDFDFD;
+	margin: 5px;
+	border-radius: 3px 3px 3px 3px;
+	color: #383B3D;
+}
+.upload {
+	opacity:0;
+	cursor:pointer;
+	position:relative;
+	left:0px;
+	top:-25px
+}
+.dialog-overlay {
+	width:100%;
+	height:100%;
+	opacity: 0.5;
+	background:#000;
+	position:absolute;
+	top:0;
+	left:0;
+	z-index:3000;
+}
+.dialog-box {
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+	border-radius: 5px;
+	background:#eee;
+	width:50%;
+	position:fixed;
+	left:25%;
+	top:25%;
+	z-index:5000;
+	display:none;
+}
+.dialog-box .dialog-content {
+	text-align:left;
+	padding:10px;
+	margin:13px;
+	color:#666;
+	font-size:14px;
+}
+.buttona {
+	margin:10px auto 0 auto;
+	text-align:center;
+	display: block;
+	width:50px;
+	padding: 5px 10px 6px;
+	margin-top:20px;
+	color: #fff;
+	text-decoration: none;
+	line-height: 1;
+	background-color: #D9290B;
+	border-radius: 4px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+	text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+	border-bottom: 1px solid rgba(0,0,0,0.25);
+	position: relative;
+	cursor: pointer;
+}
+.buttona:hover {
+	background-color: #FF3B2B;
+}
+.dialog-content p {
+	font-weight:500; margin:0;
+}
+.dialog-content ul {
+	margin:10px 0 10px 20px;
+	padding:0;
+	height:50px;
+}
+.media {
+	background-color: black;
+    border-radius: 4px 4px 4px 4px;
+    height: 370px;
+    -moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+    color: white;
+	cursor: pointer;
+	width: 640px;
+	position:fixed;
+	top: 25%;
+	left:50%;
+	margin-left:-320px;
+}
+.mediasrc {
+	margin-top:5px;
+    height: 360px;
+	width: 640px;
+}
+.boxclose{
+    float:right;
+    margin-top:-15px;
+    margin-right:-15px;
+    cursor:pointer;
+    color: #fff;
+    border: 1px solid #AEAEAE;
+    border-radius: 30px;
+    background: #605F61;
+    font-size: 31px;
+    font-weight: bold;
+    display: inline-block;
+    line-height: 0px;
+    padding: 11px 3px;
+}
+.boxclose:before {
+    content: "×";
+}
+</style>
+<div class="twrap">
+	<div id="top" class="top">
+		<span class="logo"></span>
+	</div>
+	<div class="wrap">
+		<div>
+			<div id="input" class="url em"></div>
+			<div id="stream" class="button">Stream</div>
+			<div id="ok" class="button">Download</div>
+			<div id="upload" class="button" style="cursor:default">
+				<div>Upload</div>
+				<input id="file_upload" class="upload" type="file">
+			</div>
+		</div>
+		<div style="padding-top:70px;padding-bottom:50px">
+			<div id="chart1" class="chart"></div>
+			<div id="chart2" class="chart"></div>
+			<div id="direct_text" class="circuit hidden"></div>
+			<div id="peer_text" class="circuit hidden"></div>
+			<p class="middle">Downloaded Files</p>
+			<div id="downloaded" class="download"></div>
+			<p class="middle">Local Files</p>
+			<div id="local" class="download"></div>
+			<div id="console" class="console"></div>
+		</div>
+	</div>
+	<div id="menu" class="menu">
+		<div id="open" class="item_cont">
+			<img class="item_menu_img" src="http://www.peersm.com/img/open.png">
+			<a class="item_menu_txt item_menu_lnk" target="_blank">Open/Save</a>
+		</div>
+		<div id="merge" class="item_cont">
+			<img class="item_menu_img" src="http://www.peersm.com/img/copy.png">
+			<span class="item_menu_txt">Merge</span>
+		</div>
+		<div id="delete" class="item_cont">
+			<img class="item_menu_img" src="http://www.peersm.com/img/delete.png">
+			<span class="item_menu_txt">Delete</span>
+		</div>
+		<div id="reload" class="item_cont">
+			<img class="item_menu_img" src="http://www.peersm.com/img/reload.png">
+			<span class="item_menu_txt">Resume</span>
+		</div>
+	</div>
+	<div id="menu2" class="menu">
+		<div id="open2" class="item_cont">
+			<img class="item_menu_img" src="http://www.peersm.com/img/open.png">
+			<a class="item_menu_txt item_menu_lnk" target="_blank">Open/Save</a>
+		</div>
+		<div id="rename2" class="item_cont">
+			<img class="item_menu_img" src="http://www.peersm.com/img/rename.png">
+			<span class="item_menu_txt">Rename</span>
+		</div>
+		<div id="delete2" class="item_cont">
+			<img class="item_menu_img" src="http://www.peersm.com/img/delete.png">
+			<span class="item_menu_txt">Delete</span>
+		</div>
+		<div id="reload2" class="item_cont">
+			<img class="item_menu_img" src="http://www.peersm.com/img/reload.png">
+			<span class="item_menu_txt">Resume</span>
+		</div>
+		<div id="encrypt2" class="item_cont">
+			<img class="item_menu_img" src="http://www.peersm.com/img/encrypt.png">
+			<span class="item_menu_txt">Encrypt</span>
+		</div>
+		<div id="decrypt2" class="item_cont">
+			<img class="item_menu_img" src="http://www.peersm.com/img/decrypt.png">
+			<span class="item_menu_txt">Decrypt</span>
+		</div>
+		<div id="property2" class="item_cont">
+			<img class="item_menu_img" src="http://www.peersm.com/img/property.png">
+			<span class="item_menu_txt">Properties</span>
+		</div>
+	</div>
+</div>
+
+<div id="alert_box" class="dialog-box">
+	<div class="dialog-content" align="center">
+		<div id="dialog-message"></div>
+		<div id="progress-alert" class="progressalert hidden">
+			<div class="progcont">
+				<div id="progint-alert" class="progint"></div>
+			</div>
+		</div>
+		<span id="close_alert" class="buttona">Close</a>
+	</div>
+</div>
+<div id="prompt_box" class="dialog-box">
+	<div class="dialog-content" align="center">
+		<div id="prompt-message"></div>
+		<input id="prompt-input" class="iprompt"></input>
+		<div class="box">
+			<input id="save" type="checkbox">Save key</input>
+			<!--<input id="graph" type="checkbox hidden">No graphs</input> -->
+			<input id="debug" type="checkbox">debug</input>
+		</div>
+		<span id="close_prompt" class="buttona">OK</a>
+	</div>
+</div>
+<script type="text/javascript" id="script" src="http://peersm.com/node-tor.js"></script>
+</body>
+</html>
