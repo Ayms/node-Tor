@@ -1,463 +1,186 @@
 node-Tor
 ===
 
-Javascript implementation of a Tor (or Tor like) anonymizer network (The Onion Router https://www.torproject.org/)
+Javascript open source implementation of the Tor protocol (The Onion Router https://www.torproject.org/) on server side and inside browsers
 
+## Presentation
 
-For a quick look, see the demo video on [Peersm] (http://www.peersm.com), download and stream anonymously inside your browser, serverless anonynous P2P network compatible with torrents.
+The purpose of this project is to offer a js implementation of the Tor protocol so it can be used on top of other protocols, whether on server side or inside browsers (using Websockets, WebRTC), most likely for p2p projects (like [Convergence](http://www.peersm.com/Convergence.pdf)), it supports the Onion Proxy and Onion Router features accessible via different interfaces (mainly direct TLS socket, SOCKS proxy and WebSockets, it can be extended to WebRTC for example)
 
-And try:
+Please see the [node-Tor presentation](https://nlnet.nl/project/node-Tor/), it is not intended to be used to add nodes in the Tor network, however it does support it but a minimum of Tor project specific features are implemented to allow this, please see the Specific settings section
 
-[Peersm app] (http://peersm.com/peersm)
+## Funding
 
-Or a side effect project (Download and stream live (while the download is in progress) torrents with your browser, as a total freerider minimize your visibility, send it to your TV, avoid spies and trackers):
+This module is funded by [NLnet](https://nlnet.nl/) under the [EU Horizon 2020 Next Generation internet Privacy & Trust Enhancing Technologies](https://nlnet.nl/PET/)
 
-[torrent-live](https://github.com/Ayms/torrent-live)
+The full code is now open source and provided in clear
+
+You can consider donating to BTC 19LgEmzSvD1oCr1QxT2dgmF5SSnh1aq94j
+
+## History
+
+This project was started in 2012 when we contacted the Tor project team with some objectives to use the Tor network at that time from the browser, then Aaron Swartz to whom we dedicate this project just replied "I think the right solution is to implement all of Tor in JavaScript, so that the web browser can set up the necessary tunnels and it has all the security guarantees of the client. Obviously, of course, this is quite a programming challenge."
+
+Then we did it, he got aware of the first commit which is the one that was public until now
+
+And we did continue the development over years, the full version used for [Peersm](http://www.peersm.com), [Peersm bridges](https://github.com/Ayms/node-Tor/tree/master/install) (bridging with bittorrent), [iAnonym](http://www.ianonym.com) was not public until now
+
+## License
+
+This project is under a MIT license
+
+## Phases
+
+If you intend to fork this module probably you should wait for phase 3
+
+- Phase 1: this is this commit, release the code open source in clear, clean and modular
+
+- Phase 2 (now+1.5 week): release the tools to setup a Tor node, correct some deprecated things (forge buffers, tls.createSecurePair)
+
+- Phase 3 (now+2.5 weeks): browserify everything and release the full code + Peersm interface
+
+## Dependencies
+
+This module is using the very good [Forge](https://github.com/digitalbazaar/forge), [sjcl](http://bitwiseshiftleft.github.io/sjcl/), [RSA and ECC in JavaScript](http://www-cs-students.stanford.edu/~tjw/jsbn/), [Browserify](https://github.com/browserify/browserify), [Terser](https://github.com/terser-js/terser) and other modules from us under a MIT license
+
+## Modifications
+
+We did clean the code, update it to ES6 and make it modular, as well as update it to the latest nodejs version
+
+We have removed the parts that we consider useless related to projects mentionned above (including browser emulation inside node, bittorrent and Peersm video streaming), but they still can be usefull for some potential uses, you can find them in [removed](https://github.com/Ayms/node-Tor/tree/master/lib/src/removed)
+
+The full initial code can be found [here](https://github.com/Ayms/node-Tor/tree/master/lib/src/removed/node-tor-original.js) if needed (good luck...this is a complex monolithic block with many options)
+
+We did keep the Peersm interface doing the OP to connect to Tor nodes, fetch the web or download from other peers, as well as the ORDB function for the ORs (please see the original doc https://github.com/Ayms/node-Tor/tree/master/README-old.md
+
+## Installation
+
+Install node and unzip [master](https://github.com/Ayms/node-Tor/archive/master.zip)
+
+## Browser interface
+
+To come - phase 3
+
+For now you can take a look at [Peersm](http://peersm.com/peersm) which is using the original code
+
+## Setting up your environment
+
+To come - phase 2
+
+## Use
+
+What starts everything is always a simple call to the ``Tor`` function or the use of ``handleRequest`` function
+
+Launch the OR:
+
+	Tor({params_:{port:OR_port}})
+
+The OR will listen/create tls sockets with Tor circuits, it can perform the OP also if connected via SOCKS proxy, we don't really see the use case except for testing purposes and it should not be encouraged, probably it could instead be extended to support [Shadowsocks](https://shadowsocks.org/en/index.html)
+
+Note that again the purpose is not to add nodes in the Tor network, therefore the default for the OR is NOT to extend circuits except from the WebSocket interface (you can modify this by removing the check in circuits.js, look for "do not extend" in circuits.js)
+
+Launch the Websocket OR:
+
+	net.createServer(handleRequest).listen(port,function() {console.log('WS INCOMING SOCKET : incoming socket open WS Interface port '+port)});
+
+Create circuits from the OP:
+
+	Tor((socket interface connected to an OR))
+
+where socket.params_ is ``{OP:true,nb_hop:NB_DB_HOP}``
+
+	Tor({params_:{OP:true,nb_hop:NB_DB_HOP,ws:(Websocket interface)}});
 
 or
 
-Check out [torrent-live](http://www.torrent-live.org) for a more general presentation and to get the dynamic blocklist.
+	Tor({params_:{OP:true,nb_hop:NB_DB_HOP,ws:(Websocket interface),db=true}});
 
-The minified code for browsers is in the min directory.
+which will create a circuit toward the ORDB, see the Test configuration section
 
-You can install:
+Then pipe some data through the OP socket (http request for example)
 
-* [Peersm client](https://github.com/Ayms/node-Tor/tree/master/install)
-* [node-Tor Bridge WebSocket server](https://github.com/Ayms/node-Tor/tree/master/install)
+To launch the OR from the command line, do:
 
-Several routers are live and inserted inside the Tor network.
+	node node-tor.js OR_name OR_IP OR_port OR_wsport OR_fingerprint OR_version
 
-The bittorrent client inside Peersm clients is based on a modified version of [torrent-stream] (https://github.com/mafintosh/torrent-stream) implementation.
+Please see the section Setting up your environment for the details of parameters
 
-Example of implementations:
+## Test configuration and use
 
-* Peersm (http://www.peersm.com) : Anonymous P2P serverless network inside browsers, no installation, encrypted and untrackable
+First circuit created from the browser OP via WS is:
 
-* iAnonym :Anonymity into your browser everywhere from any device, see https://www.github.com/Ayms/iAnonym and http://www.ianonym.com
+	<browser> --> <our OR node> --> <a Tor node> --> <our ORDB>
 
-Convergence project (please see below) specs: [Convergence](http://www.peersm.com/Convergence.pdf)
- 
-## Presentation:
+Then 5 other circuits are created:
 
-This is an unofficial and extended implementation of the Tor (or Tor like) protocol (Onion Proxy and Onion Router) which anonymizes communications via the Tor (or Tor like) network. This allows to simply connect to the Tor (or Tor like) network and use it, as well as creating and adding nodes into the network, creating complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, it can be used to create separated Tor like networks.
+	<browser> --> <our OR node> --> <a Tor node> --> <a Tor Exit node>
 
-There are numerous possibilities of uses for node-Tor
+From the browser interface you can enter:
 
-**The most challenging goals are to put the OP and the OR inside the browsers.**
+	http://www.peersm.com/map.jpg
 
-**This is done, see the 2 phases of [Peersm project](http://www.peersm.com) to achieve this.**
+To download from the Tor Exit nodes
 
-## Code:
+And:
 
-The code in the lib directory is outdated and corresponds to the initial commit a few years ago, but this can be a good starting point for those that would like to redevelop the Tor protocol from scratch or understand it.
+	6faddcd7f92ce3111cdf55f493ac66b0bdbaebdb
 
-The up to date (minified) code is in the install (Peersm clients/bridges) and min (browsers) directories.
+To download from a peer (including yourself) that has map.jpg via the ORDB circuit/router (ie from the browser to the browser, the messages being relayed by the ORDB via anonymized circuits, one of the purpose of the Convergence project was to replace the ORDB server by a ORDB peer/browser)
 
-## License:
+## Browserify
 
-Only the initial code in the lib directory is under the MIT license.
+To come - phase 3
 
-The complete minified versions are subject to the following modified MIT license for now (which removes the rights to modify, merge, sublicense, and sell):
+## Specific settings
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, publish, and/or distribute copies of the Software, and to permit
-persons to whom the Software is furnished to do so, subject to the following
-conditions:
+Again the intent is not to add Tor nodes inside the Tor network, so following simplifications/specific settings apply:
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
+- tls and onion keys are the same, not a big deal and not difficult to change
+- tls certificates have always the same certid (see the bug below, this is an umpteenth openssl unfortunate change and is a won't fix for us)
+- the onion keys are not rotated, this can easily be done via an external process
+- CERTS cells and AUTH are implemented but not checked, as well as NETINFO
+- the Exit function is not implemented for obvious reasons, it's of course trivial to implement
+- CREATE_FAST are used from the browser to test the whole chain, now the use of CREATE_FAST should be discouraged for any implementation
+- the directory/consensus features are not implemented (so for example you cannot proxy the Tor browser directly to node-Tor via SOCKS proxy, which is anyway not a good idea at all)
+- we don't know how secure is the nodejs and browser prng
+- the OR will not extend circuits except from WebSocket interface in order not to handle the Tor traffic, it advertises also a ridiculous bandwidth in order not to be chosen by Tor nodes
+- forge buffers are used for some features, note that they are fast (faster in fact than nodejs Buffers and ArrayBuffers when we were testing streaming)
+- <messages>2 with elliptic crypto are not implemented for now, probably this would be a good idea to do it so we get rid of RSA, PEM, DER formats for p2p implementations, please note that for publishing nodes an unused curve25519 ntor-onion-key (ie a 32B buffer) is used in the descriptor
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
+## Related bugs/issues
 
-## Anonymous serverless P2P inside browsers - Peersm specs
+* [indexedDB broken - UnknownError - Error opening Database](https://bugzilla.mozilla.org/show_bug.cgi?id=944918) : we did open this bug end of 2013 (indexedDB is used by Peersm to store downloaded content by chunks), unfortunately, as you can see, it might survive us, quite annoying bug since it destroys indexedDB and everything that was in there when it happens (usually after a FF upgrade)
+* [Undeprecate tls.createSecurePair](https://github.com/nodejs/node/issues/29559) : closed, we moved to TLSSocket and it looks to be the right way finally
+* [Advisory for SSL problems with leading zeros on OpenSSL 1.1.0](https://icinga.com/2017/08/30/advisory-for-ssl-problems-with-leading-zeros-on-openssl-1-1-0/) : probably this is the issue with certid, please see the comment in abstract-tls, we will not fix it
+* [Security error when trying to set a non SSL/TLS Websocket from a https page](https://bugzilla.mozilla.org/show_bug.cgi?id=917829) and this thread [WS/Service Workers, TLS and future apps - was Re: HTTP is just fine](https://lists.w3.org/Archives/Public/public-webapps/2015OctDec/0187.html), this is why the browser page can't be https, because the specs forbid a fallback to ws and of course wss can't be used since the nodes have self-signed certificates, this is a misdesign of the web but nobody wants to admit/correct it
+* [ISSUE 22 - Re: Incomplete blocks](https://lists.w3.org/Archives/Public/public-webcrypto-comments/2013Feb/0016.html), this relates to the fact that only the Tor project in the world uses progressive hash stopped for each chunk (cells data), which means that it closes the hash for each cell received and then restarts from the previous state, this is not supported by anybody, neither openssl, Webcrypto or NSS, that's the purpose of the specific ``Hash`` function modifying forge hash to allow this, please see https://github.com/Ayms/node-Tor/tree/master/ext/my_sha1.js
 
-#### Architecture (with servers):
+## Notes for the devs
 
-									--- Node2 --- Node3 --- ORDB1
-									--- Node5 --- Node6 --- ORDB2
-	A (the peer)---	Node/Bridge(ws)	...
-									--- Nodey --- Nodez --- ORDBw
-									--- Node --- Node --- Web site
-									...
-									--- Node --- Node --- Web site
+This project has been maintained over years but it has been a huge work to clean everything and make it modular, and at the end is very small for what it does, now some parts might still need some changes, please keep in mind that it was quite difficult at the time it was developped to put everything inside browsers with associated crypto, that's why the previous code ended up to be a monolith
 
-			----- ORDB2
-	ORDB1	....
-			----- ORDBn
+The major part of the ORDB function is isolated into circuits_extended.js, but you need to remove what relates to Peersm in the other modules if you really want to have a minimal version of node-Tor
 
-#### Final Architecture (serverless for P2P / WS Bridges for direct download / Facilitators to bridge with bittorrent):
+The same code is used at nodejs and browser side, then the browser has exactly the same functions than nodejs (and could therefore act as an OR as well)
 
-																		Bittorent network
-																				|
-																				|
-																				|
-													--- A1(Peer + Node) --- A2(Peer + Node + ordb)
-	A(Peer + Node)(WebRTC + encrypted Tor protocol)	...
-			|										--- Z1(Peer + Node) --- Z2(Peer + Node + ordb)
-		WebSockets + encrypted Tor protocol (direct download)
-			|
-			Bridge 	--- Nodea --- Nodeb --- Web site
-					...
-					--- Nodey --- Nodez --- Web site
+Globals are used at the nodejs level (but not inside browsers), most of them can be splitted as local variables inside modules but not all, this is not an issue and comes from the initial design since at the beginning the code was not intended to be modular (and then no globals were used), changing this impacts a lot of things, this might be a TODO (as well as implementing the elliptic crypto)
 
-	To give a visual representation of the P2P network it is similar to a bittorrent network
-	with two layers:
+If you PR something please make sure that the test configuration works for each type of circuit and download also (then it becomes unlikely that something is wrong)
 
-	- the Peers are connected to the ORDBs via encrypted links
-	- the ORDBs (that are the peers too) are talking "bittorrent" but encrypted and
-	are acting as "bittorrent users".
-
-	The peers are anonymized by the "bittorrent users" which are hiding what they are doing
-	and what they have. The Peersm clients are bridging the Peersm world (browsers)
-	with the bittorrent world.
-
-####General
-
-Each peer is implementing the Tor protocol (Onion proxy and Onion router) and the ORDB function.
-
-IndexedDB and File APIs are used to store and manipulate the files.
-
-WebRTC is used to connect peers and exchange UDP data.
-
-The standalone js code is loaded using http://peersm.com/peersm or can be installed as a bookmarklet from [standalone](https://github.com/Ayms/node-Tor/tree/master/min)
-
-####ID and Onion keys
-
-Each peer generates a public/private key and a corresponding self-signed certificate (ID certificate), its fingerprint (or ID) is the hash of the DER format of its public key. In what follows 'modulus' is the modulus of the public key (128 B).
-
-Keys are generated for each session using the WebCrypto API generateKey method with 'extractable' parameter set to false. In WebCrypto the keys are handled in an opaque format, you can not access them and you can not export them if extractable is false, except the public key whose extractable parameter is always true (fingerprint=exportKey(spki)+digest(), modulus: RsaKeyAlgorithm object that hangs off Key.algorithm). Keys do support the structured clone algorithm, so could be stored in indexedDB but, even if expensive, we generate a new pair for each session so users ID change and users can not be tracked based on their keys.
-
-####DHT and Bridges
-
-The ORDB function consists in serving a file or relaying the anonymized messages between a Peer A and a Peer B, several ORDBs can be in the path.
-
-Peers are implementing a Kademlia DHT using their IDs (160 bits), each routing table is composed of 160 buckets of 8 peers max where for bucket j 2^j <=distance(peer,other peer)< 2^(j+1)
-
-The DHT is not the only discovery means. The peers are communicating what they have to the ORDBs they are connected to, and the ORDBs (as peers) do the same as well as sending globally to the ORDBs they are connected too what they know other peers have, when a reference can not be found the DHT is used.
-
-If a peer is new (A), it can know how to connect to other peers asking to some servers (the WebSocket bridges used for direct download) that know about the peers.
-
-The Websocket bridges are a [Peersm bridge](https://github.com/Ayms/node-Tor/tree/master/install), anyone can install one, it can be an official Tor bridge but in that case it will not be able to advertise peers.
-
-Each peer is connected to at least one bridge.
-
-Bridges themselves have an ID and are implementing a Kademlia DHT for peers discovery.
-
-####Facilitators and Bittorrent
-
-Some facilitators (the [Peersm clients](https://github.com/Ayms/node-Tor/tree/master/install)) running as background processes are doing the same than browsers in order to keep some peers alive and to share files if the peers close their browsers. They can run on PC, Mac, servers and ADSL boxes/routers.
-
-The facilitators are implementing a bittorrent client and therefore allow Peersm users to stream or download torrents.
-
-####Bootstrap and peers discovery
-
-A connects to a bridge, the bridge registers A in the bridges DHT.
-
-A sends to the bridge it is connected to a DB_FIND_PEER request [IDA,modulusA], the bridge registers A, queries the other bridges to find the closest node to A and replies with a DB_FOUND_PEER request [IDB,modulusB,IP:port] of several peers close to A where [IP:port] corresponds to the bridge that can perform the peers introduction, if missing the queried bridge can perform it. Bridges are not numerous and at least the facilitators are connected to them, so it's unlikely that no peers are connected to a bridge.
-
-If the servers are blocked, the peer introduction can be performed by other means : mirror servers or social networks, A just needs to know about one peer first.
-
-A can send different requests to differents bridges to discover some peers.
-
-A connects to B using the related bridge for peers introduction (INTRODUCE [IDB,SDPA offer], INTRODUCED [IDA,SDPB answer] )
-
-A sends a FIND_NODE to B, B replies with the closest nodes to A connected to it [IDN,modulusN,IP:port] where IP:port is the bridge where N is connected to in B routing tables.
-
-If B is connected to nobody (rare and unlikely case since all the nodes are connected to others), B does the same than A to discover the peers and connect to them, then passes the result to A.
-
-A create circuits (Tor protocol) with the nodes connected to B that will act as the ORDBs.
-
-A adds the peers in its routing table [IDN,modulusN,IP:port(N bridge),[IDx]] where [IDx] is a list of peers that can perform the introduction to N without requesting the bridges (A and B at least here).
-
-B does the same [IDA,modulusA,IP:port(B bridge),IDB]
-
-Each peer connected to A adds A in its routing table and does the same as above.
-
-Peers are ORDBs and ORDBs are peers but the two functions should not be mixed, even if it can be confusing since the same code and port are used for both functions.
-
-####Content discovery
-
-A advertises the ORDBs when they have 25%, 50%, 75% and 100% of a file.
-
-A sends to the ORDBs what it has: db_info 'abcd',P,F --> I have something from 'abcd', I have P pieces (0 (25%) to 3(100%) and I am a facilitator (F=1) or not (no F). ORDBs as peers do the same, they advertise A of what they have.
-
-The list is maintained by OR_files_P['abcd'] variables and OR_streams_P['abcd'] for a continuous stream.
-
-The ORDBs are peers too, so they are connected to other ORDBs, they tell them what they know other peers have: 'abcd',size,type, but they do this only when they get a reference from a peer and they know the ORDBs they are connected to don't know it (ie they don't send all their references each time they discover another ORDB in order not to overload the network), the list is maintained by OR_files_P and OR_streams_P variables too.
-
-A advertises the ORDBs of what they have when a file is uploaded too.
-
-The content is referenced by hash_names, which are the hash of the DB_CONNECTED answers so a malicious ORDB can not fake the content while relaying it.
-
-Each time an ORDB has a new hash_name 'abcd' it sends a STORE message ['abcd',ID,modulus,IP:port,P] to the closest node from the hash_name (the ORDB queries the nodes and the bridge it is connected to and performs a lookup based on the closest one until no closest nodes can be found, the peers introduction during the lookup is performed by bridges or peers as for the peers discovery).
-
-Then the closest node sends the same STORE message to the closest node it knows from the hash_name, and so on.
-
-####Data validation
-
-Unlike bittorrent, there is no metadata file to describe pieces and check their integrity.
-
-A file or a stream has been brought initially to the network by one seeder that has used his private key or generated one to sign each piece, the corresponding public key is sent with the answer to the first chunk query: [size, type, public key]
-
-The signing process is based on asymmetric crypography (TODO, clarify this), it does include a timestamp for live streaming.
-
-The format of the signature is: [timestamp in seconds 4B][4 first bytes of the signature 4B]
-
-####Pieces and sliding window
-
-Tor protocol cells have a size of 512 B, the payload for streams is 498 B.
-
-Tor protocol handshake is the same as the normal one except that the link certificate used in CERTS cells is the fingerprint of the self-signed certificate of the DTLS connection.
-
-To identify the remote peer the fingerprint of the certificate used for the DTLS connection available in the SDP offer is encrypted with the ID private key of the remote peer, A receives this encrypted fingerprint and the ID certificate, it checks that indeed the ID certificate is correctly signed and that the decrypted fingerprint corresponds to the right one, therefore, since the DTLS layer has checked too that the fingerprint was matching the certificate used, A is sure to talk to the peer with whom it has established the DTLS connection.
-
-Chunk size : 498 B
-
-WebRTC empiric uses regarding packet loss possibilities advises a size of 1024B < payload of IP, UDP, DTLS, and SCTP protocols ~1150 B - unreliable mode
-
-This chunk size can look small but since the Tor protocol is fragmenting by blocks of 498B it seems logical to keep this size (we could change this but the system must be compatible with the Tor network)
-
-Window size: ~500 kB - divided in 5 blocks W1 to W5
-
-####Requests
-
-A requests 'abcd' :
-
-* A selects 5 ORDBs among the (at least) 6 he is connected to.
-
-* GET [hash_name][Chunk nb][Nb of chunks][Counter] --> 'abcd' 1 0 [random <5]
-
-* A gets the file info [file size, file type, public key]
-
-* GET [hash_name][Chunk nb][Nb of chunks][Counter] --> 'abcd' N n [random <5]
-
-* 5 GET on 5 circuits : GET1 1 (W1), GET2 2 (W2), GET3 3 (W3),GET4 4 (W4),GET5 5 (W5)
-
-* The ORDB receives the request:
-
-	* If the counter is equal to 5, send db_end (to avoid loops between ORDBs)
-
-	* if chunk nb is 0, the ORDB checks OR_Stream_P['abcd'], the result is an array of chunks indexes.
-
-		* if the result exists, the ORDBs chooses the index M of number of elements of the result minus 2 times the window size (N), the result is an array of [circ,type]
-
-			* The ORDB chooses the first one that has a valid circuit and sends the request 'abcd' N 1, A will know N in the db_data answer, the ORDB removes the first from the list and put it at the end.
-
-			* after receiving the first chunk, A will request other pieces 'abcd' N Wx_size
-
-			* the injector uses a sliding window of size 4x the window size.
-
-			* the indexes of the sliding window are rotated and reused (here when the user reaches the sliding window size the next chunk requested will be 1) - TODO explain this
-
-			* timestamp in message signature is used to make sure the requested chunk corresponds to the timing of its sliding window
-
-	* if chunk nb is not 0:
-
-		* If the ORDB has chunks N to N+n it sends it to the stream that requested it.
-
-		* If not the ORDB checks OR_files_P['abcd'], the result is an array of [circ,size,type]
-
-			* if the result exists, the ORDB chooses the first one that has a valid circuit and sends the request, the ORDB removes the first from the list and put it at the end.
-
-			* if no result, the ORDB sends a FIND_VALUE ['abcd'] to the 4 closest peers from 'abcd' it knows:
-
-				* as soon as it receives a [ID,modulus,IP:port] answer it connects to the other ORDB node ID, add the new circuit in OR_ORDB['abcd'], increments the counter and sends the request if not already sent.
-
-				* if the answer is a list of nodes (8 max), these are nodes closest from 'abcd' for the queried node, it continues to send FIND_VALUE['abcd'] to these nodes and implement the same process on reply.
-
-				* The reason to iterate is to avoid that the download is performed only from the first peer discovered that has the value.
-
-				* If the FIND process is unsuccessful, the ORDB sends the request to several facilitators which will research the file in bittorrent network (see bridging with bittorrent section).
-
-* A computes tm for every GETm, the time between the request (db_query) and the answer (db_data). Example: 250ms so 31250 B if rate of 1 Mbps, 2 blocks (c).
-
-* A computes the effective rate for each GETm.
-
-* A waits for the two first GET to end and sends next request on the circuit that showed the best rate, then next one on the second that has the best rate and idem for each finished requests.
-
-* A computes now for each requests sent when he must send a new GET using tm and the effective rate (for example A will compute that he must send a new GET after having received the 10th block)
-
-* It's a bit approximative since the ORDB is rotating the peers by putting them at the end of the lists each time they are used, we suppose that the delay is more related to the connexion between A and the ORDBS.
-
-* If the value is superior to C blocks, A sends a new GET after the C-c block.
-
-* And so on.
-
-* If a circuit has a too slow rate compared to others (slow node in the path), it is destroyed and replaced by one of the circuits not used, a new circuit is established.
-
-* If a GET does not end it is resumed from where it was.
-
-#### Handling the lists in the ORDBs:
-
-OR_files_P['abcd'] an array of : [circ,size,type] where circ is a circuit with a peer, size the total size, type the MIME-type of the file.
-
-OR_files_P are used for files or non live streaming.
-
-OR_streams_P['abcd'][N] an array of : [circ,type] where circ is a circuit with a peer, type the MIME-type of the file.
-
-OR_streams_P are used for continuous streaming.
-
-If 'abcd' is a continuous streaming, the peers periodically remove from indexedDB chunks older than 4 times the window size.
-
-The peers do not advertise the ORDBs of the removed chunks and the ORDBs do not update the lists if circuits break, this is to avoid to continuously sort the lists.
-
-The lists are always manipulated as the same objects, no copy/duplication/clone
-
-#### Streaming:
-
-The Media Source API is used, the supported formats are fragmented MP4 (MPEG-DASH) and WebM.
-
-Live Streaming:
-
-* Connection to the stream: http://mytv.fr hash_name efgh
-
-* Direct download if nobody has chunks for efgh.
-
-#### Differences with Bittorrent:
-
-It's unlikely with WebRTC and Tor protocol to be able to establish as many connections as bittorrent is doing with peers, therefore there is no swarm concepts where you connect to a big number of peers and every peer know what the others have.
-
-Then there is no rarest first algorithm and random first policy.
-
-Pieces size in bittorrent are usually in the range of 200 kB to 1 MB, they are much smaller in Peersm, which is not a problem since no metadata descriptor is needed and the small size is adapted to devices such as smartphones and live streaming.
-
-Chunks are requested sequentially, they are then reordered and streamed or stored in indexedDB.
-
-A new peer requesting something will get quickly the first pieces. The new peer is becoming a seeder for the others as soon as it advertises to have at least 25% of pieces.
-
-Unlike with the bittorrent protocol, the peers can not freeride (see [torrent-live](https://github.com/Ayms/torrent-live) ie not doing anything except requesting pieces from others, not answering to anything and not sharing anything) since they are referenced by others, they must participate to the common effort, a peer attempting to freeride will get disconnected.
-
-#### Bridging with Bittorrent:
-
-Each facilitator will be requested to retrieve a part of the file, which it will do using the bittorrent protocol, reorder the pieces and send them ordered to the requester.
-
-The facilitators are not storing the pieces that they are relaying, so they do not become seeders for Peersm world and nobody knows what they have, the requester becomes a seeder for the given file in Peersm world.
-
-The facilitators are total free riders for the torrent side, for anonymity purposes they do not contribue to the torrents, neither inform peers, answer to pieces requests and populate the DHT, other torrent peers can just know the IP address of the facilitator but can not know who is the requester.
-
-In addition they implement the find spies and block spies functions as described in [torrent-live](https://github.com/Ayms/torrent-live), hidding in the first step what they are really requesting, so it's really unlikely that some can track their real activity.
-
-The hash_name of the file will correspond to the infohash of the bittorrent file (ie the hash of the info part of the metadata file descriptor), to retrieve a bittorrent file a magnet link can be entered or the hash of the magnet link alone, in both cases the system will initiate the search based on the hash. (TODO: see compatibility with Peersm hash_names)
-
-#### Messages format:
-
-DB_QUERY [hash_name length 1B][hash_name][chunk nb length 1B][chunk nb][nb chunks 2B][Counter 0 to 5 1B]
-
-DB_CONNECTED
-* answer to nb chunks 0:[size length 1B][file size][type length 1B][MIME-type][public key length][public key]
-
-DB_DATA
-* answer to nb chunks not 0: [chunk nb 4B][signature 8B][data]
-
-DB_INFO
-	[hash_name length][hash_name][P 1B][F 1B optional]
-
-DB_FIND_PEER and DB_FOUND_PEER
-	[hash ID length][ID][IP length][IP][port length][port][modulus length][modulus]
-
-DB_END
-* [Reason 1B]
-	* 0 UNAVAILABLE
-	* 1 FINISHED (aborted by requesting party)
-	* 2 DESTROYED (destroyed by serving party)
-
-#### Security:
-
-For all security aspects, please see [The technical FAQs](http://www.peersm.com/?news), what follows describes some specifics.
-
-The initial peers returned by the bridge could be compromised, therefore they could send only compromised peers.
-
-But your ID does change for each session then if the peers are continuously returning peers that do not seem close enough to your ID, you could detect that they are compromised.
-
-The DHT represents the public table of all the peers, it's unlikely that it's entirely compromised.
-
-If you don't trust the bridges you can choose your peers as explained above yourself.
-
-As explained above, the users keys can not be accessed or used by a potential attacker.
-
-WebRTC is using self-signed certificates for DTLS, these certificates are changed so you can not be tracked, the SDP (peer introduction) does include the fingerprint of the certificate, this is not enough to guarantee that there is not a MITM peer in the middle. Therefore it is foreseen to add another mechanism where the fingerprint of the DTLS certificate will be signed by a third party that knows you, typically a social network where you have an account.
-
-This is of course far from protecting your anonymity and privacy and can not be used in Peersm context, so Peersm is using the Tor protocol Certs cells mechanism explained above to make sure that you are talking to the peer with whom you have established the DTLS connection. This peer can still be a MITM but since you are extending the circuit to another peer known in the DHT, per the Tor protocol the possible MITM will not know what happens next, as mentionned above it becomes unlikely that the second peers are all compromised.
-
-##Convergence
-
-We are working now on a project reusing the Peersm (Peer Shared Mesh technology) global concepts/architecture (for personal digital ID and data management) and node-Tor concepts as a global "Convergence" distributed/P2P network handling peer ID management/discovery inside browsers allowing privacy/anonymity and secure:
-
-* chat and messenging
-* file sharing/streaming
-* social networking
-* cooperative application
-* crypto currency
-
-and:
-
-* anonymous browsing
-* uProxy application inside browsers
-* Tor nodes inside browsers
-* protecting IOT (objects/users)
-
-Please see the description [here](http://www.peersm.com/Convergence.pdf)
-
-## Tests : 
-
-See the demo video on [Peersm] (http://www.peersm.com)
-
-## Install (initial version in lib directory) :
-
-Install node.js on supported platforms : Unix, Windows, MacOS
-	
-Then as usual :
-
-	npm install node-Tor
-
-or
-
-    git clone http://github.com/Ayms/node-Tor.git
-    cd node-Tor
-    npm link
-	
-If you encounter installation problems, you might look at :
-
-	https://github.com/joyent/node/issues/3574 (openssl)
-	https://github.com/joyent/node/issues/3504 (python)
-	https://github.com/joyent/node/issues/3516 (node.js)
-
-To launch it, you need to be in the lib directory (some small inconvenient that will be fixed) :
-
-	node node-tor.js
-
-## node-Tor Goals and possible Future :
-
-The intent of this project is to provide Tor mechanisms in a web language, so it might open the Tor (or Tor like) network to web languages interfaces.
-
-It is easy to install and to scale, does not depend on specific applications and can interact with js modules, then it is possible to easily build web/js applications on top of it (chat, etc).
-
-node-Tor's nodes can be used to create complementary and/or parallel networks, implementing completely, partially or not the Tor protocol or a derived one, using completely, partially or not the Tor network, it can be used to create separated Tor like networks.
-
-See the Convergence section above
-	
 ## Related projects :
 
+* [Discover and move your coins by yourself](https://peersm.com/wallet)
+* [Ayms/bitcoin-transactions](https://github.com/Ayms/bitcoin-transactions)
+* [Ayms/cashaddress](https://github.com/Ayms/cashaddress)
 * [Ayms/bitcoin-wallets](https://github.com/Ayms/bitcoin-wallets)
-* [Ayms/bittorrent-nodeID](https://github.com/Ayms/bittorrent-nodeid)
+* [Ayms/zcash-wallets](https://github.com/Ayms/zcash-wallets)
+* [Ayms/bittorrent-nodeid](https://github.com/Ayms/bittorrent-nodeid)
 * [Ayms/torrent-live](https://github.com/Ayms/torrent-live)
 * [Ayms/iAnonym](https://github.com/Ayms/iAnonym)
 * [Interception Detector](http://www.ianonym.com/intercept.html)
 * [Ayms/abstract-tls](https://github.com/Ayms/abstract-tls)
 * [Ayms/websocket](https://github.com/Ayms/websocket)
 * [Ayms/node-typedarray](https://github.com/Ayms/node-typedarray)
-
-node-Tor can advantageously be coupled with :
-
 * [Ayms/node-dom](https://github.com/Ayms/node-dom)
 * [Ayms/node-bot](https://github.com/Ayms/node-bot)
 * [Ayms/node-gadgets](https://github.com/Ayms/node-gadgets)
