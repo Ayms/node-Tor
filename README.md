@@ -145,7 +145,7 @@ Again the intent is not to add Tor nodes inside the Tor network, so following si
 - we don't know how secure is the nodejs and browser prng
 - the OR will not extend circuits except from WebSocket interface in order not to handle the Tor traffic, it advertises also a ridiculous bandwidth in order not to be chosen by Tor nodes
 - forge buffers are used for some features, note that they are fast (faster in fact than nodejs Buffers and ArrayBuffers when we were testing streaming)
-- <messages>2 with elliptic crypto are not implemented for now, probably this would be a good idea to do it so we get rid of RSA, PEM, DER formats for p2p implementations, please note that for publishing nodes an unused curve25519 ntor-onion-key (ie a 32B buffer) is used in the descriptor
+- MESSAGE2 with elliptic crypto are not implemented for now, probably this would be a good idea to do it so we get rid of RSA, PEM, DER formats for p2p implementations, please note that for publishing nodes an unused curve25519 ntor-onion-key (ie a 32B buffer) is used in the descriptor
 
 ## Related bugs/issues
 
