@@ -29,14 +29,6 @@ And we did continue the development over years, the full version used for [Peers
 
 This project is under a MIT license
 
-## Phases
-
-If you intend to fork this module probably you should wait for phase 3
-
-Phase 1 and 2 are completed
-
-- Phase 3 (now+1 week): browserify everything and release the full code + Peersm interface
-
 ## Dependencies
 
 This module is using the very good [Forge](https://github.com/digitalbazaar/forge), [sjcl](http://bitwiseshiftleft.github.io/sjcl/), [RSA and ECC in JavaScript](http://www-cs-students.stanford.edu/~tjw/jsbn/), [Browserify](https://github.com/browserify/browserify), [Terser](https://github.com/terser-js/terser) and other modules from us under a MIT license
@@ -57,9 +49,11 @@ Install node and unzip [master](https://github.com/Ayms/node-Tor/archive/master.
 
 ## Browser interface
 
-To come - phase 3
+The browser interface is available at http://peersm.com/peersm2
 
-For now you can take a look at [Peersm](http://peersm.com/peersm) which is using the original code
+Please see the Browserify and Test configuration sections
+
+Please not also that this configuration has been maintained for demo purposes only (and testing purposes, if the whole chain from the browser to the Tor nodes work then it becomes unlikely that something is incorrect in your code) without any focus on security considerations and usability since it has been simplified from the initial Peersm project, it is not the main purpose of this project, the main purpose being to allow the use of the Tor protocol inside browsers and on server side for your own projects, it can have some bugs and if circuits don't get created refresh the page
 
 ## Setting up your environment
 
@@ -85,7 +79,7 @@ An unused ntor-onion-key is used in the publish descriptor, basically the base64
 
 You can check that the process was successful by doing from the browser ``IP:port/tor/server/fp/<fingerprint>`` where fingerprint is the one displayed in the result of the call to ``publish.js`` and is the one to be used when you launch the OR, and where IP:port is the IP/port of an authority, you can also check that your node appears in [onionoo relay serach](https://metrics.torproject.org/rs.html)
 
-If you don't want to publish you can comment the calls to ``publish`` at the end of ``publish.js``, please note that the authorities might change over time, then you musk keep the list up to date in ``publish.js``, and once you have published the autorities will check your node periodically sending VERSION cells
+If you don't want to publish (which we think is not really considered as good practices by the Tor community) you can comment the calls to ``publish`` at the end of ``publish.js``, please note that the authorities might change over time, then you musk keep the list up to date in ``publish.js``, and once you have published the autorities will check your node periodically sending VERSION cells
 
 ### Update the routers
 
@@ -127,7 +121,13 @@ or
 
 which will create a circuit toward the ORDB, see the Test configuration section
 
-Then pipe some data through the OP socket (http request for example)
+Once some circuits are created you can create a ``request`` object with the ``one_c`` property set to true (see the Tor function), you can then call:
+
+	Tor(request)
+
+Which will select a circuit (associated to the initial socket via its ``socket_`` property) among those available in ``OP_sock`` and call ``circ.process(request)``, please see an example starting by the ``load`` function in ``browser2.js``, this will typically initiate a ``RELAY_BEGIN`` message establishing a TCP connection from the exit node to the target node (or site) and stream data through the established connection and anonymized circuits, received data is processed via the ``_write_`` property of the ``request`` object (which in our test configuration stores the data as chunks of Blobs inside indexedDB, see the ``load_Blob`` function
+
+You can of course set all of this the way you like
 
 To launch the OR from the command line, do:
 
@@ -157,9 +157,13 @@ And:
 
 To download from a peer (including yourself) that has map.jpg via the ORDB circuit/router (ie from the browser to the browser, the messages being relayed by the ORDB via anonymized circuits, one of the purpose of the Convergence project was to replace the ORDB server by a ORDB peer/browser)
 
+This is just an example of use, by default the test configuration calls ``monitor_circuits`` periodically which will create up to 6 circuits, the first one being the ORDB circuit (if it fails the other circuits will not be created), you can change this removing the check of ``db_cid`` in ``choose_circuits`` and removing the check also in ``monitor_circuits`` (or changing the NB parameter) to create one to NB normal circuits
+
 ## Browserify
 
-To come - phase 3
+Please see [browserify](https://github.com/Ayms/node-Tor/tree/master/browserify)
+
+To setup your test configuration you need to put the right parameters in ``node-tor.js`` for ``one_OR`` (who is the OR the browser will connect to via WebSockets) and ``DB_OR`` who is the OR performing the ORDB function, then launch the two ORs as explained above and serve the file ``index.html``
 
 ## Specific settings
 
@@ -193,9 +197,13 @@ The major part of the ORDB function is isolated into circuits_extended.js, but y
 
 The same code is used at nodejs and browser side, then the browser has exactly the same functions than nodejs (and could therefore act as an OR as well)
 
-Globals are used at the nodejs level (but not inside browsers), most of them can be splitted as local variables inside modules but not all, this is not an issue and comes from the initial design since at the beginning the code was not intended to be modular (and then no globals were used), changing this impacts a lot of things, this might be a TODO (as well as implementing the elliptic crypto)
+Globals are used at the nodejs level (see the note for browsers in Browserify section), most of them can be splitted as local variables inside modules but not all, this is not an issue and comes from the initial design since at the beginning the code was not intended to be modular (and then no globals were used), changing this impacts a lot of things, this might be a TODO (as well as implementing the elliptic crypto)
 
 If you PR something please make sure that the test configuration works for each type of circuit and download also (then it becomes unlikely that something is wrong)
+
+## Peer review
+
+This project has been quickly scanned by [ROS](https://radicallyopensecurity.com/) experts, it is speechless to say that when you create an app using node-Tor inside browsers you must not do stupid things like injecting the content donwloaded via the anonymized circuits inside the page to fetch resources outside of them (and then deanonymize you), this is the very purpose of the proxyJS concept in the Convergence proposal
 
 ## Related projects :
 
