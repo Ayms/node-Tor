@@ -121,7 +121,7 @@ or
 
 which will create a circuit toward the ORDB, see the Test configuration section
 
-Once some circuits are created you can create a ``request`` object with the ``one_c`` property set to true (see the Tor function), you can then call:
+Once some circuits are created you can create a ``request`` object with the ``one_c`` property set to true (see the Tor function), you can then simply call:
 
 	Tor(request)
 
