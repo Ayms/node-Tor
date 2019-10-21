@@ -75,7 +75,7 @@ Note that this is not mandatory, some years ago it appeared that a Tor node woul
 
 By default a small bandwidth will be advertised for your node, this is to discourage other nodes to choose your node, you can change it in ``publish.js``, and the version advertised is "node-Tor "+version (advised value: 1.0.0)
 
-An unused ntor-onion-key is used in the publish descriptor, basically the base64 encoding of the sha256 of "Thanks Ayms this module is great", we don't know why it is mandatory for nodes that do not implement elliptic crypto
+An unused ntor-onion-key is used in the publish descriptor, basically the base64 encoding of the sha256 of "Thanks Ayms this module is great", we don't know why it is mandatory for nodes that do not implement elliptic crypto (apparently it's a Tor project bug when releasing 0.2.4)
 
 You can check that the process was successful by doing from the browser ``IP:port/tor/server/fp/<fingerprint>`` where fingerprint is the one displayed in the result of the call to ``publish.js`` and is the one to be used when you launch the OR, and where IP:port is the IP/port of an authority, you can also check that your node appears in [onionoo relay serach](https://metrics.torproject.org/rs.html)
 
@@ -99,7 +99,7 @@ Launch the OR:
 
 The OR will listen/create tls sockets with Tor circuits, it can perform the OP also if connected via SOCKS proxy, we don't really see the use case except for testing purposes and it should not be encouraged, probably it could instead be extended to support [Shadowsocks](https://shadowsocks.org/en/index.html)
 
-Note that again the purpose is not to add nodes in the Tor network, therefore the default for the OR is NOT to extend circuits except from the WebSocket interface (you can modify this by removing the check in circuits.js, look for "does not extend" in circuits.js)
+Note that again the purpose is not to add nodes into the Tor network, therefore the default for the OR is NOT to extend circuits except from the WebSocket interface (you can modify this by removing the check in circuits.js, look for "does not extend" in circuits.js)
 
 Launch the Websocket OR:
 
@@ -165,12 +165,14 @@ Please see [browserify](https://github.com/Ayms/node-Tor/tree/master/browserify)
 
 To setup your test configuration you need to put the right parameters in ``node-tor.js`` for ``one_OR`` (who is the OR the browser will connect to via WebSockets) and ``DB_OR`` who is the OR performing the ORDB function, then launch the two ORs as explained above and serve the file ``index.html``
 
+You must also xhr ``Guards.js`` and ``Exit.js`` built with ``build-relays_and_dir.js`` (see above) from your server or ours in ``browser2.js``
+
 ## Specific settings
 
 Again the intent is not to add Tor nodes inside the Tor network, unlike the common belief the Tor network is very centralized, this implementation is more oriented for decentralized networks (and for p2p we think that two hops are enough since the guards concept does not apply, as well as tls, the Tor protocol does not need it), so following simplifications/specific settings apply:
 
 - tls and onion keys are the same, not a big deal and not difficult to change
-- tls certificates have always the same certid (see the bug below, this is an umpteenth openssl unfortunate change and is a won't fix for us)
+- tls certificates have always the same certid (see the bug below, this is an umpteenth openssl unfortunate change and is a won't fix for us for now despite of the fact that it allows fingerprinting)
 - the onion keys are not rotated, this can easily be done via an external process
 - CERTS cells and AUTH are implemented but not checked, as well as NETINFO
 - the Exit function is not implemented for obvious reasons, it's of course trivial to implement
@@ -184,7 +186,7 @@ Again the intent is not to add Tor nodes inside the Tor network, unlike the comm
 ## Related bugs/issues
 
 * [indexedDB broken - UnknownError - Error opening Database](https://bugzilla.mozilla.org/show_bug.cgi?id=944918) : we did open this bug end of 2013 (indexedDB is used by Peersm to store downloaded content by chunks), unfortunately, as you can see, it might survive us, quite annoying bug since it destroys indexedDB and everything that was in there when it happens (usually after a FF upgrade)
-* [Undeprecate tls.createSecurePair](https://github.com/nodejs/node/issues/29559) : closed, we moved to TLSSocket and it looks to be the right way finally, implemented in this commit
+* [Undeprecate tls.createSecurePair](https://github.com/nodejs/node/issues/29559) : closed, we moved to TLSSocket and it looks to be the right way finally
 * [Advisory for SSL problems with leading zeros on OpenSSL 1.1.0](https://icinga.com/2017/08/30/advisory-for-ssl-problems-with-leading-zeros-on-openssl-1-1-0/) : probably this is the issue with certid, please see the comment in abstract-tls, we will not fix it
 * [Security error when trying to set a non SSL/TLS Websocket from a https page](https://bugzilla.mozilla.org/show_bug.cgi?id=917829) and this thread [WS/Service Workers, TLS and future apps - was Re: HTTP is just fine](https://lists.w3.org/Archives/Public/public-webapps/2015OctDec/0187.html), this is why the browser page can't be https, because the specs forbid a fallback to ws and of course wss can't be used since the nodes have self-signed certificates, this is a misdesign of the web but nobody wants to admit/correct it
 * [ISSUE 22 - Re: Incomplete blocks](https://lists.w3.org/Archives/Public/public-webcrypto-comments/2013Feb/0016.html), this relates to the fact that only the Tor project in the world uses progressive hash stopped for each chunk (cells data), which means that it closes the hash for each cell received and then restarts from the previous state, this is not supported by anybody, neither openssl, Webcrypto or NSS, that's the purpose of the specific ``Hash`` function modifying forge hash to allow this, please see https://github.com/Ayms/node-Tor/tree/master/ext/my_sha1.js (this does not impact the aes encryption, my_aes.js is just a repackaging of aes to make it behave the nodejs way)
@@ -203,7 +205,7 @@ If you PR something please make sure that the test configuration works for each 
 
 ## Peer review
 
-This project has been quickly scanned by [ROS](https://radicallyopensecurity.com/) experts, it is speechless to say that when you create an app using node-Tor inside browsers you must not do stupid things like injecting the content donwloaded via the anonymized circuits inside the page to fetch resources outside of them (and then deanonymize you), this is the very purpose of the proxyJS concept in the Convergence proposal
+This project has been quickly scanned by [ROS](https://radicallyopensecurity.com/) experts, it is useless to say that when you create an app using node-Tor inside browsers you must not do inept things like injecting the content donwloaded via the anonymized circuits inside the page to fetch resources outside of them (and then deanonymize you), this is the very purpose of the proxyJS concept in the Convergence proposal
 
 ## Related projects :
 
