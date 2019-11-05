@@ -212,6 +212,7 @@ const writefile=require('./src/logs.js');
 
 /* uncomment for logs in file - change it to a stream if you prefer */
 console.log=function(txt) {
+	oconsole(txt);
 	writefile('debug-prod.txt',txt);
 };
 
@@ -495,7 +496,7 @@ module.exports={createIdLinkTLSCert,abstract_tls};
 (function (Buffer){
 const {$_,addEvent,delEvent,Myprompt,remove,Myalert,hide,show,delete_,hide_menu,property2_,add_menu_event,del_menu_event,clear_menu,workerjs,rand_hash,remove_ext,thumb,xhr,test_bandwidth,getmouseY,getmouseX,detkey,magnet,update_circ,get_extension}=require('./browser_utils.js');
 const {Tor}=require('./circuits.js');
-const {clearTimers,url_decode,get_request,simpleParser,delete_request,open_db}=require('./utils.js');
+const {clearTimers,url_decode,get_request,get_resume,simpleParser,delete_request,open_db}=require('./utils.js');
 const {crypto,Hash,Rand}=require('./crypto.js');
 const {ini_nosocks_request}=require('./sockets2.js');
 const {clear_requests}=require('./requests.js');
@@ -2490,6 +2491,8 @@ Circuit.prototype = {
 		let K0=[this.X_,this.Y_].concatBuffers();
 		let KH=this.circuit_keys(K0);
 		let resp=new Cell(this.circId,Cell.prototype.CREATED_FAST,[this.Y_,KH].concatBuffers());
+		console.log('sending created fast');
+		console.log(this.circId+' '+Cell.prototype.CREATED_FAST+' '+[this.Y_,KH].concatBuffers().toString('hex'));
 		this.send(resp);
 	},
 	created_handle:function() {
@@ -2497,6 +2500,9 @@ Circuit.prototype = {
 		if (this.next_) {
 			this.extended_=this.next_;
 			this.extend();
+		} else { //modif bug
+			console.log('yyyyyyyyyyyyyyyy next_ undefined '+this.next_);
+			this.destroy();
 		};
 	},
 	created_fast_cell_handle:function(cell) {
