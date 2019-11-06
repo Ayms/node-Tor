@@ -99,8 +99,6 @@ Launch the OR:
 
 The OR will listen/create tls sockets with Tor circuits, it can perform the OP also if connected via SOCKS proxy, we don't really see the use case except for testing purposes and it should not be encouraged, probably it could instead be extended to support [Shadowsocks](https://shadowsocks.org/en/index.html)
 
-Note that again the purpose is not to add nodes into the Tor network, therefore the default for the OR is NOT to extend circuits except from the WebSocket interface (you can modify this by removing the check in circuits.js, look for "does not extend" in circuits.js)
-
 Launch the Websocket OR:
 
 	net.createServer(handleRequest).listen(port,function() {console.log('WS INCOMING SOCKET : incoming socket open WS Interface port '+port)});
@@ -179,7 +177,6 @@ Again the intent is not to add Tor nodes inside the Tor network, unlike the comm
 - CREATE_FAST are used from the browser to test the whole chain, now the use of CREATE_FAST should be discouraged for any implementation
 - the directory/consensus features are not implemented (so for example you cannot proxy the Tor browser directly to node-Tor via SOCKS proxy, which is anyway not a good idea at all)
 - we don't know how secure is the nodejs and browser prng
-- the OR will not extend circuits except from WebSocket interface in order not to handle the Tor traffic, it advertises also a ridiculous bandwidth in order not to be chosen by Tor nodes
 - forge buffers are used for some features, note that they are fast (faster in fact than nodejs Buffers and ArrayBuffers when we were testing streaming)
 - MESSAGE2 with elliptic crypto are not implemented for now, probably this would be a good idea to do it so we get rid of RSA, PEM, DER formats for p2p implementations, please note that for publishing nodes an unused curve25519 ntor-onion-key (ie a 32B buffer) is used in the descriptor
 
