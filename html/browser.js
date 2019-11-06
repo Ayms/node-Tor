@@ -70,6 +70,9 @@ oBuffer.prototype.parse=function(socket) {
 				};
 			};
 			let cell=new Cell(cir.readUInt(),com.readUInt(),payl,true);
+			if (window_browser) {
+				//console.log('Handle_cells '+com.readUInt());
+			};
 			Handle_cells.bind(socket)([cell]);
 	};
 	socket.stream_tor_=stream_tor_;
@@ -1273,7 +1276,7 @@ const init_download=function(request) {
 		};
 		setTimeout(function(){$_('alert_box').style.display='none';addEvent(document.body,'mousedown',function() {setTimeout(clear_menu,1000)},false);},12000);
 	};
-	request.start_=function(resp) {
+	request.start_=function(resp,first_) {
 		let parse;
 		request._data_=true;
 		resp=request.wait_header?[request.wait_header,resp].concatBuffers():resp;
@@ -1339,7 +1342,7 @@ const init_download=function(request) {
 		};
 		return resp;
 	};
-	request.end_=function() {
+	request.end_=function(first_) {
 		if (request.url_) { //direct download
 			let resume=function() {
 				request.queue_.shift();
@@ -1387,7 +1390,7 @@ const init_download=function(request) {
 			};
 		};
 	};
-	request.db_end=function(reason) {
+	request.db_end=function(reason,sid) {
 		if (!request.send_data) { //requesting OP
 			clearTimers(request.query_t0);
 			clearTimers(request.sendme_tout);
@@ -1412,7 +1415,7 @@ const init_download=function(request) {
 							request.params_.stream=get_resume(url.host,url.rest,length);
 							delete request.params_.db_;
 							delete request.cid_;
-							delete first_[sid];
+							delete this.first_[sid];
 							delete request.file_id;
 							delete request.start_t0;
 							request.received_=0;
@@ -2492,7 +2495,7 @@ Circuit.prototype = {
 		let KH=this.circuit_keys(K0);
 		let resp=new Cell(this.circId,Cell.prototype.CREATED_FAST,[this.Y_,KH].concatBuffers());
 		console.log('sending created fast');
-		console.log(this.circId+' '+Cell.prototype.CREATED_FAST+' '+[this.Y_,KH].concatBuffers().toString('hex'));
+		//console.log(this.circId+' '+Cell.prototype.CREATED_FAST+' '+[this.Y_,KH].concatBuffers().toString('hex'));
 		this.send(resp);
 	},
 	created_handle:function() {
@@ -2500,9 +2503,6 @@ Circuit.prototype = {
 		if (this.next_) {
 			this.extended_=this.next_;
 			this.extend();
-		} else { //modif bug
-			console.log('yyyyyyyyyyyyyyyy next_ undefined '+this.next_);
-			this.destroy();
 		};
 	},
 	created_fast_cell_handle:function(cell) {
@@ -2737,7 +2737,7 @@ Circuit.prototype = {
 								request.destroy();
 							} else {
 								//browser
-								request.end_();
+								request.end_(this.first_);
 							};
 						} else {
 							if (!request.bufferSize) {
@@ -2883,7 +2883,7 @@ Circuit.prototype = {
 			if (request) {
 				let resp=(stream.data.slice(0,stream.length.readUInt()));
 				if ((!request._data_)||(request.wait_header)) {
-					resp=request.start_(resp);
+					resp=request.start_(resp,this.first_);
 				};
 				request._data_=true;
 				request.received_++;
@@ -3068,11 +3068,11 @@ Circuit.prototype = {
 		};
 	},
 	extend:function() {
-		let extended_=this.extended_;
+		let extended_=this.extended_||this.next_; //modif bug change_or
 		let Address=IPtoVal(extended_.server_.ip);
 		let Port=(new Buffer(2)).writeUInt(parseInt(extended_.server_.port));
 		let Fing=new Buffer(extended_.server_.fing,'hex');
-		let DH = crypto.getDiffieHellman('modp2');
+		let DH=crypto.getDiffieHellman('modp2');
 		//TODO ?? private key x is recommended to be 320 bits length for optimization
 		//node.js improvment https://github.com/joyent/node/issues/3622
 		DH.generateKeys();
@@ -4169,6 +4169,10 @@ const init_socket_=function(socket,circ) {
 			} else {
 				if (c.data.length()) {
 					let data=new Buffer(c.data.getBytes(),'binary');
+					if (window_browser) {
+						//console.log('calling on_data');
+						//console.log(data.toString('hex'));
+					};
 					on_data.call(socket,data);
 				};
 			};
@@ -4801,7 +4805,7 @@ Extended.prototype={
 			let first_=this.first_;
 			let request=first_[sid];
 			if (request) {
-				request.db_end.call(this,reason);
+				request.db_end.call(this,reason,sid);
 			};
 		} else {
 			this.nb_query=0;
@@ -5743,6 +5747,9 @@ const execute=function(data) {
 
 const on_data=function(data) {
 	this.queue_=this.queue_||[];
+	if (window_browser) {
+		//console.log('on_data '+this.queue_.length);
+	};
 	this.queue_.push(execute(data).bind(this));
 	if (this.queue_.length===1) {
 		this.queue_[0]();
