@@ -9,7 +9,7 @@ The purpose of this project is to offer a js implementation of the Tor protocol 
 
 Please see the [node-Tor presentation](https://nlnet.nl/project/node-Tor/), it is not intended to be used to add nodes in the Tor network, however it does support it but a minimum of Tor project specific features are implemented to allow this, please see the Specific settings section
 
-And it must be not misunderstood as a remake of the Tor network, this is a complete implementation of the Tor protocol that can be used to anonymize any protocol
+And it must not be misunderstood as a remake of the Tor network, this is a complete implementation of the Tor protocol that can be used to anonymize any protocol
 
 To give an idea of the global target and potential, please see [Anonymous IPFS, Filecoin or whatever protocol in fact](https://github.com/ipfs/ipfs/issues/439)
 
@@ -33,7 +33,7 @@ Phase 5 goes along with phase 4 in order to implement elliptic crypto, the Tor p
 
 <b>For now there is no funding left for the development/release of phase 4 and phase 5, that would be too bad to stop here since we are enthusiastic to link phase 4 evented pipes with phase 5 elliptic crypto and WebRTC</b>
 
-You can consider also donating to BTC 19LgEmzSvD1oCr1QxT2dgmF5SSnh1aq94j, 5 BTCs and we move forward with phase 4/5
+You can consider also donating to BTC 19LgEmzSvD1oCr1QxT2dgmF5SSnh1aq94j, 5 BTCs would allow to move forward with phase 4/5
 
 ## License
 
