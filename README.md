@@ -31,9 +31,9 @@ Phase 4 implements the ``Duplex Object`` and evented pipes method, please see be
 
 Phase 5 goes along with phase 4 in order to implement elliptic crypto, the Tor protocol v3 features and WebRTC so browsers can perform the Onion Proxy and Onion Router functions as p2p peers, this will be compatible with [Snowflake](https://snowflake.torproject.org/) but is much more ambitious since browsers and nodes are really behaving like Tor protocol nodes on top of WebRTC not only relaying WebRTC messages
 
-For now there is no funding left for the development/release of phase 4 and phase 5, that would be too bad to stop here so we are interested to continue should funding be available
+<b>For now there is no funding left for the development/release of phase 4 and phase 5, that would be too bad to stop here since we are enthusiastic to link phase 4 evented pipes with phase 5 elliptic crypto and WebRTC</b>
 
-You can consider also donating to BTC 19LgEmzSvD1oCr1QxT2dgmF5SSnh1aq94j
+You can consider also donating to BTC 19LgEmzSvD1oCr1QxT2dgmF5SSnh1aq94j, 5 BTCs and we move forward with phase 4/5
 
 ## License
 
@@ -113,7 +113,7 @@ If you want to hide who are operating the protocols
 
 Both on Onion Proxy side (initiator) and Onion Router side (responder), knowing that both can be browsers
 
-On both side the `pipe` method is bidirectional (ie you don't have to do `bitcoin.pipe(node-Tor).pipe(bitcoin)`) and allows to stream/pipe chained protocols
+On both side the `pipe` method is bidirectional (ie you don't have to do `ipfs.pipe(node-Tor).pipe(ipfs)`) and allows to stream/pipe chained protocols
 
 Future development are planning to include the `MESSAGES2` elliptic crypto and WebRTC transport layer between peers
 
@@ -134,7 +134,7 @@ The above pipes methods are using events but in case the initial source does not
 
 	(bitcoin or any process) | node-tor | (bitcoin or any process)
 
-Where the protocol is piped to the node-Tor process via stdin and stdout, this is similar to the socks proxy piping but is more secure since it stays local to the code and removes the need of a local (or distant) server implementing the SOCKS interface
+Where the protocol is piped to the node-Tor process via stdin and stdout (or unix sockets), this is similar to the socks proxy piping but is more secure since it stays local to the code and removes the need of a local (or distant) server implementing the SOCKS interface
 
 ### Phase 5
 
@@ -144,7 +144,7 @@ As stated above Phase 5 consists in implementing elliptic crypto, the Tor protoc
 
 This module is using the very good [Forge](https://github.com/digitalbazaar/forge), [sjcl](http://bitwiseshiftleft.github.io/sjcl/), [RSA and ECC in JavaScript](http://www-cs-students.stanford.edu/~tjw/jsbn/), [Browserify](https://github.com/browserify/browserify), [Terser](https://github.com/terser-js/terser) and other modules from us under a MIT license
 
-All dependencies (except browserify and terser) are currently embedded in the code (mainly because we had to modify some specific parts)
+All dependencies (except browserify and terser) are currently embedded in the code (mainly because we had to modify some specific parts), so you don't have to [install](https://github.com/Ayms/node-Tor#installation) anything else
 
 ## Modifications (phases 1 to 3)
 
