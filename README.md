@@ -5,17 +5,13 @@ Javascript open source implementation of the Tor protocol (The Onion Router http
 
 ## Presentation
 
-The purpose of this project is to offer a js implementation of the Tor protocol so it can be used on top of other protocols, whether on server side or inside browsers (using Websockets, WebRTC), most likely for p2p projects (like [Convergence](http://www.peersm.com/Convergence.pdf)), it supports the Onion Proxy and Onion Router features accessible via different interfaces (mainly direct TLS socket, SOCKS proxy and WebSockets, it can be extended to WebRTC for example)
+The purpose of this project is to offer a js implementation of the Tor protocol so it can be used on top of other protocols, whether on server side or inside browsers (using Websockets, WebRTC), most likely for p2p projects (like [Convergence](http://www.peersm.com/Convergence.pdf)), it supports the Onion Proxy and Onion Router features accessible via different interfaces (mainly direct TLS socket, SOCKS proxy and WebSockets, WebRTC might come)
 
 Please see the [node-Tor presentation](https://nlnet.nl/project/node-Tor/), it is not intended to be used to add nodes in the Tor network, however it does support it but a minimum of Tor project specific features are implemented to allow this, please see the Specific settings section
 
-## Funding
+And it must be not misunderstood as a remake of the Tor network, this is a complete implementation of the Tor protocol that can be used to anonymize any protocol
 
-This module is funded by [NLnet](https://nlnet.nl/) under the [EU Horizon 2020 Next Generation internet Privacy & Trust Enhancing Technologies](https://nlnet.nl/PET/)
-
-The full code is now open source and provided in clear
-
-You can consider donating to BTC 19LgEmzSvD1oCr1QxT2dgmF5SSnh1aq94j
+To give an idea of the global target and potential, please see [Anonymous IPFS, Filecoin or whatever protocol in fact](https://github.com/ipfs/ipfs/issues/439)
 
 ## History
 
@@ -25,15 +21,132 @@ Then we did it, he got aware of the first commit which is the one that was publi
 
 And we did continue the development over years, the full version used for [Peersm](http://www.peersm.com), [Peersm bridges](https://github.com/Ayms/node-Tor/tree/master/install) (bridging with bittorrent), [iAnonym](http://www.ianonym.com) was not public until now
 
+## Phases and Funding
+
+Phases 1 to 3 (refactoring of the whole initial code, split into modules and push everything open source) have been funded by [NLnet](https://nlnet.nl/) under the [EU Horizon 2020 Next Generation internet Privacy & Trust Enhancing Technologies](https://nlnet.nl/PET/)
+
+The full code up to phase 3 is the current status of this repo and is now open source and provided in clear
+
+Phase 4 implements the ``Duplex Object`` and evented pipes method, please see below and the [docs](https://github.com/Ayms/node-Tor/tree/master/docs/README.md), it has been developped but remains experimental and not fully tested it's not part of this repo
+
+Phase 5 goes along with phase 4 in order to implement elliptic crypto, the Tor protocol v3 features and WebRTC so browsers can perform the Onion Proxy and Onion Router functions as p2p peers, this will be compatible with [Snowflake](https://snowflake.torproject.org/) but is much more ambitious since browsers and nodes are really behaving like Tor protocol nodes on top of WebRTC not only relaying WebRTC messages
+
+For now there is no funding left for the development/release of phase 4 and phase 5, that would be too bad to stop here so we are interested to continue should funding be available
+
+You can consider also donating to BTC 19LgEmzSvD1oCr1QxT2dgmF5SSnh1aq94j
+
 ## License
 
-This project is under a MIT license
+Phase 1 to 3 are under a MIT license
+
+Same license will apply to phase 4 and phase 5 if they are funded
+
+## Phase 4 and Phase 5
+
+### Evented pipes (phase4)
+
+RDV below stands for 'RendezVous' point, which is a peer that will connect two anonymous peers
+
+The evented (and non evented) pipe methods are now implemented but until we remove this notice it remains experimental and subject to change (see the TODO mainly for the RDV protocol), the detailed API documentation is [here](https://github.com/Ayms/node-Tor/tree/master/docs/README.md) (but please read what follows first) and some code examples to pipe any protocol can be found in [protocol.js](https://github.com/Ayms/node-Tor/tree/master/lib/src/protocol.js)
+
+	<any protocol>.(...).pipe(<any protocol>).pipe(node-Tor)
+
+	sources --> A --> B --> C --> destination (web site for example)
+
+For example:
+
+	http.pipe(tls).pipe(node-Tor)
+
+or
+
+	http.pipe(parser).pipe(gzip).pipe(tls).pipe(node-Tor)
+
+Where we are on the Onion Proxy side which will pipe https through Tor circuits and an exit node
+
+Here and in what follows all objects piped are extending nodejs' `Duplex Streams` (<b>and `-->` or `<--` are bidirectional too but show the way the Tor circuits are established</b>)
+
+And
+
+	<any protocol>.(...).pipe(<any protocol>).pipe(node-Tor).pipe(RDV peer)
+
+	hidden querying peer --> A --> B --> RDV <-- C <-- D <-- hidden queried peer
+
+Where `RDV peer` allows to choose the last peer which can be an end point or a RDV point to which another Tor peer is connected to via several hops (like hidden services), the RDV peer is relaying the data between the two end points not knowing who they are, the two end points not knowing who they are also of course
+
+For example:
+
+	torrent.pipe(node-Tor).pipe(RDV peer)
+
+Which for Peersm project is:
+
+	DB.pipe(node-Tor).pipe(RDV peer)
+
+Where `DB` is the `ORDB` protocol extending the Tor protocol to stream files downloaded inside browser's indexedDB storage between peers
+
+The RDV peer is not using (hidden services)-like addresses to link two peers but simple hashes (so a peer transiting via the RDV peer to access another one must have the knowledge of its hash), this can be customized
+
+And
+
+	<any protocol>.pipe(<any protocol>).pipe(node-Tor)
+
+	hidden querying peer --> A --> B --> C --> queried peer
+
+Where we are on the Onion Router side as the last node (supposed to be an exit one but that's not the case here) which will pipe some protocols, most likely identical between peers (ie the OP initiator and the OR responder)
+
+For example:
+
+	bitcoin.pipe(node-Tor) between two bitcoin peers
+
+	or
+
+	ipfs.pipe(node-Tor) between two ipfs peers
+
+	or
+
+	webtorrent.pipe(node-Tor) between two webtorrent peers
+
+You can do also:
+
+	(bitcoin/ipfs/webtorrent/etc).pipe(node-Tor).pipe(RDV peer)
+
+If you want to hide who are operating the protocols
+
+Both on Onion Proxy side (initiator) and Onion Router side (responder), knowing that both can be browsers
+
+On both side the `pipe` method is bidirectional (ie you don't have to do `bitcoin.pipe(node-Tor).pipe(bitcoin)`) and allows to stream/pipe chained protocols
+
+Future development are planning to include the `MESSAGES2` elliptic crypto and WebRTC transport layer between peers
+
+So at the end:
+
+	<any protocol>.(...).pipe(<any protocol>).pipe(node-Tor).pipe(RDV peer - optional)
+
+where `node-Tor` circuits are:
+
+	Tor TLS+Tor protocol over TCP (already implemented)
+	Tor TLS+Tor protocol over TCP streamed via SOCKS proxy (already implemented)
+	Tor TLS+Tor protocol over WebSockets (already implemented)
+	Tor TLS+Tor protocol over WebRTC (TODO - phase5)
+
+### Non Evented pipes (phase4)
+
+The above pipes methods are using events but in case the initial source does not support events and cannot pipe natively with nodejs, the process can start automatically for example doing:
+
+	(bitcoin or any process) | node-tor | (bitcoin or any process)
+
+Where the protocol is piped to the node-Tor process via stdin and stdout, this is similar to the socks proxy piping but is more secure since it stays local to the code and removes the need of a local (or distant) server implementing the SOCKS interface
+
+### Phase 5
+
+As stated above Phase 5 consists in implementing elliptic crypto, the Tor protocol v3 features and WebRTC, this is a short summary for something that is of course not trivial
 
 ## Dependencies
 
 This module is using the very good [Forge](https://github.com/digitalbazaar/forge), [sjcl](http://bitwiseshiftleft.github.io/sjcl/), [RSA and ECC in JavaScript](http://www-cs-students.stanford.edu/~tjw/jsbn/), [Browserify](https://github.com/browserify/browserify), [Terser](https://github.com/terser-js/terser) and other modules from us under a MIT license
 
-## Modifications
+All dependencies (except browserify and terser) are currently embedded in the code (mainly because we had to modify some specific parts)
+
+## Modifications (phases 1 to 3)
 
 We did clean the code, update it to ES6 and make it modular, as well as update it to the latest nodejs version
 
@@ -49,9 +162,9 @@ Install node and unzip [master](https://github.com/Ayms/node-Tor/archive/master.
 
 ## Browser interface
 
-The browser interface is available at http://peersm.com/peersm2
-
 Please see the Browserify and Test configuration sections
+
+For now we have removed the demo interface but you can look at the test configuration below
 
 Please not also that this configuration has been maintained for demo purposes only (and testing purposes, if the whole chain from the browser to the Tor nodes work then it becomes unlikely that something is incorrect in your code) without any focus on security considerations and usability since it has been simplified from the initial Peersm project, it is not the main purpose of this project, the main purpose being to allow the use of the Tor protocol inside browsers and on server side for your own projects, it can have some bugs and if circuits don't get created refresh the page
 
@@ -178,7 +291,7 @@ Again the intent is not to add Tor nodes inside the Tor network, unlike the comm
 - the directory/consensus features are not implemented (so for example you cannot proxy the Tor browser directly to node-Tor via SOCKS proxy, which is anyway not a good idea at all)
 - we don't know how secure is the nodejs and browser prng
 - forge buffers are used for some features, note that they are fast (faster in fact than nodejs Buffers and ArrayBuffers when we were testing streaming)
-- MESSAGE2 with elliptic crypto are not implemented for now, probably this would be a good idea to do it so we get rid of RSA, PEM, DER formats for p2p implementations, please note that for publishing nodes an unused curve25519 ntor-onion-key (ie a 32B buffer) is used in the descriptor
+- MESSAGE2 with elliptic crypto are not implemented for now, probably this would be a good idea to do it so we get rid of RSA, PEM, DER formats for p2p implementations (phase 5), please note that for publishing nodes an unused curve25519 ntor-onion-key (ie a 32B buffer) is used in the descriptor
 
 ## Related bugs/issues
 
@@ -187,18 +300,21 @@ Again the intent is not to add Tor nodes inside the Tor network, unlike the comm
 * [Advisory for SSL problems with leading zeros on OpenSSL 1.1.0](https://icinga.com/2017/08/30/advisory-for-ssl-problems-with-leading-zeros-on-openssl-1-1-0/) : probably this is the issue with certid, please see the comment in abstract-tls, we will not fix it
 * [Security error when trying to set a non SSL/TLS Websocket from a https page](https://bugzilla.mozilla.org/show_bug.cgi?id=917829) and this thread [WS/Service Workers, TLS and future apps - was Re: HTTP is just fine](https://lists.w3.org/Archives/Public/public-webapps/2015OctDec/0187.html), this is why the browser page can't be https, because the specs forbid a fallback to ws and of course wss can't be used since the nodes have self-signed certificates, this is a misdesign of the web but nobody wants to admit/correct it
 * [ISSUE 22 - Re: Incomplete blocks](https://lists.w3.org/Archives/Public/public-webcrypto-comments/2013Feb/0016.html), this relates to the fact that only the Tor project in the world uses progressive hash stopped for each chunk (cells data), which means that it closes the hash for each cell received and then restarts from the previous state, this is not supported by anybody, neither openssl, Webcrypto or NSS, that's the purpose of the specific ``Hash`` function modifying forge hash to allow this, please see https://github.com/Ayms/node-Tor/tree/master/ext/my_sha1.js (this does not impact the aes encryption, my_aes.js is just a repackaging of aes to make it behave the nodejs way)
+* [Relay_extended - hash and padding - specs are wrong or unclear](https://trac.torproject.org/projects/tor/ticket/32830#comment:4) - little change accepted by the Tor project team
+* [Chaining pipe for streams - probably stupid question but...](https://github.com/nodejs/help/issues/2384) - the initial question was indeed stupid, now it is probably a misdesign of nodejs that a.pipe(b).pipe(a) creates an infinite loop and we have to use two duplex streams for the way back and forward instead of one
+* [TLS - nothing looks to be working](https://github.com/digitalbazaar/forge/issues/758) - tls for https in node-Tor demo is implemented in tls.js but does not work, see the bug report
 
 ## Notes for the devs
 
 This project has been maintained over years but it has been a huge work to clean everything and make it modular, and at the end is very small for what it does, now some parts might still need some changes, please keep in mind that it was quite difficult at the time it was developped to put everything inside browsers with associated crypto, that's why the previous code ended up to be a monolith
 
-The major part of the ORDB function is isolated into circuits_extended.js, but you need to remove what relates to Peersm in the other modules if you really want to have a minimal version of node-Tor
+Following the evented pipes implementation (phase 4) everything is now clearly splitted between layers and modules but probably some little cleaning is still required, which will happen with time
 
 The same code is used at nodejs and browser side, then the browser has exactly the same functions than nodejs (and could therefore act as an OR as well)
 
 Globals are used at the nodejs level (see the note for browsers in Browserify section), most of them can be splitted as local variables inside modules but not all, this is not an issue and comes from the initial design since at the beginning the code was not intended to be modular (and then no globals were used), changing this impacts a lot of things, this might be a TODO (as well as implementing the elliptic crypto)
 
-If you PR something please make sure that the test configuration works for each type of circuit and download also (then it becomes unlikely that something is wrong)
+If you PR something (please wait that we remove the experimental notice above, in the meantime you can email us) please make sure that the test configuration works for each type of circuit and download also (then it becomes unlikely that something is wrong)
 
 ## Peer review
 
