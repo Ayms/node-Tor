@@ -27,7 +27,7 @@ Phases 1 to 3 (refactoring of the whole initial code, split into modules and pus
 
 The full code up to phase 3 is the current status of this repo and is now open source and provided in clear
 
-Phase 4 implements the ``Duplex Object`` and evented pipes method, please see below and the [docs](https://github.com/Ayms/node-Tor/tree/master/docs/README.md), it has been developped but remains experimental and not fully tested it's not part of this repo
+Phase 4 will implement the ``Duplex Object`` and evented pipes method, please see below and the [docs](https://github.com/Ayms/node-Tor/tree/master/docs/README.md), the main concepts have been  developped but not the split of the ``request`` object, it's not part of this repo
 
 Phase 5 goes along with phase 4 in order to implement elliptic crypto, the Tor protocol v3 features and WebRTC so browsers can perform the Onion Proxy and Onion Router functions as p2p peers, this will be compatible with [Snowflake](https://snowflake.torproject.org/) but is much more ambitious since browsers and nodes are really behaving like Tor protocol nodes on top of WebRTC not only relaying WebRTC messages
 
@@ -47,7 +47,7 @@ Same license will apply to phase 4 and phase 5 if they are funded
 
 RDV below stands for 'RendezVous' point, which is a peer that will connect two anonymous peers
 
-The evented (and non evented) pipe methods are now implemented but until we remove this notice it remains experimental and subject to change (see the TODO mainly for the RDV protocol), the detailed API documentation is [here](https://github.com/Ayms/node-Tor/tree/master/docs/README.md) (but please read what follows first) and some code examples to pipe any protocol can be found in [protocol.js](https://github.com/Ayms/node-Tor/tree/master/lib/src/protocol.js)
+The detailed API documentation is [here](https://github.com/Ayms/node-Tor/tree/master/docs/README.md) (but please read what follows first)
 
 	<any protocol>.(...).pipe(<any protocol>).pipe(node-Tor)
 
@@ -307,8 +307,6 @@ Again the intent is not to add Tor nodes inside the Tor network, unlike the comm
 ## Notes for the devs
 
 This project has been maintained over years but it has been a huge work to clean everything and make it modular, and at the end is very small for what it does, now some parts might still need some changes, please keep in mind that it was quite difficult at the time it was developped to put everything inside browsers with associated crypto, that's why the previous code ended up to be a monolith
-
-Following the evented pipes implementation (phase 4) everything is now clearly splitted between layers and modules but probably some little cleaning is still required, which will happen with time
 
 The same code is used at nodejs and browser side, then the browser has exactly the same functions than nodejs (and could therefore act as an OR as well)
 
