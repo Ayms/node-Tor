@@ -107,7 +107,7 @@ For example:
 
 	or
 
-	sip.pipe(node-Tor) for conferences services
+	sip.pipe(node-Tor) for conferencing services
 
 You can do also:
 
