@@ -11,7 +11,7 @@ Please see the [node-Tor presentation](https://nlnet.nl/project/node-Tor/), it i
 
 And it must not be misunderstood as a remake of the Tor network, this is a complete implementation of the Tor protocol that can be used to anonymize any protocol
 
-To give an idea of the global target and potential, please see [Anonymous IPFS, Filecoin or whatever protocol in fact](https://github.com/ipfs/ipfs/issues/439)
+To give an idea of the global target and potential, please see [Anonymous IPFS, Filecoin or whatever protocol in fact](https://github.com/ipfs/ipfs/issues/439) or a complete redesign of the 2015 Convergence proposal [Convergence - 2020](http://www.peersm.com/Convergence - 2020.pdf) "A universal and generic architecture to anonymize any application or protocol and turn it into an independent decentralized p2p network inside browsers and servers, with browsers acting as servers"
 
 ## History
 
@@ -105,9 +105,13 @@ For example:
 
 	webtorrent.pipe(node-Tor) between two webtorrent peers
 
+	or
+
+	sip.pipe(node-Tor) for conferences services
+
 You can do also:
 
-	(bitcoin/ipfs/webtorrent/etc).pipe(node-Tor).pipe(RDV peer)
+	(bitcoin/ipfs/webtorrent/sip/etc).pipe(node-Tor).pipe(RDV peer)
 
 If you want to hide who are operating the protocols
 
