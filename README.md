@@ -33,7 +33,7 @@ Phase 5 goes along with phase 4 in order to implement elliptic crypto, the Tor p
 
 <b>For now there is no funding left for the development/release of phase 4 and phase 5, that would be too bad to stop here since we are enthusiastic to link phase 4 evented pipes with phase 5 elliptic crypto and WebRTC</b>
 
-You can consider also donating to BTC 19LgEmzSvD1oCr1QxT2dgmF5SSnh1aq94j, 5 BTCs would allow to move forward with phase 4/5
+You can consider also donating to BTC 19LgEmzSvD1oCr1QxT2dgmF5SSnh1aq94j, 5 BTCs would allow to move forward with phase 4/5 and more funding would allow to go up to phase10 of the Convergence proposal
 
 ## License
 
