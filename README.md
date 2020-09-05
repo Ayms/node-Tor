@@ -19,7 +19,7 @@ This project was started in 2012 when we contacted the Tor project team with som
 
 Then we did it, he got aware of the first commit which is the one that was public until now
 
-And we did continue the development over years, the full version used for [Peersm](http://www.peersm.com), [Peersm bridges](https://github.com/Ayms/node-Tor/tree/master/install) (bridging with bittorrent), [iAnonym](http://www.ianonym.com) was not public until now
+And we did continue the development over years, the full version used for [Peersm](http://www.peersm.com), [Peersm bridges](https://github.com/Ayms/node-Tor/tree/master/install) (bridging with bittorrent), [iAnonym](http://ianonym.peersm.com) was not public until now
 
 ## Phases and Funding
 
@@ -332,7 +332,7 @@ This project has been quickly scanned by [ROS](https://radicallyopensecurity.com
 * [Ayms/bittorrent-nodeid](https://github.com/Ayms/bittorrent-nodeid)
 * [Ayms/torrent-live](https://github.com/Ayms/torrent-live)
 * [Ayms/iAnonym](https://github.com/Ayms/iAnonym)
-* [Interception Detector](http://www.ianonym.com/intercept.html)
+* [Interception Detector](http://ianonym.peersm.com/intercept.html)
 * [Ayms/abstract-tls](https://github.com/Ayms/abstract-tls)
 * [Ayms/websocket](https://github.com/Ayms/websocket)
 * [Ayms/node-typedarray](https://github.com/Ayms/node-typedarray)
