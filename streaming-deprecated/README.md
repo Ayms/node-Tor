@@ -15,11 +15,11 @@ If you want to run a Tor Bridge implementing the WebSocket interface, ie a Tor a
 
 Both can run on Linux, Windows or Mac.
 
-####The installation is quite simple: just nodejs, node-Tor file and torrent-stream bittorrent client.
+#### The installation is quite simple: just nodejs, node-Tor file and torrent-stream bittorrent client.
 
 ## Peersm client installation:
 
-####For those that are not very familiar with installation stuff, please see the installer for Windows below.
+#### For those that are not very familiar with installation stuff, please see the installer for Windows below.
 
 Install node (see below)
 Get [the javascript file](http://www.peersm.com/node-Tor-min.js) and [the bittorrent client files](http://www.peersm.com/torrent-stream.zip) and store them somewhere.
@@ -106,7 +106,7 @@ If Peersm can not connect to your bridge, probably the port forwarding is not wo
 
 	If you don't get an error, the bridge is running, you can check the logs too in the debug-prod.txt file.
 
-##Windows installation example for Peersm client:
+## Windows installation example for Peersm client:
 
 	With your browser download:
 
