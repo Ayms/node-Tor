@@ -27,7 +27,7 @@ To give an idea of the global target and potential, please see [Anonymous IPFS, 
 
 * Reimplement uproxy project: https://www.uproxy.org/
 
-* Bypassing the Great China Firewall: https://github.com/Ayms/node-Tor/issues/2
+* Bypassing the Great China Firewall: https://github.com/Ayms/node-Tor/issues/2#issuecomment-66150611
 
 * Bitcoin: https://github.com/bitcoin/bitcoin/pull/18988#issuecomment-646564853
 
