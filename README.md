@@ -13,13 +13,52 @@ And it must not be misunderstood as a remake of the Tor network, this is a compl
 
 To give an idea of the global target and potential, please see [Anonymous IPFS, Filecoin or whatever protocol in fact](https://github.com/ipfs/ipfs/issues/439) or a complete redesign of the 2015 Convergence proposal [Convergence - 2020](http://www.peersm.com/Convergence-2020.pdf) "A universal and generic architecture to anonymize any application or protocol and turn it into an independent decentralized p2p network inside browsers and servers, with browsers acting as servers"
 
+## Examples / Use cases
+
+* Convergence proposal: A universal architecture to anonymize any application or protocol and turn it into an independent decentralized p2p network inside browsers and servers, with browsers acting as servers http://www.peersm.com/Convergence.pdf
+
+* Peersm: bittorrent-like anonymous download/streaming inside browsers (http://www.peersm.com)
+
+* Bridging with bittorrent [Peersm bridges](https://github.com/Ayms/node-Tor/tree/master/streaming-deprecated)
+
+* Anonymous Webtorrent: https://github.com/webtorrent/webtorrent/issues/1767
+
+* Compatibility with the Tor network and Snowflake
+
+* Reimplement uproxy project: https://www.uproxy.org/
+
+* Bypassing the Great China Firewall: https://github.com/Ayms/node-Tor/issues/2
+
+* Bitcoin: https://github.com/bitcoin/bitcoin/pull/18988#issuecomment-646564853
+
+* Decentralized crypto currency exchanges: [Internet of Coins](https://internetofcoins.org/blog/page:12)
+
+* Anonymizing IOT: https://www.objetconnecte.com/objets-connectes-anonyme-peersm/
+
+* IPFS: https://github.com/ipfs/ipfs/issues/439#issuecomment-593116241
+
+* Covid apps - Stopcovid and DP-3T discussion:
+https://github.com/ROBERT-proximity-tracing/documents/issues/6#issuecomment-623704990
+
+* French covid app: https://github.com/ROBERT-proximity-tracing/documents/issues/55
+
+* Filecoin: https://github.com/protocol/research/issues/4#issuecomment-388766158
+
+* Anonymous Videoconf apps
+
+* Anonymous Data portability
+
+* Any app...
+
+Some examples among many others
+
 ## History
 
 This project was started in 2012 when we contacted the Tor project team with some objectives to use the Tor network at that time from the browser, then Aaron Swartz to whom we dedicate this project just replied "I think the right solution is to implement all of Tor in JavaScript, so that the web browser can set up the necessary tunnels and it has all the security guarantees of the client. Obviously, of course, this is quite a programming challenge."
 
 Then we did it, he got aware of the first commit which is the one that was public until now
 
-And we did continue the development over years, the full version used for [Peersm](http://www.peersm.com), [Peersm bridges](https://github.com/Ayms/node-Tor/tree/master/install) (bridging with bittorrent), [iAnonym](http://ianonym.peersm.com) was not public until now
+And we did continue the development over years, the full version used for [Peersm](http://www.peersm.com), [iAnonym](http://ianonym.peersm.com) was not public until now
 
 ## Phases and Funding
 
@@ -31,9 +70,11 @@ Phase 4 will implement the ``Duplex Object`` and evented pipes method, please se
 
 Phase 5 goes along with phase 4 in order to implement elliptic crypto, the Tor protocol v3 features and WebRTC so browsers can perform the Onion Proxy and Onion Router functions as p2p peers, this will be compatible with [Snowflake](https://snowflake.torproject.org/) but is much more ambitious since browsers and nodes are really behaving like Tor protocol nodes on top of WebRTC not only relaying WebRTC messages
 
-<b>For now there is no funding left for the development/release of phase 4 and phase 5, that would be too bad to stop here since we are enthusiastic to link phase 4 evented pipes with phase 5 elliptic crypto and WebRTC</b>
+<b>For now there is no funding left for the development/release of phase 4 and phase 5
 
-You can consider also donating to BTC 19LgEmzSvD1oCr1QxT2dgmF5SSnh1aq94j, 5 BTCs would allow to move forward with phase 4/5 and more funding would allow to go up to phase10 of the Convergence proposal
+Phase 4 will be released if/when ~1 BTC is reached on address 19LgEmzSvD1oCr1QxT2dgmF5SSnh1aq94j
+
+Then @Ayms will not be needed any longer for future uses/integrations of the project</b>
 
 ## License
 
