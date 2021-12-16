@@ -31,6 +31,8 @@ To give an idea of the global target and potential, please see [Anonymous IPFS, 
 
 * Bitcoin: https://github.com/bitcoin/bitcoin/pull/18988#issuecomment-646564853
 
+* Anonymous wallets: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2020-December/018329.html
+
 * Decentralized crypto currency exchanges: [Internet of Coins](https://internetofcoins.org/blog/page:12)
 
 * Anonymizing IOT: https://www.objetconnecte.com/objets-connectes-anonyme-peersm/
