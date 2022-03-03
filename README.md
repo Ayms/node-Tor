@@ -229,7 +229,7 @@ Run ``node publish.js OR_name OR_IP:OR_port version email``
 
 This will create your onion key and long term ID key in the ``OR_name`` directory, then you must use that name when you launch the OR
 
-You can also do this manually, please see an example [here](https://github.com/Ayms/node-Tor/tree/master/install#node-tor-bridge-websocket-server-installation)
+You can also do this manually, please see an example [here](https://github.com/Ayms/node-Tor/tree/master/streaming-deprecated#node-tor-bridge-websocket-server-installation)
 
 And this will publish your node to the Tor authorities who will add your node into the Tor consensus
 
