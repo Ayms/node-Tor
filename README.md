@@ -219,6 +219,8 @@ Please not also that this configuration has been maintained for demo purposes on
 
 For both processes below you can make it periodic by uncommenting the related call in ``node-tor.js``
 
+See a concrete example here: https://github.com/Ayms/node-Tor/issues/20#issuecomment-1058021169
+
 ### Create your keys and publish your node
 
 Create a directory ``OR_name`` in lib directory (for example OR1, note that only regular characters must be used for the names of the routers)
