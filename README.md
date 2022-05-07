@@ -13,6 +13,7 @@ And it must not be misunderstood as a remake of the Tor network, this is a compl
 
 To give an idea of the global target and potential, please see [Anonymous IPFS, Filecoin or whatever protocol in fact](https://github.com/ipfs/ipfs/issues/439) or a complete redesign of the 2015 Convergence proposal [Convergence - 2020](http://www.peersm.com/Convergence-2020.pdf) "A universal and generic architecture to anonymize any application or protocol and turn it into an independent decentralized p2p network inside browsers and servers, with browsers acting as servers"
 
+
 ## Examples / Use cases
 
 * Convergence proposal: A universal architecture to anonymize any application or protocol and turn it into an independent decentralized p2p network inside browsers and servers, with browsers acting as servers http://www.peersm.com/Convergence.pdf
