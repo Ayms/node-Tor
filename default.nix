@@ -31,6 +31,14 @@ stdenv.mkDerivation rec {
     mkdir -p $out/lib/node
     cp -r lib/* $out/lib/node
     mv $out/lib/node/node-tor.js $out/lib/node/node-Tor.js
+    cat > $out/lib/node/package.json << EOF
+    {
+      "name": "${pname}",
+      "version": "0.0.0-${version}",
+      "license": "MIT",
+      "main": "node-Tor.js"
+    }
+    EOF
 
     # lib/browser
     mkdir -p $out/lib/browser
